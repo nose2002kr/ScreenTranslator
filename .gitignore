@@ -2,4 +2,5 @@
 .vs/
 
 # Build Generate
-x64/
+Debug/
+Release/
