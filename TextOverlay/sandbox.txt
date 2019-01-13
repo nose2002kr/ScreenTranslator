@@ -1,0 +1,189 @@
+
+void testFunc3() {
+  /*HDC hDest = CreateCompatibleDC(hdc);
+  HBITMAP bitmap = CreateCompatibleBitmap(hdc, RctW(rect), RctH(rect));
+  SelectObject(hDest, bitmap);
+  BitBlt(hDest, 0, 0, RctW(rect), RctH(rect), hdc, 0, 0, SRCCOPY);
+  ReleaseDC(NULL, hdc);
+  DeleteObject(bitmap);
+  std::vector<byte> buf = ToPixels(bitmap);
+  ID2D1Bitmap *pBackBufBitmap;
+  hr = pTarget->CreateBitmap(
+    D2D1::SizeU(rect.right - rect.left, rect.bottom - rect.top),
+    &buf[0],
+    RctW(rect) * 4,
+    D2D1::BitmapProperties(D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE)),
+    &pBackBufBitmap);*/
+}
+
+
+
+void testFunc2() {
+
+  ID2D1Factory* fac = nullptr;
+  throwIfFail(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &fac), "CreateFactory Failure.");
+  Sleep(1000);
+
+  HWND hwnd = ::GetForegroundWindow();
+  InitD3D();
+
+  IDWriteFactory* writeFac = nullptr;
+  throwIfFail(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&writeFac), "DWriteCreateFactory Failure.");
+  IDWriteTextFormat* textFormat = nullptr;
+  throwIfFail(
+    writeFac->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 10, L"en-us", &textFormat),
+    "CreateTextFormat Failure.");
+
+  ID2D1RenderTarget* pTarget = createRenderTarget(canvasWnd, fac);
+  ID2D1SolidColorBrush* redBlush = nullptr;
+  throwIfFail(pTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &redBlush), "CreateSolidColorBrush Failure.");
+
+  while (true) {
+    //ShowWindow(canvasWnd, false);
+    g_pd3dDevice->GetFrontBufferData(0, g_pSurface);
+    //ShowWindow(canvasWnd, true);
+    HWND hwnd2 = ::GetForegroundWindow();
+
+    RECT rect;
+    HRESULT hr = DwmGetWindowAttribute(hwnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
+    rect.left += 8;
+    rect.top += 8;
+    rect.right -= 8;
+    rect.bottom -= 8;
+    SetWindowPos(canvasWnd, HWND_TOPMOST, rect.left, rect.top, rect.right, rect.bottom, NULL);
+
+    BYTE* pBits = new BYTE[(rect.bottom - rect.top) * (rect.right - rect.left) * 4];
+    int scanline = (rect.right - rect.left) * 4;
+
+    //g_pSurface->LockRect
+    D3DXSaveSurfaceToFile("C:/temp/test.bmp", D3DXIFF_BMP, g_pSurface, NULL, NULL);		//Save to File
+    D3DLOCKED_RECT	lockedRect;
+    if (FAILED(g_pSurface->LockRect(&lockedRect, &rect, D3DLOCK_NO_DIRTY_UPDATE | D3DLOCK_NOSYSLOCK | D3DLOCK_READONLY)))
+    {
+      //ErrorMessage("Unable to Lock Front Buffer Surface");	break;
+    }
+
+    for (int i = 0; i < rect.bottom - rect.top; i++)
+    {
+      memcpy(
+        (BYTE*)pBits + (i * scanline),
+        (BYTE*)lockedRect.pBits + ((rect.top + i) * scanline + rect.left),
+        scanline);
+    }
+
+    g_pSurface->UnlockRect();
+
+    ID2D1Bitmap *pBackBufBitmap;
+    hr = pTarget->CreateBitmap(
+      D2D1::SizeU(rect.right - rect.left, rect.bottom - rect.top),
+      pBits,
+      scanline,
+      D2D1::BitmapProperties(D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE)),
+      &pBackBufBitmap);
+    /*throwIfFail(
+      pTarget->CreateBitmap(D2D1::SizeU(rect.right-rect.left, rect.bottom - rect.top), pBits, 0, D2D1::BitmapProperties(D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE)), &pBackBufBitmap),
+      "CreateBitmap");*/
+
+    pTarget->BeginDraw();
+    pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+    pTarget->DrawBitmap(pBackBufBitmap, D2D1::RectF(0, 0, rect.right - rect.left, rect.bottom - rect.top));
+    for (int i = 0; i < 1000; i++) {
+      pTarget->DrawTextA(L"Hellllo", 7, textFormat, D2D1::Rect(0, 0 + i * 10, 100, 10 + i * 10), redBlush);
+    }
+
+    pTarget->EndDraw();
+
+    delete[] pBits;
+    Sleep(10);
+  }
+}
+
+
+void testFunc(ID2D1Factory* fac) {
+  HWND hwnd = ::GetForegroundWindow();
+  ID2D1RenderTarget* pTarget = createRenderTarget(hwnd, fac);
+
+  ID2D1SolidColorBrush* redBlush = nullptr;
+  throwIfFail(pTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &redBlush), "CreateSolidColorBrush Failure.");
+  
+  IDWriteFactory* writeFac = nullptr;
+  throwIfFail(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&writeFac), "DWriteCreateFactory Failure.");
+
+  IDWriteTextFormat* textFormat = nullptr;
+  throwIfFail(
+    writeFac->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 10, L"en-us", &textFormat),
+    "CreateTextFormat Failure.");
+
+  IDWriteTextLayout* textLayout;
+  throwIfFail(writeFac->CreateTextLayout(L"HELLO", 6, textFormat, 100, 100, &textLayout),
+    "CreateTextLayout Failure.");
+
+  ID2D1Layer *pLayer = NULL;
+  RECT rect;
+  GetClientRect(hwnd, &rect);
+  D2D1_SIZE_U winSize = D2D1::SizeU(rect.right - rect.left, rect.bottom - rect.top);
+  D2D1_SIZE_F winSizeF = D2D1::SizeF(rect.right - rect.left, rect.bottom - rect.top);
+  
+  /*
+  ID2D1Bitmap *pBackBufBitmap;
+  throwIfFail(
+    pTarget->CreateBitmap(winSize, D2D1::BitmapProperties(D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE)), &pBackBufBitmap),
+    "CreateBitmap");
+
+  throwIfFail(pBackBufBitmap->CopyFromRenderTarget(&D2D1::Point2U(0, 0), pTarget, &D2D1::RectU(0, 0, pBackBufBitmap->GetSize().width, pBackBufBitmap->GetSize().height))
+    , "Copt Failure");*/
+  
+  //hr = pTarget->CreateLayer(NULL, &pLayer);
+  while (true) {
+
+    //pTarget->SetTransform(D2D1::Matrix3x2F::Translation(300, 250));
+    pTarget->BeginDraw();
+    //pTarget->PushLayer(D2D1::LayerParameters(),pLayer);
+    pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+    //pTarget->DrawBitmap(pBackBufBitmap, D2D1::RectF(0, 0, rect.right - rect.left, rect.bottom - rect.top));
+    
+    // Push the layer with the content bounds.
+    
+    for (int i = 0; i < 1000; i++) {
+      pTarget->DrawTextA(L"Hellllo", 7, textFormat, D2D1::Rect(0, 0 + i * 10, 100, 10 + i * 10), redBlush);
+    }
+  
+    ///pBackBufBitmap->CopyFromRenderTarget(&D2D1::Point2U(0, 0), pTarget, &D2D1::RectU(0, 0, pBackBufBitmap->GetSize().width, pBackBufBitmap->GetSize().height));
+    //pTarget->PopLayer();
+    pTarget->EndDraw();
+    ::Sleep(100);
+  }
+
+  //SafeRelease(redBlush);
+  //SafeRelease(textFormat);
+}
+
+std::vector<byte> ToPixels(HBITMAP BitmapHandle)
+{
+  int width;
+  int height;
+  BITMAP Bmp = { 0 };
+  BITMAPINFO Info = { 0 };
+  std::vector<byte> Pixels = std::vector<byte>();
+
+  HDC DC = CreateCompatibleDC(NULL);
+  std::memset(&Info, 0, sizeof(BITMAPINFO)); //not necessary really..
+  HBITMAP OldBitmap = (HBITMAP)SelectObject(DC, BitmapHandle);
+  GetObject(BitmapHandle, sizeof(Bmp), &Bmp);
+
+  Info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+  Info.bmiHeader.biWidth = width = Bmp.bmWidth;
+  Info.bmiHeader.biHeight = height = Bmp.bmHeight;
+  Info.bmiHeader.biPlanes = 1;
+  Info.bmiHeader.biBitCount = Bmp.bmBitsPixel;
+  Info.bmiHeader.biCompression = BI_RGB;
+  Info.bmiHeader.biSizeImage = ((width * Bmp.bmBitsPixel + 31) / 32) * 4 * height;
+
+  Pixels.resize(Info.bmiHeader.biSizeImage);
+  GetDIBits(DC, BitmapHandle, 0, height, &Pixels[0], &Info, DIB_RGB_COLORS);
+  SelectObject(DC, OldBitmap);
+
+  height = std::abs(height);
+  DeleteDC(DC);
+  return Pixels;
+}
