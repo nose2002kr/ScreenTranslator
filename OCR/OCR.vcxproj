@@ -94,6 +94,14 @@
     <Link>
       <AdditionalDependencies>tesseract40d.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy "..\..\..\leptonica\build\bin\$(Configuration)\leptonica-1.78.0d.dll" "$(SolutionDir)"
+copy "..\..\..\tesseract\build\bin\$(Configuration)\tesseract40d.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400d.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400d.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(SolutionDir)"
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -106,6 +114,14 @@
     <Link>
       <AdditionalDependencies>tesseract40d.lib;opencv_world401d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy "..\..\..\leptonica\build\bin\$(Configuration)\leptonica-1.78.0d.dll" "$(SolutionDir)"
+copy "..\..\..\tesseract\build\bin\$(Configuration)\tesseract40d.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400d.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400d.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(SolutionDir)"
+</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -122,6 +138,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>tesseract40.lib;opencv_core400.lib;opencv_imgcodecs400.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy "..\..\..\leptonica\build\bin\$(Configuration)\leptonica-1.78.0.dll" "$(SolutionDir)"
+copy "..\..\..\tesseract\build\bin\$(Configuration)\tesseract40.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(SolutionDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -138,6 +161,13 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>tesseract40.lib;opencv_world401.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>copy "..\..\..\leptonica\build\bin\$(Configuration)\leptonica-1.78.0.dll" "$(SolutionDir)"
+copy "..\..\..\tesseract\build\bin\$(Configuration)\tesseract40.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400.dll" "$(SolutionDir)"
+copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(SolutionDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\ocr.cpp" />

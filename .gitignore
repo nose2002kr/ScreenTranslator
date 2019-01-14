@@ -4,3 +4,6 @@
 # Build Generate
 Debug/
 Release/
+
+# BinrayFile
+*.dll

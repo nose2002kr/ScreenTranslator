@@ -8,3 +8,6 @@ Install & thirdparty List
 
 **2. for TextOveryaer Project**
 * DirectX SDK
+
+**3. for Translate Project**
+* libcurl (https://curl.haxx.se/libcurl/ <U> no git</U>)
