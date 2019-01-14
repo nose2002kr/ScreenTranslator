@@ -1,6 +1,5 @@
 #include <string>
 #include "baseapi.h"
-
 #include <opencv2/opencv.hpp>
 
 using namespace std;
@@ -8,29 +7,23 @@ using namespace cv;
 
 int main(int argc, char* argv[])
 {
-  string outText;
   string imPath = argv[1];
 
-  // Create Tesseract object
-  tesseract::TessBaseAPI *ocr = new tesseract::TessBaseAPI();
-
-  // Initialize tesseract to use English (eng) and the LSTM OCR engine. 
-  ocr->Init(NULL, "eng", tesseract::OEM_LSTM_ONLY);
-
-  // Set Page segmentation mode to PSM_AUTO (3)
-  ocr->SetPageSegMode(tesseract::PSM_AUTO);
-
+  
+  tesseract::TessBaseAPI api;
+  api.SetPageSegMode(tesseract::PSM_AUTO);  // Segmentation on auto 
+  api.Init("C:/Users/1004/C++/tesseract/tessdata", "eng");   // path = parent directory of tessdata 
   // Open input image using OpenCV
   Mat im = cv::imread(imPath, IMREAD_COLOR);
-
+  cv::cvtColor(im, im, COLOR_BGR2RGB);
   // Set image data
-  ocr->SetImage(im.data, im.cols, im.rows, 3, im.step);
-
-  // Run Tesseract OCR on image
-  outText = string(ocr->GetUTF8Text());
-
+  api.SetImage(im.data, im.cols, im.rows, 4, 4* im.cols);
+  //api.SetImage(image);       // Run the OCR 
+  char* textOutput = new char[512];
+  textOutput = api.GetUTF8Text();     // Get the text 
+                                      
   // print recognized text
-  cout << outText << endl; // Destroy used object and release memory ocr->End();
+  cout << textOutput << endl; // Destroy used object and release memory ocr->End();
 
   return EXIT_SUCCESS;
 }
