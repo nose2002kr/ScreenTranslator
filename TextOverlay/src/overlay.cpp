@@ -151,8 +151,12 @@ TextOverlay::isInvalidHwnd(HWND hWnd) {
 
 void
 TextOverlay::updateCanvasWindow(RECT rect) {
-  if (m_rt->GetSize().height == RctH(rect)
-   && m_rt->GetSize().width == RctW(rect))
+  RECT canvasRect;
+  DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
+  if (canvasRect.left == rect.left
+   && canvasRect.top == rect.top
+   && canvasRect.right == rect.right
+   && canvasRect.bottom == rect.bottom)
     return;
 
   m_rt->Resize(D2D1::SizeU(RctW(rect), RctH(rect)));
