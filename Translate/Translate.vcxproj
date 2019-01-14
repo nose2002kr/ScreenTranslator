@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>..\..\..\curl-7.63.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\..\curl-7.63.0\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\..\curl\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\curl\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>..\..\..\curl-7.63.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\..\..\curl-7.63.0\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\..\..\curl\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\..\..\curl\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -88,7 +88,7 @@
       <AdditionalDependencies>libcurl-d_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\curl-7.63.0\build\lib\$(Configuration)\libcurl-d.dll" "$(SolutionDir)"</Command>
+      <Command>copy "..\..\..\curl\build\lib\$(Configuration)\libcurl-d.dll" "$(SolutionDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -117,7 +117,7 @@
       <AdditionalDependencies>libcurl_imp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\curl-7.63.0\build\lib\$(Configuration)\libcurl.dll" "$(SolutionDir)"</Command>
+      <Command>copy "..\..\..\curl\build\lib\$(Configuration)\libcurl.dll" "$(SolutionDir)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
