@@ -11,3 +11,5 @@ Install & thirdparty List
 
 **3. for Translate Project**
 * libcurl (https://curl.haxx.se/libcurl/ <U> no git</U>)
+* openssl
+* libjson
