@@ -21,6 +21,24 @@ TextOverlay::TextOverlay(HINSTANCE hInstance) {
   createRenderTarget();
 }
 
+void
+TextOverlay::screenCapture() {
+  //ShowWindow(m_canvasWnd, SW_HIDE);
+  RECT canvasRect;
+  DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
+
+  SetWindowPos(m_canvasWnd, HWND_TOPMOST, INT_MAX, INT_MAX, 0, 0, SWP_NOSIZE);
+  //SetWindowDisplayAffinity(m_canvasWnd, WDA_MONITOR);
+  m_pd3dDevice->GetFrontBufferData(0, m_pSurface);
+  SetWindowPos(m_canvasWnd, HWND_TOPMOST, canvasRect.left, canvasRect.top, 0, 0, SWP_NOSIZE);
+  //ShowWindow(m_canvasWnd, SW_RESTORE);
+  //save its contents to a bitmap file.
+  D3DXSaveSurfaceToFile("C:/Users/1004/C++/capturedImage.bmp",
+    D3DXIFF_BMP,
+    m_pSurface,
+    NULL,
+    NULL);
+}
 
 ID2D1HwndRenderTarget* 
 TextOverlay::createRenderTarget() {
@@ -179,6 +197,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
       ::Sleep(100); continue;
     }
 
+    overlayer->screenCapture();
     RECT rect;
     HRESULT hr = DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
     overlayer->updateCanvasWindow(rect);

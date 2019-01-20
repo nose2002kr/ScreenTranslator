@@ -32,7 +32,8 @@ public:
   }
 
   ID2D1HwndRenderTarget* getRenderTarget() { return m_rt; }
-
+  
+  void screenCapture();
   bool isInvalidHwnd(HWND hWnd);
   void updateCanvasWindow(RECT rect);
 
