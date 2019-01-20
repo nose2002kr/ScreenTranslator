@@ -43,11 +43,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>..\..\..\tesseract\build\$(Configuration)\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\..\..\tesseract\lib\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>..\..\..\tesseract\build\$(Configuration)\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\..\..\tesseract\lib\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -56,14 +56,15 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\tesseract\build;..\..\..\tesseract\src\api;..\..\..\tesseract\build\api;..\..\..\tesseract\src\arch;..\..\..\tesseract\src\ccmain;..\..\..\tesseract\src\ccstruct;..\..\..\tesseract\src\ccutil;..\..\..\tesseract\src\classify;..\..\..\tesseract\src\cutil;..\..\..\tesseract\src\dict;..\..\..\tesseract\src\lstm;..\..\..\tesseract\src\opencl;..\..\..\tesseract\src\textord;..\..\..\tesseract\src\viewer;..\..\..\tesseract\src\wordrec;..\..\..\tesseract\src\vs2010\tesseract;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>tesseract40d.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtesseract302.lib;liblept168.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\leptonica\build\bin\$(Configuration)\leptonica-1.78.0d.dll" "$(SolutionDir)"
-copy "..\..\..\tesseract\build\bin\$(Configuration)\tesseract40d.dll" "$(SolutionDir)"
+      <Command>copy "..\..\..\tesseract\lib\liblept168.dll" "$(SolutionDir)"
+copy "..\..\..\tesseract\lib\libtesseract302.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400d.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400d.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(SolutionDir)"
@@ -78,17 +79,18 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\tesseract\build;..\..\..\tesseract\src\api;..\..\..\tesseract\build\api;..\..\..\tesseract\src\arch;..\..\..\tesseract\src\ccmain;..\..\..\tesseract\src\ccstruct;..\..\..\tesseract\src\ccutil;..\..\..\tesseract\src\classify;..\..\..\tesseract\src\cutil;..\..\..\tesseract\src\dict;..\..\..\tesseract\src\lstm;..\..\..\tesseract\src\opencl;..\..\..\tesseract\src\textord;..\..\..\tesseract\src\viewer;..\..\..\tesseract\src\wordrec;..\..\..\tesseract\src\vs2010\tesseract;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>tesseract40.lib;opencv_core400.lib;opencv_imgcodecs400.lib;opencv_imgproc400.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libtesseract302.lib;liblept168.lib;opencv_core400.lib;opencv_imgcodecs400.lib;opencv_imgproc400.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\leptonica\build\bin\$(Configuration)\leptonica-1.78.0.dll" "$(SolutionDir)"
-copy "..\..\..\tesseract\build\bin\$(Configuration)\tesseract40.dll" "$(SolutionDir)"
+      <Command>copy "..\..\..\tesseract\lib\liblept168.dll" "$(SolutionDir)"
+copy "..\..\..\tesseract\lib\libtesseract302.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(SolutionDir)"</Command>
