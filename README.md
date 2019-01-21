@@ -3,8 +3,9 @@ Install & thirdparty List
 ---------------
 **1. for OCR Project**
 * opencv
-* tesseract (https://github.com/tesseract-ocr/tesseract.git)
-* leptonica (https://github.com/danbloomberg/leptonica)
+* tesseract for build (https://github.com/peirick/VS2015_Tesseract)
+  * tesseract (https://github.com/tesseract-ocr/tesseract.git)
+  * leptonica (https://github.com/danbloomberg/leptonica)
 
 **2. for TextOveryaer Project**
 * DirectX SDK

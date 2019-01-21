@@ -1,6 +1,6 @@
 #include <string>
 #include <opencv2/opencv.hpp>
-#include "tesseract/baseapi.h"
+#include "baseapi.h"
 
 using namespace std;
 using namespace cv;
@@ -396,64 +396,6 @@ std::vector<cv::Rect> reorganizeText(std::vector<cv::Rect> src) {
   dst.push_back(rect);
   return dst;
 }
-void
-ocrTest() {
-  
-  HWND hwndDesktop = GetDesktopWindow();
-  Mat src = hwnd2mat(hwndDesktop);
-  tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
-  // Initialize tesseract-ocr with English, without specifying tessdata path
-  if (api->Init("C:/Users/1004/C++/tesseract/tessdata", "eng")) {
-    fprintf(stderr, "Could not initialize tesseract.\n");
-    exit(1);
-  }
-
-  // Open input image with leptonica library
-  api->SetImage(src.data, src.cols, src.rows, 4, 4 * src.cols);
-  //Pix *image = pixRead("C:/Users/1004/Pictures/sample.tif");
-  //api->SetImage(image);
-  // Get OCR result
-  char* outText = api->GetUTF8Text();
-  printf("OCR output:\n%s", outText);
-
-  // Destroy used object and release memory
-  api->End(); 
-  //delete[] outText;
-  //pixDestroy(&image);
-
-  ::Sleep(2000);
-  
-
-  /*
-  HWND hwndDesktop = GetDesktopWindow();
-  Mat src = hwnd2mat(hwndDesktop);
-  cv::imwrite("C:/Users/1004/C++/capturedImage.png", src);
-  tesseract::TessBaseAPI api;
-  api.SetPageSegMode(tesseract::PSM_AUTO);  // Segmentation on auto 
-  api.Init("C:/Users/1004/C++/tesseract/tessdata", "eng");   // path = parent directory of tessdata 
-  // Open input image using OpenCV
-  std::vector<cv::Rect> letterBBoxes1 = detectLetters(src);
-
-  for (int i = 0; i < letterBBoxes1.size(); i++) {
-    cv::Mat cropImg = src(letterBBoxes1[i]);
-    cv::rectangle(src, letterBBoxes1[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
-    //cv::threshold(cropImg, cropImg, 0, 255, cv::THRESH_BINARY);
-    cv::imwrite("C:/Users/1004/C++/crop.png", cropImg);
-    //api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 4, 4 * cropImg.cols);
-    api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 4, 4 * cropImg.cols);
-    // Set image data
-    //api.SetImage(image);       // Run the OCR 
-    char* textOutput = new char[512];
-    textOutput = api.GetUTF8Text();     // Get the text 
-
-    // print recognized text
-    cout << textOutput << endl; // Destroy used object and release memory ocr->End();
-  }
-
-  cv::imwrite("C:/Users/1004/C++/searchedImage.png", src);
-  */
-
-}
 
 std::vector<TextInfo> findOutTextInfos(cv::Mat img) {
   char *outText;
@@ -472,7 +414,7 @@ std::vector<TextInfo> findOutTextInfos(cv::Mat img) {
     fprintf(stderr, "Could not initialize tesseract.\n");
     exit(1);
   }
-  api.SetPageSegMode(tesseract::PSM_AUTO);
+  api.SetPageSegMode(tesseract::PSM_SINGLE_LINE);
 
   //  std::sort(letterBBoxes1.begin(), letterBBoxes1.end(), rectComp);
 
@@ -484,7 +426,7 @@ std::vector<TextInfo> findOutTextInfos(cv::Mat img) {
     //cv::rectangle(src, letterBBoxes1[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
     resize(cropImg, cropImg, cv::Size(cropImg.cols / 2.5, cropImg.rows / 2.5));//resize image
     cv::imwrite("C:/Users/1004/C++/crop.png", cropImg);
-    api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 4, 4 * cropImg.cols);
+    api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 3, 3 * cropImg.cols);
     char* textOutput;
     textOutput = api.GetUTF8Text();     // Get the text 
 
@@ -503,6 +445,70 @@ std::vector<TextInfo> findOutTextInfos(cv::Mat img) {
     cv::rectangle(src, textInfos[i].rect, cv::Scalar(0, 255, 0, 255), 3, 8, 0);
   }
   cv::imwrite("C:/Users/1004/C++/searchedImage.png", src);
+}
+
+
+void
+ocrTest() {
+  HWND hwndDesktop = GetDesktopWindow();
+  Mat src = hwnd2mat(hwndDesktop);
+  findOutTextInfos(src);
+  /*
+  HWND hwndDesktop = GetDesktopWindow();
+  Mat src = hwnd2mat(hwndDesktop);
+  tesseract::TessBaseAPI *api = new tesseract::TessBaseAPI();
+  // Initialize tesseract-ocr with English, without specifying tessdata path
+  if (api->Init("C:/Users/1004/C++/tesseract/tessdata", "eng")) {
+    fprintf(stderr, "Could not initialize tesseract.\n");
+    exit(1);
+  }
+
+  // Open input image with leptonica library
+  api->SetImage(src.data, src.cols, src.rows, 4, 4 * src.cols);
+  //Pix *image = pixRead("C:/Users/1004/Pictures/sample.tif");
+  //api->SetImage(image);
+  // Get OCR result
+  char* outText = api->GetUTF8Text();
+  printf("OCR output:\n%s", outText);
+
+  // Destroy used object and release memory
+  api->End();
+  //delete[] outText;
+  //pixDestroy(&image);
+
+  ::Sleep(2000);
+  */
+
+
+  /*
+  HWND hwndDesktop = GetDesktopWindow();
+  Mat src = hwnd2mat(hwndDesktop);
+  cv::imwrite("C:/Users/1004/C++/capturedImage.png", src);
+  tesseract::TessBaseAPI api;
+  api.SetPageSegMode(tesseract::PSM_AUTO);  // Segmentation on auto
+  api.Init("C:/Users/1004/C++/tesseract/tessdata", "eng");   // path = parent directory of tessdata
+  // Open input image using OpenCV
+  std::vector<cv::Rect> letterBBoxes1 = detectLetters(src);
+
+  for (int i = 0; i < letterBBoxes1.size(); i++) {
+    cv::Mat cropImg = src(letterBBoxes1[i]);
+    cv::rectangle(src, letterBBoxes1[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
+    //cv::threshold(cropImg, cropImg, 0, 255, cv::THRESH_BINARY);
+    cv::imwrite("C:/Users/1004/C++/crop.png", cropImg);
+    //api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 4, 4 * cropImg.cols);
+    api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 4, 4 * cropImg.cols);
+    // Set image data
+    //api.SetImage(image);       // Run the OCR
+    char* textOutput = new char[512];
+    textOutput = api.GetUTF8Text();     // Get the text
+
+    // print recognized text
+    cout << textOutput << endl; // Destroy used object and release memory ocr->End();
+  }
+
+  cv::imwrite("C:/Users/1004/C++/searchedImage.png", src);
+  */
+
 }
 
 int main(int argc, char* argv[])

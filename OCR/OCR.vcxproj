@@ -60,12 +60,10 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libtesseract302.lib;liblept168.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\tesseract\lib\liblept168.dll" "$(SolutionDir)"
-copy "..\..\..\tesseract\lib\libtesseract302.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400d.dll" "$(SolutionDir)"
+      <Command>copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400d.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400d.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(SolutionDir)"
 </Command>
@@ -85,13 +83,11 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libtesseract302.lib;liblept168.lib;opencv_core400.lib;opencv_imgcodecs400.lib;opencv_imgproc400.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400.lib;opencv_imgcodecs400.lib;opencv_imgproc400.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\tesseract\lib\liblept168.dll" "$(SolutionDir)"
-copy "..\..\..\tesseract\lib\libtesseract302.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400.dll" "$(SolutionDir)"
+      <Command>copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(SolutionDir)"</Command>
     </PreBuildEvent>
