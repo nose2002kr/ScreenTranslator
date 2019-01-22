@@ -18,13 +18,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -43,11 +43,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>..\..\..\tesseract\lib\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\..\..\tesseract\lib\$(Configuration)\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>..\..\..\tesseract\lib\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\..\..\tesseract\lib\$(Configuration)\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -68,6 +68,9 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400d.dll" "$(So
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(SolutionDir)"
 </Command>
     </PreBuildEvent>
+    <Lib>
+      <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -91,9 +94,15 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400.dll" "$(SolutionDir)"
 copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(SolutionDir)"</Command>
     </PreBuildEvent>
+    <Lib>
+      <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400.lib;opencv_imgcodecs400.lib;opencv_imgproc400.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\ocr.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\ocr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

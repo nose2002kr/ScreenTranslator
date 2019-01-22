@@ -9,6 +9,11 @@
 #include "dwmapi.h"
 #include "draw_util.h"
 
+#pragma comment(lib, "D2D1.lib")
+#pragma comment(lib, "d3d9.lib")
+#pragma comment(lib, "d3dx9.lib")
+#pragma comment(lib, "dwrite.lib")
+
 #define throwIfFail(func, failMsg) {HRESULT hr = func;\
 if(!SUCCEEDED(hr)) { throw std::exception(failMsg); }}
 
@@ -21,7 +26,7 @@ TextOverlay::TextOverlay(HINSTANCE hInstance) {
   createRenderTarget();
 }
 
-void
+Image
 TextOverlay::screenCapture() {
   //ShowWindow(m_canvasWnd, SW_HIDE);
   RECT canvasRect;
@@ -33,11 +38,33 @@ TextOverlay::screenCapture() {
   SetWindowPos(m_canvasWnd, HWND_TOPMOST, canvasRect.left, canvasRect.top, 0, 0, SWP_NOSIZE);
   //ShowWindow(m_canvasWnd, SW_RESTORE);
   //save its contents to a bitmap file.
+#ifdef DEBUG_LEVEL2
   D3DXSaveSurfaceToFile("C:/Users/1004/C++/capturedImage.bmp",
     D3DXIFF_BMP,
     m_pSurface,
     NULL,
     NULL);
+#endif
+  BYTE* pBits = new BYTE[m_screenH * m_screenW * 4];
+  int scanline = (m_screenW) * 4;
+  RECT screenRect = { 0, 0, m_screenW, m_screenH };
+  D3DLOCKED_RECT	lockedRect;
+  if (FAILED(m_pSurface->LockRect(&lockedRect, &screenRect, D3DLOCK_NO_DIRTY_UPDATE | D3DLOCK_NOSYSLOCK | D3DLOCK_READONLY)))
+  {
+    //ErrorMessage("Unable to Lock Front Buffer Surface");	break;
+  }
+
+  for (int i = 0; i < m_screenH; i++)
+  {
+    memcpy(
+      (BYTE*)pBits + (i * scanline),
+      (BYTE*)lockedRect.pBits + (i * scanline),
+      scanline);
+  }
+
+  m_pSurface->UnlockRect();
+
+  return Image{ pBits, m_screenW, m_screenH };
 }
 
 ID2D1HwndRenderTarget* 
@@ -70,8 +97,8 @@ TextOverlay::InitD3D() {
   d3dpp.Windowed = true;
   d3dpp.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
   d3dpp.BackBufferFormat = ddm.Format;
-  d3dpp.BackBufferHeight = ddm.Width;
-  d3dpp.BackBufferWidth = ddm.Height;
+  d3dpp.BackBufferHeight = m_screenW = ddm.Width;
+  d3dpp.BackBufferWidth = m_screenH = ddm.Height;
   d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
   d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
   d3dpp.hDeviceWindow = NULL;

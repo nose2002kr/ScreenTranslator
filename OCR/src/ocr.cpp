@@ -1,15 +1,4 @@
-#include <string>
-#include <opencv2/opencv.hpp>
-#include "baseapi.h"
-
-using namespace std;
-using namespace cv;
-
-#include <stdio.h>
-#include <opencv2/opencv.hpp>
-#include <queue>
-
-using namespace std;
+#include "ocr.h"
 
 typedef struct t_color_node {
   cv::Mat       mean;       // The mean of this node
@@ -295,6 +284,7 @@ std::vector<cv::Vec3b> find_dominant_colors(cv::Mat img, int count) {
 
   std::vector<cv::Vec3b> colors = get_dominant_colors(root);
 
+#ifdef DEBUG
   cv::Mat quantized = get_quantized_image(classes, root);
   cv::Mat viewable = get_viewable_image(classes);
   cv::Mat dom = get_dominant_palette(colors);
@@ -302,6 +292,7 @@ std::vector<cv::Vec3b> find_dominant_colors(cv::Mat img, int count) {
   cv::imwrite("./classification.png", viewable);
   cv::imwrite("./quantized.png", quantized);
   cv::imwrite("./palette.png", dom);
+#endif
 
   return colors;
 }
@@ -330,14 +321,14 @@ detectLetters(cv::Mat img)
 }
 
 
-Mat hwnd2mat(HWND hwnd)
+cv::Mat hwnd2mat(HWND hwnd)
 {
   RECT rc;
   GetClientRect(hwnd, &rc);
   int width = rc.right;
   int height = rc.bottom;
 
-  Mat src;
+  cv::Mat src;
   src.create(height, width, CV_8UC4);
 
   HDC hdc = GetDC(hwnd);
@@ -358,19 +349,12 @@ Mat hwnd2mat(HWND hwnd)
   return src;
 }
 
-struct TextInfo {
-  cv::Rect rect;
-  int fontColor;
-  int backgroundColor;
-  std::string text;
-};
-
-cv::Rect rectMerge(Rect A, Rect B) {
-  int left = min(A.x, B.x);
-  int top = min(A.y, B.y);
-  int right = max(A.x + A.width, B.x + B.width);
-  int bottom = max(A.y + A.height, B.y + B.height);
-  return Rect(left, top, right - left, bottom - top);
+cv::Rect rectMerge(cv::Rect A, cv::Rect B) {
+  int left = std::min(A.x, B.x);
+  int top = std::min(A.y, B.y);
+  int right = std::max(A.x + A.width, B.x + B.width);
+  int bottom = std::max(A.y + A.height, B.y + B.height);
+  return cv::Rect(left, top, right - left, bottom - top);
 }
 std::vector<cv::Rect> reorganizeText(std::vector<cv::Rect> src) {
   std::vector<cv::Rect> dst;
@@ -397,40 +381,41 @@ std::vector<cv::Rect> reorganizeText(std::vector<cv::Rect> src) {
   return dst;
 }
 
-std::vector<TextInfo> findOutTextInfos(cv::Mat img) {
-  char *outText;
-  HWND hwndDesktop = GetDesktopWindow();
-  //Mat src = hwnd2mat(hwndDesktop);
-  Mat src = imread("C:\\Users\\1004\\Pictures\\Dr_DeernD.png");
-  int count = 2;
-  if (count <= 0 || count > 255) {
-    printf("The color count needs to be between 1-255. You picked: %d\n", count);
-    return std::vector<TextInfo>();
-  }
-
-  std::vector<cv::Rect> letterBBoxes1 = detectLetters(src);
-  tesseract::TessBaseAPI api;
-  if (api.Init("C:/Users/1004/C++/tesseract/tessdata", "eng")) {
+OCR::OCR(std::string tessdataPath) {
+  api = new tesseract::TessBaseAPI();
+  if (api->Init(tessdataPath.c_str(), "eng")) {
     fprintf(stderr, "Could not initialize tesseract.\n");
     exit(1);
   }
-  api.SetPageSegMode(tesseract::PSM_SINGLE_LINE);
 
-  //  std::sort(letterBBoxes1.begin(), letterBBoxes1.end(), rectComp);
+  api->SetPageSegMode(tesseract::PSM_SINGLE_LINE);
+}
 
+OCR::~OCR() {
+  delete api;
+}
+
+std::vector<TextInfo>
+OCR::findOutTextInfos(cv::Mat* img) {
+  std::vector<cv::Rect> letterBBoxes1 = detectLetters(*img);
+  
   std::vector<TextInfo> textInfos;
   letterBBoxes1 = reorganizeText(letterBBoxes1);
 
   for (auto it = letterBBoxes1.rbegin(); it != letterBBoxes1.rend(); ++it) {
-    cv::Mat cropImg = src(*it);
-    //cv::rectangle(src, letterBBoxes1[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
+    cv::Mat cropImg = (*img)(*it);
+#ifdef DEBUG_LEVEL2
+    cv::rectangle(src, letterBBoxes1[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
+#endif
     resize(cropImg, cropImg, cv::Size(cropImg.cols / 2.5, cropImg.rows / 2.5));//resize image
+#ifdef DEBUG_LEVEL2
     cv::imwrite("C:/Users/1004/C++/crop.png", cropImg);
-    api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 3, 3 * cropImg.cols);
-    char* textOutput;
-    textOutput = api.GetUTF8Text();     // Get the text 
-
+#endif
+    api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, 3, 3 * cropImg.cols);
+    char* textOutput = api->GetUTF8Text();     // Get the text 
+#ifdef DEBUG_LEVEL2
     cout << textOutput << endl; // Destroy used object and release memory ocr->End();
+#endif
     std::vector<cv::Vec3b> vec = find_dominant_colors(cropImg, 2);
     TextInfo tInfo;
 
@@ -441,18 +426,23 @@ std::vector<TextInfo> findOutTextInfos(cv::Mat img) {
     textInfos.push_back(tInfo);
   }
 
+#ifdef DEBUG_LEVEL2
   for (int i = 0; i < textInfos.size(); i++) {
     cv::rectangle(src, textInfos[i].rect, cv::Scalar(0, 255, 0, 255), 3, 8, 0);
   }
   cv::imwrite("C:/Users/1004/C++/searchedImage.png", src);
+#endif
+  return textInfos;
 }
 
 
 void
 ocrTest() {
   HWND hwndDesktop = GetDesktopWindow();
-  Mat src = hwnd2mat(hwndDesktop);
-  findOutTextInfos(src);
+  cv::Mat src = hwnd2mat(hwndDesktop);
+  OCR ocr("C:/Users/1004/C++/tesseract/tessdata");
+  ocr.findOutTextInfos(&src);
+
   /*
   HWND hwndDesktop = GetDesktopWindow();
   Mat src = hwnd2mat(hwndDesktop);

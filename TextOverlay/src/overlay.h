@@ -6,17 +6,19 @@
 #include "d3d9.h"
 #include "d3dx9.h"
 #include "dwrite.h"
-#pragma comment(lib, "D2D1.lib")
-#pragma comment(lib, "d3d9.lib")
-#pragma comment(lib, "d3dx9.lib")
-#pragma comment(lib, "dwrite.lib")
+
+struct Image {
+  byte* samples;
+  int width;
+  int height;
+};
 
 class TextOverlay {
 private:
   static TextOverlay* g_inst;
    
   TextOverlay(HINSTANCE hInstance);
-  ~TextOverlay();
+  ~TextOverlay() {}
 
 public:
   static void init(HINSTANCE hInstance) {
@@ -33,7 +35,7 @@ public:
 
   ID2D1HwndRenderTarget* getRenderTarget() { return m_rt; }
   
-  void screenCapture();
+  Image screenCapture();
   bool isInvalidHwnd(HWND hWnd);
   void updateCanvasWindow(RECT rect);
 
@@ -51,4 +53,7 @@ private:
   ID2D1Factory* m_fac = nullptr;
   IDWriteTextFormat* m_textFormat = nullptr;
   ID2D1HwndRenderTarget* m_rt = nullptr;
+
+  int m_screenW;
+  int m_screenH;
 };

@@ -1,6 +1,9 @@
+#include "translate.h"
+
 #include <stdio.h>
 #include <memory>
-#include <string>
+#include <sstream>
+#include <iomanip>
 
 #define CURL_STATICLIB
 #define USE_OPENSSL
@@ -23,18 +26,46 @@ size_t CurlWrite_CallbackFunc_StdString(void *contents, size_t size, size_t nmem
   return size * nmemb;
 }
 
-int main() {
-  CURL *curl;
-  CURLcode res;
-
+Translate::Translate() {
   curl_global_init(CURL_GLOBAL_DEFAULT);
+}
 
-  curl = curl_easy_init();
+Translate::~Translate() {
+  curl_global_cleanup();
+}
+
+std::string url_encode(const std::string &value) {
+  std::ostringstream escaped;
+  escaped.fill('0');
+  escaped << std::hex;
+
+  for (std::string::const_iterator i = value.begin(), n = value.end(); i != n; ++i) {
+    std::string::value_type c = (*i);
+
+    // Keep alphanumeric and other accepted characters intact
+    if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~') {
+      escaped << c;
+      continue;
+    }
+
+    // Any other characters are percent-encoded
+    escaped << std::uppercase;
+    escaped << '%' << std::setw(2) << int((unsigned char)c);
+    escaped << std::nouppercase;
+  }
+
+  return escaped.str();
+}
+
+std::string 
+Translate::translate(std::string src) {
+  CURL *curl = curl_easy_init();
+  CURLcode res;
+  std::string s;
   if (curl) {
-    std::string s;
     char error_buffer[CURL_ERROR_SIZE] = {};
 
-    curl_easy_setopt(curl, CURLOPT_URL, "https://translation.googleapis.com/language/translate/v2?q=hello&target=ko&format=text&source=en&key=AIzaSyB3MXUyZEcDiw4VQ8tucT3lcvOyr5VbIh0");
+    curl_easy_setopt(curl, CURLOPT_URL, "https://translation.googleapis.com/language/translate/v2?q=" + url_encode(src) + "&target=ko&format=text&source=en&key=AIzaSyB3MXUyZEcDiw4VQ8tucT3lcvOyr5VbIh0");
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CurlWrite_CallbackFunc_StdString);
@@ -51,8 +82,12 @@ int main() {
     /* always cleanup */
     curl_easy_cleanup(curl);
   }
+  
+  return s;
+}
 
-  curl_global_cleanup();
+int main() {
+  
 
 
   return 0;
