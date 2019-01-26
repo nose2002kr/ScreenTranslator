@@ -1,17 +1,13 @@
 #pragma once
 
+#include "../../CommonUtil/src/common_util.h"
+
 #include <exception>
 
 #include "D2D1.h"
 #include "d3d9.h"
 #include "d3dx9.h"
 #include "dwrite.h"
-
-struct Image {
-  byte* samples;
-  int width;
-  int height;
-};
 
 class TextOverlay {
 private:

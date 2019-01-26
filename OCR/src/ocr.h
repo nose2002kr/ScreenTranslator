@@ -3,12 +3,7 @@
 #include <opencv2/opencv.hpp>
 #include <baseapi.h>
 
-struct TextInfo {
-  cv::Rect rect;
-  int fontColor;
-  int backgroundColor;
-  std::string text;
-};
+#include "../../CommonUtil/src/common_util.h"
 
 class OCR {
 public:

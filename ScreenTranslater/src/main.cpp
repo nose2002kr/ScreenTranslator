@@ -14,7 +14,7 @@ int CALLBACK WinMain(
   _In_ LPSTR     lpCmdLine,
   _In_ int       nCmdShow
 ) {
-  
+  Sleep(2000);
   TextOverlay::init(hInstance);
   TextOverlay* ov = TextOverlay::instnace();
   Image img = ov->screenCapture();
@@ -31,7 +31,7 @@ int CALLBACK WinMain(
   IDWriteFactory* writeFac = nullptr;
   DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&writeFac);
   IDWriteTextFormat* textFormat = nullptr;
-  writeFac->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 10, L"en-us", &textFormat);
+  writeFac->CreateTextFormat(L"Arial", NULL, DWRITE_FONT_WEIGHT_REGULAR, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 24, L"en-us", &textFormat);
   while (true) {
     HWND hWnd = ::GetForegroundWindow();
     if (ov->isInvalidHwnd(hWnd)) {
@@ -52,7 +52,7 @@ int CALLBACK WinMain(
       ID2D1SolidColorBrush* fontBrs = nullptr;
       pTarget->CreateSolidColorBrush(D2D1::ColorF(info.backgroundColor), &backBrs);
       pTarget->CreateSolidColorBrush(D2D1::ColorF(info.fontColor), &fontBrs);
-      D2D1_RECT_F d2Rect = D2D1::RectF(info.rect.tl().x, info.rect.tl().y, info.rect.br().x, info.rect.br().y);
+      D2D1_RECT_F d2Rect = D2D1::RectF(info.rect.left, info.rect.top, info.rect.right, info.rect.bottom);
       pTarget->FillRectangle(d2Rect, backBrs);
       pTarget->DrawTextA(A2W(info.text.c_str()), info.text.length(), textFormat, d2Rect, fontBrs);
     }

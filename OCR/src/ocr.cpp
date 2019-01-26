@@ -1,4 +1,5 @@
 #include "ocr.h"
+#define DEBUG_LEVEL2
 
 typedef struct t_color_node {
   cv::Mat       mean;       // The mean of this node
@@ -356,28 +357,34 @@ cv::Rect rectMerge(cv::Rect A, cv::Rect B) {
   int bottom = std::max(A.y + A.height, B.y + B.height);
   return cv::Rect(left, top, right - left, bottom - top);
 }
+
 std::vector<cv::Rect> reorganizeText(std::vector<cv::Rect> src) {
   std::vector<cv::Rect> dst;
 
-  cv::Rect rect;
-  for (auto it = src.end() - 1; it != src.begin(); it--) {
-    if (rect.empty()) {
-      rect = *it;
-      continue;
+  for (auto st = src.begin(); st != src.end(); st++) {
+    int pv = dst.size();
+    for (size_t i = 0; i < dst.size(); i++) {
+      cv::Rect dt = dst[i];
+      double spacing = (*st).height * 0.4;
+      if ((*st).y - spacing < dt.y &&
+          (*st).y + spacing > dt.y &&
+          (*st).x < dt.x) {
+
+        if ((*st).br().x + spacing > dt.x) {
+          dst[i] = rectMerge(dt, *st);
+          pv = -1;
+        } else {
+          pv = i;
+        }
+        break;
+      }
     }
 
-    double spacing = rect.height * 0.8;
-    if (rect.y - spacing < it->y && rect.br().y + spacing > it->y
-      && rect.br().x + spacing > it->x) {
-        rect = rectMerge(rect, *it);
-    } else {
-      dst.push_back(rect);
-      rect = *it;
-      //rect = cv::Rect();
-    }
+    if (pv < 0) continue;
+
+    dst.insert(dst.begin() + pv, *st);
   }
 
-  dst.push_back(rect);
   return dst;
 }
 
@@ -388,12 +395,15 @@ OCR::OCR(std::string tessdataPath) {
     exit(1);
   }
 
-  api->SetPageSegMode(tesseract::PSM_SINGLE_LINE);
+  api->SetPageSegMode(tesseract::PSM_AUTO);
 }
 
 OCR::~OCR() {
   delete api;
 }
+
+#define W2CRect(rect) cv::Rect(rect.left, rect.top, RctW(rect), RctH(rect))
+#define C2WRect(rect) RECT{(rect).x, (rect).y, (rect).br().x, (rect).br().y}
 
 std::vector<TextInfo>
 OCR::findOutTextInfos(cv::Mat* img) {
@@ -404,17 +414,14 @@ OCR::findOutTextInfos(cv::Mat* img) {
 
   for (auto it = letterBBoxes1.rbegin(); it != letterBBoxes1.rend(); ++it) {
     cv::Mat cropImg = (*img)(*it);
-#ifdef DEBUG_LEVEL2
-    cv::rectangle(src, letterBBoxes1[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
-#endif
-    resize(cropImg, cropImg, cv::Size(cropImg.cols / 2.5, cropImg.rows / 2.5));//resize image
+    resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
 #ifdef DEBUG_LEVEL2
     cv::imwrite("C:/Users/1004/C++/crop.png", cropImg);
 #endif
     api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, 3, 3 * cropImg.cols);
     char* textOutput = api->GetUTF8Text();     // Get the text 
 #ifdef DEBUG_LEVEL2
-    cout << textOutput << endl; // Destroy used object and release memory ocr->End();
+    std:: cout << textOutput << std::endl; // Destroy used object and release memory ocr->End();
 #endif
     std::vector<cv::Vec3b> vec = find_dominant_colors(cropImg, 2);
     TextInfo tInfo;
@@ -422,15 +429,15 @@ OCR::findOutTextInfos(cv::Mat* img) {
     tInfo.backgroundColor = static_cast<int>(vec[0][0]);
     tInfo.fontColor = static_cast<int>(vec[1][0]);
     tInfo.text = std::string(textOutput);
-    tInfo.rect = *it;
+    tInfo.rect = C2WRect(*it);
     textInfos.push_back(tInfo);
   }
 
 #ifdef DEBUG_LEVEL2
   for (int i = 0; i < textInfos.size(); i++) {
-    cv::rectangle(src, textInfos[i].rect, cv::Scalar(0, 255, 0, 255), 3, 8, 0);
+    cv::rectangle(*img, W2CRect(textInfos[i].rect), cv::Scalar(0, 255, 0, 255), 3, 8, 0);
   }
-  cv::imwrite("C:/Users/1004/C++/searchedImage.png", src);
+  cv::imwrite("C:/Users/1004/C++/searchedImage.png", *img);
 #endif
   return textInfos;
 }

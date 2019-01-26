@@ -1,4 +1,6 @@
 #include "draw_util.h"
+#include "../../CommonUtil/src/common_util.h"
+
 void drawDebugLine(ID2D1RenderTarget* pTarget, RECT rect, ID2D1Brush* brush) {
 
   pTarget->DrawLine(D2D1::Point2(0, 0), D2D1::Point2(30, 0), brush, 4.0);
