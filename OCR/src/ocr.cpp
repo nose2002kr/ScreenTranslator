@@ -301,17 +301,23 @@ std::vector<cv::Rect>
 detectLetters(cv::Mat img)
 {
   std::vector<cv::Rect> boundRect;
-  cv::Mat img_gray, img_sobel, img_threshold, element;
+  cv::Mat img_gray;
   cvtColor(img, img_gray, cv::COLOR_BGR2GRAY);
+  cv::Mat img_sobel;
   cv::Sobel(img_gray, img_sobel, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_CONSTANT);
+  cv::Mat img_threshold;
   cv::threshold(img_sobel, img_threshold, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
-  element = getStructuringElement(cv::MORPH_RECT, cv::Size(17, 3));
-  cv::morphologyEx(img_threshold, img_threshold, cv::MORPH_CLOSE, element); //Does the trick
+  cv::morphologyEx(img_threshold, img_threshold, cv::MORPH_CLOSE, getStructuringElement(cv::MORPH_RECT, cv::Size(6, 4))); //Does the trick
   std::vector< std::vector< cv::Point> > contours;
   cv::findContours(img_threshold, contours, 0, 1);
   std::vector<std::vector<cv::Point> > contours_poly(contours.size());
+#ifdef DEBUG_LEVEL2
+  cv::imwrite("./detect-img_gray.png", img_gray);
+  cv::imwrite("./detect-img_sobel.png", img_sobel);
+  cv::imwrite("./detect-img_threshold.png", img_threshold);
+#endif
   for (int i = 0; i < contours.size(); i++)
-    if (contours[i].size() > 100)
+    if (contours[i].size() > 25)
     {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
       cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
@@ -395,7 +401,7 @@ OCR::OCR(std::string tessdataPath) {
     exit(1);
   }
 
-  api->SetPageSegMode(tesseract::PSM_AUTO);
+  api->SetPageSegMode(tesseract::PSM_SINGLE_LINE);
 }
 
 OCR::~OCR() {
@@ -409,11 +415,10 @@ OCR::~OCR() {
 
 std::vector<TextInfo>
 OCR::findOutTextInfos(cv::Mat* img) {
-  std::vector<cv::Rect> letterBBoxes = detectLetters(*img);
-  
   std::vector<TextInfo> textInfos;
-  letterBBoxes = reorganizeText(letterBBoxes);
 
+  std::vector<cv::Rect> detectedLetterBoxes = detectLetters(*img);
+  std::vector<cv::Rect> letterBBoxes = reorganizeText(detectedLetterBoxes);
   for (auto it = letterBBoxes.rbegin(); it != letterBBoxes.rend(); ++it) {
     cv::Mat cropImg = (*img)(*it);
     resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
@@ -422,8 +427,9 @@ OCR::findOutTextInfos(cv::Mat* img) {
 #endif
     api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, 3, 3 * cropImg.cols);
     char* textOutput = api->GetUTF8Text();     // Get the text 
+    if (strlen(textOutput) == 0) continue;
 #ifdef DEBUG_LEVEL2
-    std:: cout << textOutput << std::endl; // Destroy used object and release memory ocr->End();
+    std::cout << textOutput << std::endl; // Destroy used object and release memory ocr->End();
 #endif
     std::vector<cv::Vec3b> vec = find_dominant_colors(cropImg, 2);
     TextInfo tInfo;
