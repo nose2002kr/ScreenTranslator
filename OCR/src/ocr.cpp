@@ -1,5 +1,5 @@
 #include "ocr.h"
-#define DEBUG_LEVEL2
+//#define DEBUG_LEVEL2
 
 typedef struct t_color_node {
   cv::Mat       mean;       // The mean of this node
@@ -298,16 +298,18 @@ std::vector<cv::Vec3b> find_dominant_colors(cv::Mat img, int count) {
   return colors;
 }
 std::vector<cv::Rect>
-detectLetters(cv::Mat img)
-{
+detectLetters(cv::Mat img) {
   std::vector<cv::Rect> boundRect;
   cv::Mat img_gray;
   cvtColor(img, img_gray, cv::COLOR_BGR2GRAY);
-  cv::Mat img_sobel;
-  cv::Sobel(img_gray, img_sobel, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_CONSTANT);
+  cv::Mat img_sobelX;
+  cv::Mat img_sobelY;
+  cv::Sobel(img_gray, img_sobelX, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_CONSTANT);
+  cv::Sobel(img_gray, img_sobelY, CV_8U, 0, 1, 3, 1, 0, cv::BORDER_CONSTANT);
+  cv::Mat img_sobel = img_sobelX + img_sobelY;
   cv::Mat img_threshold;
   cv::threshold(img_sobel, img_threshold, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
-  cv::morphologyEx(img_threshold, img_threshold, cv::MORPH_CLOSE, getStructuringElement(cv::MORPH_RECT, cv::Size(6, 4))); //Does the trick
+  cv::morphologyEx(img_threshold, img_threshold, cv::MORPH_CLOSE, getStructuringElement(cv::MORPH_RECT, cv::Size(3, 1))); //Does the trick
   std::vector< std::vector< cv::Point> > contours;
   cv::findContours(img_threshold, contours, 0, 1);
   std::vector<std::vector<cv::Point> > contours_poly(contours.size());
@@ -316,14 +318,20 @@ detectLetters(cv::Mat img)
   cv::imwrite("./detect-img_sobel.png", img_sobel);
   cv::imwrite("./detect-img_threshold.png", img_threshold);
 #endif
-  for (int i = 0; i < contours.size(); i++)
-    if (contours[i].size() > 25)
-    {
+  for (int i = 0; i < contours.size(); i++) {
+#ifdef DEBUG_LEVEL2
+    cv::Mat dbgImg = img.clone();
+    cv::polylines(dbgImg, contours[i], false, cv::Scalar(0., 255, 0., 255), 1, 8, 0);
+    cv::imwrite("./detect-contours.png", dbgImg);
+#endif
+    if (contours[i].size() > 40) {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
       cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
-      if (appRect.width > appRect.height)
+      if (appRect.width > appRect.height &&
+          appRect.height < 100)
         boundRect.push_back(appRect);
     }
+  }
   return boundRect;
 }
 
@@ -387,6 +395,10 @@ std::vector<cv::Rect> reorganizeText(std::vector<cv::Rect> src) {
     }
 
     if (pv < 0) continue;
+    (*st).x -= 1;
+    (*st).y -= 1;
+    (*st).width += 2;
+    (*st).height += 2;
 
     dst.insert(dst.begin() + pv, *st);
   }
@@ -425,7 +437,7 @@ OCR::findOutTextInfos(cv::Mat* img) {
 #ifdef DEBUG_LEVEL2
     cv::imwrite("./crop.png", cropImg);
 #endif
-    api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, 3, 3 * cropImg.cols);
+    api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, cropImg.channels(), cropImg.step1());
     char* textOutput = api->GetUTF8Text();     // Get the text 
     if (strlen(textOutput) == 0) continue;
 #ifdef DEBUG_LEVEL2
