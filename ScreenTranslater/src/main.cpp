@@ -8,6 +8,10 @@
 #include <CRTDBG.H>
 #include <atlconv.h>
 
+void findingOutTextInfos() {
+
+}
+
 int CALLBACK WinMain(
   _In_ HINSTANCE hInstance,
   _In_ HINSTANCE hPrevInstance,
@@ -21,14 +25,13 @@ int CALLBACK WinMain(
   TextOverlay* ov = TextOverlay::instnace();
   Image img = ov->windowScreenCapture();
   
-  OCR ocr("C:/Users/1004/C++/tesseract/tessdata");
-  cv::Mat matImg(cv::Size(img.width, img.height), CV_8UC4, img.samples);
-  cv::imwrite("./loadedImg.png", matImg);
-  std::vector<TextInfo> infos = ocr.findOutTextInfos(&matImg);
+  OCR::init("C:/Users/1004/C++/tesseract/tessdata");
+  //std::vector<TextInfo> infos = ocr.findOutTextInfos(&matImg);
+  std::vector<TextInfo> infos;
 
   //Translate tr;
   //std::string translated = tr.translate(infos[0].text);
-  
+  std::thread()
   while (true) {
     ov->showText(infos);
     ::Sleep(100);
