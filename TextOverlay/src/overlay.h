@@ -9,6 +9,9 @@
 #include "d3dx9.h"
 #include "dwrite.h"
 
+#include <vector>
+#include <map>
+
 class TextOverlay {
 private:
   static TextOverlay* g_inst;
@@ -30,25 +33,32 @@ public:
   }
 
   ID2D1HwndRenderTarget* getRenderTarget() { return m_rt; }
+  IDWriteFactory* getWriteFactory();
+  IDWriteTextFormat* getTextFormat(int fontSize);
   
   Image screenCapture();
+  Image windowScreenCapture();
   bool isInvalidHwnd(HWND hWnd);
   void updateCanvasWindow(RECT rect);
+
+  void showText(std::vector<TextInfo> infos);
 
 private:
   void buildCanvasWindow(HINSTANCE hInstance);
   HRESULT	InitD3D();
   HRESULT InitD2D();
   ID2D1HwndRenderTarget* createRenderTarget();
+  Image D3SurfaceToImage(IDirect3DSurface9* surface, RECT rect);
 
   IDirect3D9* m_pD3D = nullptr;
   IDirect3DDevice9* m_pd3dDevice = nullptr;
   IDirect3DSurface9* m_pSurface = nullptr;
   
   HWND m_canvasWnd = nullptr;
-  ID2D1Factory* m_fac = nullptr;
-  IDWriteTextFormat* m_textFormat = nullptr;
   ID2D1HwndRenderTarget* m_rt = nullptr;
+  ID2D1Factory* m_fac = nullptr;
+  IDWriteFactory* m_writeFac = nullptr;
+  std::map<int, IDWriteTextFormat*> m_textFormats;
 
   int m_screenW;
   int m_screenH;

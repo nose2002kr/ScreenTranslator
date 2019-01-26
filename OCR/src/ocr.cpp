@@ -285,7 +285,7 @@ std::vector<cv::Vec3b> find_dominant_colors(cv::Mat img, int count) {
 
   std::vector<cv::Vec3b> colors = get_dominant_colors(root);
 
-#ifdef DEBUG
+#ifdef DEBUG_LEVEL2
   cv::Mat quantized = get_quantized_image(classes, root);
   cv::Mat viewable = get_viewable_image(classes);
   cv::Mat dom = get_dominant_palette(colors);
@@ -405,18 +405,20 @@ OCR::~OCR() {
 #define W2CRect(rect) cv::Rect(rect.left, rect.top, RctW(rect), RctH(rect))
 #define C2WRect(rect) RECT{(rect).x, (rect).y, (rect).br().x, (rect).br().y}
 
+#define VEC2RGB(vec) vec[2] << 16 | vec[1] << 8 | vec[0]
+
 std::vector<TextInfo>
 OCR::findOutTextInfos(cv::Mat* img) {
-  std::vector<cv::Rect> letterBBoxes1 = detectLetters(*img);
+  std::vector<cv::Rect> letterBBoxes = detectLetters(*img);
   
   std::vector<TextInfo> textInfos;
-  letterBBoxes1 = reorganizeText(letterBBoxes1);
+  letterBBoxes = reorganizeText(letterBBoxes);
 
-  for (auto it = letterBBoxes1.rbegin(); it != letterBBoxes1.rend(); ++it) {
+  for (auto it = letterBBoxes.rbegin(); it != letterBBoxes.rend(); ++it) {
     cv::Mat cropImg = (*img)(*it);
     resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
 #ifdef DEBUG_LEVEL2
-    cv::imwrite("C:/Users/1004/C++/crop.png", cropImg);
+    cv::imwrite("./crop.png", cropImg);
 #endif
     api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, 3, 3 * cropImg.cols);
     char* textOutput = api->GetUTF8Text();     // Get the text 
@@ -426,8 +428,8 @@ OCR::findOutTextInfos(cv::Mat* img) {
     std::vector<cv::Vec3b> vec = find_dominant_colors(cropImg, 2);
     TextInfo tInfo;
 
-    tInfo.backgroundColor = static_cast<int>(vec[0][0]);
-    tInfo.fontColor = static_cast<int>(vec[1][0]);
+    tInfo.backgroundColor = static_cast<int>(VEC2RGB(vec[1]));
+    tInfo.fontColor = static_cast<int>(VEC2RGB(vec[0]));
     tInfo.text = std::string(textOutput);
     tInfo.rect = C2WRect(*it);
     textInfos.push_back(tInfo);
@@ -437,7 +439,7 @@ OCR::findOutTextInfos(cv::Mat* img) {
   for (int i = 0; i < textInfos.size(); i++) {
     cv::rectangle(*img, W2CRect(textInfos[i].rect), cv::Scalar(0, 255, 0, 255), 3, 8, 0);
   }
-  cv::imwrite("C:/Users/1004/C++/searchedImage.png", *img);
+  cv::imwrite("./searchedImage.png", *img);
 #endif
   return textInfos;
 }
@@ -480,7 +482,7 @@ ocrTest() {
   /*
   HWND hwndDesktop = GetDesktopWindow();
   Mat src = hwnd2mat(hwndDesktop);
-  cv::imwrite("C:/Users/1004/C++/capturedImage.png", src);
+  cv::imwrite("./capturedImage.png", src);
   tesseract::TessBaseAPI api;
   api.SetPageSegMode(tesseract::PSM_AUTO);  // Segmentation on auto
   api.Init("C:/Users/1004/C++/tesseract/tessdata", "eng");   // path = parent directory of tessdata
@@ -491,7 +493,7 @@ ocrTest() {
     cv::Mat cropImg = src(letterBBoxes1[i]);
     cv::rectangle(src, letterBBoxes1[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
     //cv::threshold(cropImg, cropImg, 0, 255, cv::THRESH_BINARY);
-    cv::imwrite("C:/Users/1004/C++/crop.png", cropImg);
+    cv::imwrite("./crop.png", cropImg);
     //api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 4, 4 * cropImg.cols);
     api.SetImage(cropImg.data, cropImg.cols, cropImg.rows, 4, 4 * cropImg.cols);
     // Set image data
@@ -503,7 +505,7 @@ ocrTest() {
     cout << textOutput << endl; // Destroy used object and release memory ocr->End();
   }
 
-  cv::imwrite("C:/Users/1004/C++/searchedImage.png", src);
+  cv::imwrite("./searchedImage.png", src);
   */
 
 }

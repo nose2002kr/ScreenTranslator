@@ -1,3 +1,4 @@
+//#define DEBUG_LEVEL2
 #include "overlay.h"
 
 #include <stdio.h>
@@ -14,6 +15,9 @@
 #pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "dwrite.lib")
 
+#include <CRTDBG.H>
+#include <atlconv.h>
+
 #define throwIfFail(func, failMsg) {HRESULT hr = func;\
 if(!SUCCEEDED(hr)) { throw std::exception(failMsg); }}
 
@@ -27,44 +31,74 @@ TextOverlay::TextOverlay(HINSTANCE hInstance) {
 }
 
 Image
+TextOverlay::D3SurfaceToImage(IDirect3DSurface9* surface, RECT rect) {
+  int w = RctW(rect);
+  int h = RctH(rect);
+
+  BYTE* pBits = new BYTE[w * h * 4];
+  int scanline = w * 4;
+  RECT screenRect = { 0, 0, m_screenW, m_screenH };
+  D3DLOCKED_RECT	lockedRect;
+  if (FAILED(surface->LockRect(&lockedRect, &screenRect, D3DLOCK_NO_DIRTY_UPDATE | D3DLOCK_NOSYSLOCK | D3DLOCK_READONLY)))
+  {
+    //ErrorMessage("Unable to Lock Front Buffer Surface");	break;
+  }
+
+  for (int i = 0; i < h; i++) {
+    memcpy((BYTE*)pBits + (i * scanline),
+      (BYTE*)lockedRect.pBits + (((rect.top + i) * (m_screenW) + rect.left) * 4),
+      scanline);
+  }
+
+  surface->UnlockRect();
+
+  return Image{ pBits, w, h };
+}
+
+Image
 TextOverlay::screenCapture() {
-  //ShowWindow(m_canvasWnd, SW_HIDE);
   RECT canvasRect;
   DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
 
   SetWindowPos(m_canvasWnd, HWND_TOPMOST, INT_MAX, INT_MAX, 0, 0, SWP_NOSIZE);
-  //SetWindowDisplayAffinity(m_canvasWnd, WDA_MONITOR);
   m_pd3dDevice->GetFrontBufferData(0, m_pSurface);
   SetWindowPos(m_canvasWnd, HWND_TOPMOST, canvasRect.left, canvasRect.top, 0, 0, SWP_NOSIZE);
-  //ShowWindow(m_canvasWnd, SW_RESTORE);
-  //save its contents to a bitmap file.
 #ifdef DEBUG_LEVEL2
-  D3DXSaveSurfaceToFile("C:/Users/1004/C++/capturedImage.bmp",
+  D3DXSaveSurfaceToFile("./capturedImage.bmp",
     D3DXIFF_BMP,
     m_pSurface,
     NULL,
     NULL);
 #endif
-  BYTE* pBits = new BYTE[m_screenH * m_screenW * 4];
-  int scanline = (m_screenW) * 4;
-  RECT screenRect = { 0, 0, m_screenW, m_screenH };
-  D3DLOCKED_RECT	lockedRect;
-  if (FAILED(m_pSurface->LockRect(&lockedRect, &screenRect, D3DLOCK_NO_DIRTY_UPDATE | D3DLOCK_NOSYSLOCK | D3DLOCK_READONLY)))
-  {
-    //ErrorMessage("Unable to Lock Front Buffer Surface");	break;
+  
+  return D3SurfaceToImage(m_pSurface, RECT{ 0, 0, m_screenW, m_screenH });
+}
+
+Image
+TextOverlay::windowScreenCapture() {
+  HWND hWnd = ::GetForegroundWindow();
+  if (isInvalidHwnd(hWnd)) {
+    return Image{ 0, };
   }
 
-  for (int i = 0; i < m_screenH; i++)
-  {
-    memcpy(
-      (BYTE*)pBits + (i * scanline),
-      (BYTE*)lockedRect.pBits + (i * scanline),
-      scanline);
-  }
+  RECT canvasRect;
+  DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
 
-  m_pSurface->UnlockRect();
+  SetWindowPos(m_canvasWnd, HWND_TOPMOST, INT_MAX, INT_MAX, 0, 0, SWP_NOSIZE);
+  m_pd3dDevice->GetFrontBufferData(0, m_pSurface);
+  SetWindowPos(m_canvasWnd, HWND_TOPMOST, canvasRect.left, canvasRect.top, 0, 0, SWP_NOSIZE);
+#ifdef DEBUG_LEVEL2
+  D3DXSaveSurfaceToFile("./capturedImage.bmp",
+    D3DXIFF_BMP,
+    m_pSurface,
+    NULL,
+    NULL);
+#endif
 
-  return Image{ pBits, m_screenW, m_screenH };
+  RECT windowRect;
+  DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &windowRect, sizeof(RECT));
+  return D3SurfaceToImage(m_pSurface, windowRect);
+  
 }
 
 ID2D1HwndRenderTarget* 
@@ -121,18 +155,6 @@ TextOverlay::InitD2D() {
   
   IDWriteFactory* writeFac = nullptr;
   throwIfFail(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&writeFac), "DWriteCreateFactory Failure.");
-  
-  throwIfFail(
-    writeFac->CreateTextFormat(
-      L"Arial",
-      NULL,
-      DWRITE_FONT_WEIGHT_REGULAR,
-      DWRITE_FONT_STYLE_NORMAL,
-      DWRITE_FONT_STRETCH_NORMAL,
-      10,
-      L"en-us",
-      &m_textFormat),
-    "CreateTextFormat Failure.");
   
   return S_OK;
 }
@@ -207,6 +229,67 @@ TextOverlay::updateCanvasWindow(RECT rect) {
   m_rt->Resize(D2D1::SizeU(RctW(rect), RctH(rect)));
   ShowWindow(m_canvasWnd, true);
   SetWindowPos(m_canvasWnd, HWND_TOPMOST, rect.left, rect.top, RctW(rect), RctH(rect), NULL);
+}
+
+IDWriteFactory* 
+TextOverlay::getWriteFactory() {
+  if (m_writeFac == nullptr) {
+    DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&m_writeFac);
+  }
+  return m_writeFac;
+}
+
+IDWriteTextFormat*
+TextOverlay::getTextFormat(int fontSize) {
+  IDWriteTextFormat* textFormat = m_textFormats[fontSize];
+  if (textFormat == NULL) {
+    throwIfFail(
+      getWriteFactory()->CreateTextFormat(
+        L"Arial",
+        NULL,
+        DWRITE_FONT_WEIGHT_REGULAR,
+        DWRITE_FONT_STYLE_NORMAL,
+        DWRITE_FONT_STRETCH_NORMAL,
+        fontSize,
+        L"en-us",
+        &textFormat),
+      "CreateTextFormat Failure.");
+    m_textFormats[fontSize] = textFormat;
+  }
+  return textFormat;
+}
+
+void
+TextOverlay::showText(std::vector<TextInfo> infos) {
+  
+  HWND hWnd = ::GetForegroundWindow();
+  if (isInvalidHwnd(hWnd)) {
+    return;
+  }
+
+  USES_CONVERSION;
+  RECT rect;
+  HRESULT hr = DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
+  updateCanvasWindow(rect);
+
+  ID2D1HwndRenderTarget* pTarget = getRenderTarget(); 
+  pTarget->BeginDraw();
+  pTarget->Clear(D2D1::ColorF(1.0, 1.0, 0.));
+  pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+  //drawDebugLine(pTarget, rect, redBrush);
+  for (auto info : infos) {
+    IDWriteTextFormat* textFormat = getTextFormat(RctH(info.rect));
+    ID2D1SolidColorBrush* backBrs = nullptr;
+    ID2D1SolidColorBrush* fontBrs = nullptr;
+    pTarget->CreateSolidColorBrush(D2D1::ColorF(info.backgroundColor), &backBrs);
+    pTarget->CreateSolidColorBrush(D2D1::ColorF(info.fontColor), &fontBrs);
+    D2D1_RECT_F d2Rect = D2D1::RectF(info.rect.left, info.rect.top, info.rect.right, info.rect.bottom);
+    pTarget->FillRectangle(d2Rect, backBrs);
+    pTarget->DrawTextA(A2W(info.text.c_str()), info.text.length(), textFormat, d2Rect, fontBrs);
+  }
+
+  pTarget->EndDraw();
 }
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
