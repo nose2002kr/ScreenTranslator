@@ -220,7 +220,7 @@ TextOverlay::buildCanvasWindow(HINSTANCE hInstance) {
 
 bool
 TextOverlay::isInvalidHwnd(HWND hWnd) {
-  return hWnd == m_canvasWnd;
+  return hWnd == NULL || hWnd == m_canvasWnd;
 }
 
 void
@@ -233,6 +233,10 @@ TextOverlay::updateCanvasWindow() {
    && canvasRect.right == rect.right
    && canvasRect.bottom == rect.bottom)
     return;
+
+  if (RctW(canvasRect) != RctW(rect) || RctH(canvasRect) != RctH(rect)) {
+    g_msg.push(MESSAGE_OCR_CANCEL);
+  }
 
   m_rt->Resize(D2D1::SizeU(RctW(rect), RctH(rect)));
   ShowWindow(m_canvasWnd, true);

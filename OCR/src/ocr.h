@@ -26,5 +26,9 @@ public:
     return g_inst;
   }
 
+  void cancel() { m_cancelFlag = true; }
+
   std::vector<TextInfo> findOutTextInfos(Image imgParam);
+private:
+  bool m_cancelFlag;
 };

@@ -406,6 +406,11 @@ OCR::findOutTextInfos(Image imgParam) {
   std::vector<cv::Rect> detectedLetterBoxes = detectLetters(img);
   std::vector<cv::Rect> letterBBoxes = reorganizeText(detectedLetterBoxes);
   for (auto it = letterBBoxes.rbegin(); it != letterBBoxes.rend(); ++it) {
+    if (m_cancelFlag) {
+      m_cancelFlag = false;
+      return std::vector<TextInfo>();
+    }
+
     cv::Mat cropImg = img(*it);
     resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
 #ifdef DEBUG_LEVEL2

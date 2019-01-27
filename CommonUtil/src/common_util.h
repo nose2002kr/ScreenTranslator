@@ -22,4 +22,6 @@ struct Image {
 
 #define MESSAGE_TO_CAPTURE_SCREEN 100
 #define MESSAGE_TO_UPDATE_CANVAS_WINDOW 101
+
+#define MESSAGE_OCR_CANCEL 200
 extern std::queue<int> g_msg;
