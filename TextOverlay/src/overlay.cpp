@@ -17,6 +17,7 @@
 
 #include <CRTDBG.H>
 #include <atlconv.h>
+#include <queue>
 
 #define throwIfFail(func, failMsg) {HRESULT hr = func;\
 if(!SUCCEEDED(hr)) { throw std::exception(failMsg); }}
@@ -32,6 +33,13 @@ TextOverlay::TextOverlay(HINSTANCE hInstance) {
 
 Image
 TextOverlay::D3SurfaceToImage(IDirect3DSurface9* surface, RECT rect) {
+  if (rect.left < 0 || rect.top < 0) {
+    int adj = rect.left < rect.top ? rect.left : rect.top;
+    rect.left -= adj;
+    rect.top -= adj;
+    rect.right += adj;
+    rect.bottom += adj;
+  }
   int w = RctW(rect);
   int h = RctH(rect);
 
@@ -52,7 +60,8 @@ TextOverlay::D3SurfaceToImage(IDirect3DSurface9* surface, RECT rect) {
 
   surface->UnlockRect();
 
-  return Image{ pBits, w, h };
+  m_lastImage = Image{ pBits, w, h };
+  return m_lastImage;
 }
 
 Image
@@ -207,8 +216,6 @@ TextOverlay::buildCanvasWindow(HINSTANCE hInstance) {
   ShowWindow(m_canvasWnd, false);
   UpdateWindow(m_canvasWnd);
   ::SetLayeredWindowAttributes(m_canvasWnd, RGB(255, 255, 0), 0, LWA_COLORKEY);
-  //::SetLayeredWindowAttributes(m_canvasWnd, RGB(255, 255, 255), 0, LWA_COLORKEY);
-  //::SetLayeredWindowAttributes(m_canvasWnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
 }
 
 bool
@@ -217,7 +224,8 @@ TextOverlay::isInvalidHwnd(HWND hWnd) {
 }
 
 void
-TextOverlay::updateCanvasWindow(RECT rect) {
+TextOverlay::updateCanvasWindow() {
+  RECT rect = getForegroundWindowRect();
   RECT canvasRect;
   DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
   if (canvasRect.left == rect.left
@@ -259,25 +267,29 @@ TextOverlay::getTextFormat(int fontSize) {
   return textFormat;
 }
 
-void
-TextOverlay::showText(std::vector<TextInfo> infos) {
-  
+RECT 
+TextOverlay::getForegroundWindowRect() {
   HWND hWnd = ::GetForegroundWindow();
   if (isInvalidHwnd(hWnd)) {
-    return;
+    return RECT{ 0, };
   }
 
-  USES_CONVERSION;
   RECT rect;
-  HRESULT hr = DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
-  updateCanvasWindow(rect);
+  throwIfFail(DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT)), "getForegroundWindowRect");
+  return rect;
+}
+void
+TextOverlay::showText(std::vector<TextInfo> infos) {
+  requestUpdateCanvasWindow();
 
   ID2D1HwndRenderTarget* pTarget = getRenderTarget(); 
   pTarget->BeginDraw();
   pTarget->Clear(D2D1::ColorF(1.0, 1.0, 0.));
   pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-
-  //drawDebugLine(pTarget, rect, redBrush);
+  
+  drawDebugLine(pTarget, getForegroundWindowRect());
+  
+  USES_CONVERSION;
   for (auto info : infos) {
     IDWriteTextFormat* textFormat = getTextFormat(RctH(info.rect));
     ID2D1SolidColorBrush* backBrs = nullptr;
@@ -292,35 +304,10 @@ TextOverlay::showText(std::vector<TextInfo> infos) {
   pTarget->EndDraw();
 }
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
-
-  TextOverlay::init(hInstance);
-  TextOverlay* overlayer = TextOverlay::instnace();
-  
-
-  ID2D1HwndRenderTarget* pTarget = overlayer->getRenderTarget();
-  ID2D1SolidColorBrush* redBrush = nullptr;
-  throwIfFail(pTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &redBrush), "CreateSolidColorBrush Failure.");
-  while (true) {
-    HWND hWnd = ::GetForegroundWindow();
-    if (overlayer->isInvalidHwnd(hWnd)) {
-      ::Sleep(100); continue;
-    }
-
-    overlayer->screenCapture();
-    RECT rect;
-    HRESULT hr = DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
-    overlayer->updateCanvasWindow(rect);
-    
-    pTarget->BeginDraw();
-    pTarget->Clear(D2D1::ColorF(1.0, 1.0, 0.));
-    pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-
-    drawDebugLine(pTarget, rect, redBrush);
-    
-    pTarget->EndDraw();
-    
-    ::Sleep(100);
+Image
+TextOverlay::getCapturedImage() {
+  while (!m_lastImage.samples) {
+    ::Sleep(10);
   }
-  return 0;
+  return m_lastImage;
 }

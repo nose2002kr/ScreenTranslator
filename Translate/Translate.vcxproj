@@ -90,6 +90,11 @@ copy "..\..\..\openssl\bin\ssleay32.dll" "$(SolutionDir)"</Command>
   <ItemGroup>
     <ClInclude Include="src\translate.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonUtil\CommonUtil.vcxproj">
+      <Project>{6e1b5721-084a-4b14-8f83-b0b299ef60b5}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

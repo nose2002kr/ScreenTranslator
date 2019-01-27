@@ -12,6 +12,7 @@ class OCR {
     OCR(std::string);
     ~OCR();
 
+    tesseract::TessBaseAPI* api;
 public:
   static void init(std::string tessdataPath) {
     if (g_inst == nullptr) {
@@ -26,7 +27,4 @@ public:
   }
 
   std::vector<TextInfo> findOutTextInfos(Image imgParam);
-
-
-  tesseract::TessBaseAPI* api;
 };

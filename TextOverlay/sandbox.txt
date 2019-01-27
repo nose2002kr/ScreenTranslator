@@ -187,3 +187,38 @@ std::vector<byte> ToPixels(HBITMAP BitmapHandle)
   DeleteDC(DC);
   return Pixels;
 }
+
+
+
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow){
+
+  TextOverlay::init(hInstance);
+  TextOverlay* overlayer = TextOverlay::instnace();
+  
+
+  ID2D1HwndRenderTarget* pTarget = overlayer->getRenderTarget();
+  ID2D1SolidColorBrush* redBrush = nullptr;
+  throwIfFail(pTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Red), &redBrush), "CreateSolidColorBrush Failure.");
+  while (true) {
+    HWND hWnd = ::GetForegroundWindow();
+    if (overlayer->isInvalidHwnd(hWnd)) {
+      ::Sleep(100); continue;
+    }
+
+    overlayer->screenCapture();
+    RECT rect;
+    HRESULT hr = DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT));
+    overlayer->updateCanvasWindow(rect);
+    
+    pTarget->BeginDraw();
+    pTarget->Clear(D2D1::ColorF(1.0, 1.0, 0.));
+    pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+
+    drawDebugLine(pTarget, rect, redBrush);
+    
+    pTarget->EndDraw();
+    
+    ::Sleep(100);
+  }
+  return 0;
+}

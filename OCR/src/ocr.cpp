@@ -1,6 +1,8 @@
 #include "ocr.h"
 //#define DEBUG_LEVEL2
 
+OCR* OCR::g_inst = nullptr;
+
 typedef struct t_color_node {
   cv::Mat       mean;       // The mean of this node
   cv::Mat       cov;

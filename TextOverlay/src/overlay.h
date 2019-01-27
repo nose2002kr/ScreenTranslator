@@ -39,9 +39,13 @@ public:
   Image screenCapture();
   Image windowScreenCapture();
   bool isInvalidHwnd(HWND hWnd);
-  void updateCanvasWindow(RECT rect);
+  void updateCanvasWindow();
 
   void showText(std::vector<TextInfo> infos);
+
+  void requestWindowScreenCapture() { g_msg.push(MESSAGE_TO_CAPTURE_SCREEN); }
+  void requestUpdateCanvasWindow() { g_msg.push(MESSAGE_TO_UPDATE_CANVAS_WINDOW); }
+  Image getCapturedImage();
 
 private:
   void buildCanvasWindow(HINSTANCE hInstance);
@@ -60,6 +64,10 @@ private:
   IDWriteFactory* m_writeFac = nullptr;
   std::map<int, IDWriteTextFormat*> m_textFormats;
 
+  RECT getForegroundWindowRect();
   int m_screenW;
   int m_screenH;
+
+  Image m_lastImage;
+
 };

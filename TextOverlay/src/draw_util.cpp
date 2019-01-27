@@ -1,7 +1,9 @@
 #include "draw_util.h"
 #include "../../CommonUtil/src/common_util.h"
 
-void drawDebugLine(ID2D1RenderTarget* pTarget, RECT rect, ID2D1Brush* brush) {
+void drawDebugLine(ID2D1RenderTarget* pTarget, RECT rect) {
+  ID2D1SolidColorBrush* brush = nullptr;
+  pTarget->CreateSolidColorBrush(D2D1::ColorF(255, 0, 0, 255), &brush);
 
   pTarget->DrawLine(D2D1::Point2(0, 0), D2D1::Point2(30, 0), brush, 4.0);
   pTarget->DrawLine(D2D1::Point2(0, 0), D2D1::Point2(0, 30), brush, 4.0);
