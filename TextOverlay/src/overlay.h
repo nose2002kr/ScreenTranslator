@@ -43,7 +43,7 @@ public:
 
   void showText(std::vector<TextInfo> infos);
 
-  void requestWindowScreenCapture() { g_msg.push(MESSAGE_TO_CAPTURE_SCREEN); }
+  void requestWindowScreenCapture() { m_lastImage = Image{ 0, }; g_msg.push(MESSAGE_TO_CAPTURE_SCREEN); }
   void requestUpdateCanvasWindow() { g_msg.push(MESSAGE_TO_UPDATE_CANVAS_WINDOW); }
   Image getCapturedImage();
 

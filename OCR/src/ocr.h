@@ -28,7 +28,7 @@ public:
 
   void cancel() { m_cancelFlag = true; }
 
-  std::vector<TextInfo> findOutTextInfos(Image imgParam);
+  void findOutTextInfos(Image imgParam, std::vector<TextInfo>* infos);
 private:
   bool m_cancelFlag;
 };

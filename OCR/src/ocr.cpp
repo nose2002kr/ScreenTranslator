@@ -398,17 +398,16 @@ OCR::~OCR() {
 
 #define VEC2RGB(vec) vec[2] << 16 | vec[1] << 8 | vec[0]
 
-std::vector<TextInfo>
-OCR::findOutTextInfos(Image imgParam) {
+void
+OCR::findOutTextInfos(Image imgParam, std::vector<TextInfo>* infos) {
   cv::Mat img(cv::Size(imgParam.width, imgParam.height), CV_8UC4, imgParam.samples);
-  std::vector<TextInfo> textInfos;
 
   std::vector<cv::Rect> detectedLetterBoxes = detectLetters(img);
   std::vector<cv::Rect> letterBBoxes = reorganizeText(detectedLetterBoxes);
   for (auto it = letterBBoxes.rbegin(); it != letterBBoxes.rend(); ++it) {
     if (m_cancelFlag) {
       m_cancelFlag = false;
-      return std::vector<TextInfo>();
+      return;
     }
 
     cv::Mat cropImg = img(*it);
@@ -429,7 +428,7 @@ OCR::findOutTextInfos(Image imgParam) {
     tInfo.fontColor = static_cast<int>(VEC2RGB(vec[0]));
     tInfo.text = std::string(textOutput);
     tInfo.rect = C2WRect(*it);
-    textInfos.push_back(tInfo);
+    infos->push_back(tInfo);
   }
 
 #ifdef DEBUG_LEVEL2
@@ -438,5 +437,5 @@ OCR::findOutTextInfos(Image imgParam) {
   }
   cv::imwrite("./searchedImage.png", *img);
 #endif
-  return textInfos;
+  return;
 }

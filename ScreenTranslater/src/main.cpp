@@ -13,9 +13,7 @@ void findingText(std::vector<TextInfo>* infos) {
   TextOverlay* ov = TextOverlay::instnace();
   while (true) {
     ov->requestWindowScreenCapture();
-    std::vector<TextInfo> updatedData = ocr->findOutTextInfos(ov->getCapturedImage());
-    infos->swap(updatedData);
-    updatedData.clear();
+    ocr->findOutTextInfos(ov->getCapturedImage(), infos);
     ::Sleep(100);
   }
 }
@@ -56,7 +54,7 @@ int CALLBACK WinMain(
     case MESSAGE_TO_CAPTURE_SCREEN: TextOverlay::instnace()->windowScreenCapture(); break;
     case MESSAGE_TO_UPDATE_CANVAS_WINDOW: TextOverlay::instnace()->updateCanvasWindow(); break;
     
-    case MESSAGE_OCR_CANCEL: OCR::instnace()->cancel(); break;
+    case MESSAGE_OCR_CANCEL: infos.clear(); OCR::instnace()->cancel(); break;
     }
     g_msg.pop();
   }
