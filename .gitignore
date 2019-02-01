@@ -7,3 +7,6 @@ Release/
 
 # BinrayFile
 *.dll
+
+# DataFile
+translation.history

@@ -398,6 +398,17 @@ OCR::~OCR() {
 
 #define VEC2RGB(vec) vec[2] << 16 | vec[1] << 8 | vec[0]
 
+std::string ReplaceAll(std::string str, const std::string& from, const std::string& to) {
+  size_t start_pos = 0; //string처음부터 검사
+  while ((start_pos = str.find(from, start_pos)) != std::string::npos)  //from을 찾을 수 없을 때까지
+  {
+    str.replace(start_pos, from.length(), to);
+    start_pos += to.length(); // 중복검사를 피하고 from.length() > to.length()인 경우를 위해서
+  }
+  return str;
+}
+
+
 void
 OCR::findOutTextInfos(Image imgParam, std::vector<TextInfo>* infos) {
   cv::Mat img(cv::Size(imgParam.width, imgParam.height), CV_8UC4, imgParam.samples);
@@ -422,11 +433,11 @@ OCR::findOutTextInfos(Image imgParam, std::vector<TextInfo>* infos) {
     std::cout << textOutput << std::endl; // Destroy used object and release memory ocr->End();
 #endif
     std::vector<cv::Vec3b> vec = find_dominant_colors(cropImg, 2);
-    TextInfo tInfo;
+    TextInfo tInfo{ 0, };
 
     tInfo.backgroundColor = static_cast<int>(VEC2RGB(vec[1]));
     tInfo.fontColor = static_cast<int>(VEC2RGB(vec[0]));
-    tInfo.text = std::string(textOutput);
+    tInfo.ocrText = ReplaceAll(std::string(textOutput), "\n", "");
     tInfo.rect = C2WRect(*it);
     infos->push_back(tInfo);
   }
