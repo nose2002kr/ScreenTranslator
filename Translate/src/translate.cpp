@@ -122,11 +122,3 @@ Translate::translate(std::string src) {
   
   return "";
 }
-
-int main() {
-  
-
-
-  return 0;
-}
-// 
