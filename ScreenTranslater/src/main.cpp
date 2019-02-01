@@ -44,17 +44,18 @@ int CALLBACK WinMain(
   std::thread st(showingText, &infos);
   std::thread ft(findingText, &infos);
   
-  while (true) {
+  bool doYouWantBreakIt = false;
+  while (!doYouWantBreakIt) {
     if (g_msg.empty()) {
       ::Sleep(100);
       continue;
     }
 
     switch (g_msg.front()) {
-    case MESSAGE_TO_CAPTURE_SCREEN: TextOverlay::instnace()->windowScreenCapture(); break;
-    case MESSAGE_TO_UPDATE_CANVAS_WINDOW: TextOverlay::instnace()->updateCanvasWindow(); break;
+      case MESSAGE_TO_CAPTURE_SCREEN: TextOverlay::instnace()->windowScreenCapture(); break;
+      case MESSAGE_TO_UPDATE_CANVAS_WINDOW: TextOverlay::instnace()->updateCanvasWindow(); break;
     
-    case MESSAGE_OCR_CANCEL: infos.clear(); OCR::instnace()->cancel(); break;
+      case MESSAGE_OCR_CANCEL: infos.clear(); OCR::instnace()->cancel(); break;
     }
     g_msg.pop();
   }
