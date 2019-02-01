@@ -11,7 +11,9 @@ struct TextInfo {
   RECT rect;
   int fontColor;
   int backgroundColor;
-  std::string text;
+  std::string ocrText;
+  bool translated;
+  std::string translatedText;
 };
 
 struct Image {

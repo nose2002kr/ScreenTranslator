@@ -56,6 +56,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>crypt32.lib;ws2_32.lib;wldap32.lib;libcurld.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -64,6 +65,9 @@
       <Command>copy "..\..\..\openssl\bin\libeay32.dll" "$(SolutionDir)"
 copy "..\..\..\openssl\bin\ssleay32.dll" "$(SolutionDir)"</Command>
     </PreBuildEvent>
+    <Lib>
+      <AdditionalDependencies>crypt32.lib;ws2_32.lib;wldap32.lib;libcurld.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -83,8 +87,25 @@ copy "..\..\..\openssl\bin\ssleay32.dll" "$(SolutionDir)"</Command>
       <Command>copy "..\..\..\openssl\bin\libeay32.dll" "$(SolutionDir)"
 copy "..\..\..\openssl\bin\ssleay32.dll" "$(SolutionDir)"</Command>
     </PreBuildEvent>
+    <Lib>
+      <AdditionalDependencies>crypt32.lib;ws2_32.lib;wldap32.lib;libcurld.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\json\internalJSONNode.cpp" />
+    <ClCompile Include="..\..\..\json\JSONAllocator.cpp" />
+    <ClCompile Include="..\..\..\json\JSONChildren.cpp" />
+    <ClCompile Include="..\..\..\json\JSONDebug.cpp" />
+    <ClCompile Include="..\..\..\json\JSONIterators.cpp" />
+    <ClCompile Include="..\..\..\json\JSONMemory.cpp" />
+    <ClCompile Include="..\..\..\json\JSONNode.cpp" />
+    <ClCompile Include="..\..\..\json\JSONNode_Mutex.cpp" />
+    <ClCompile Include="..\..\..\json\JSONPreparse.cpp" />
+    <ClCompile Include="..\..\..\json\JSONStream.cpp" />
+    <ClCompile Include="..\..\..\json\JSONValidator.cpp" />
+    <ClCompile Include="..\..\..\json\JSONWorker.cpp" />
+    <ClCompile Include="..\..\..\json\JSONWriter.cpp" />
+    <ClCompile Include="..\..\..\json\libjson.cpp" />
     <ClCompile Include="src\translate.cpp" />
   </ItemGroup>
   <ItemGroup>
