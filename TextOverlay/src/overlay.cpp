@@ -215,7 +215,7 @@ TextOverlay::buildCanvasWindow(HINSTANCE hInstance) {
 
   ShowWindow(m_canvasWnd, false);
   UpdateWindow(m_canvasWnd);
-  ::SetLayeredWindowAttributes(m_canvasWnd, RGB(255, 255, 0), 0, LWA_COLORKEY);
+  ::SetLayeredWindowAttributes(m_canvasWnd, RGB(255, 255, 255), 0, LWA_COLORKEY);
 }
 
 bool
@@ -282,13 +282,16 @@ TextOverlay::getForegroundWindowRect() {
   throwIfFail(DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT)), "getForegroundWindowRect");
   return rect;
 }
+
+#define IGNORE_WHITE_COLOR(color) color & 0xFFFFFF == 0xFFFFFF ? 0xFEFEFE : color
+
 void
 TextOverlay::showText(std::vector<TextInfo> infos) {
   requestUpdateCanvasWindow();
 
   ID2D1HwndRenderTarget* pTarget = getRenderTarget(); 
   pTarget->BeginDraw();
-  pTarget->Clear(D2D1::ColorF(1.0, 1.0, 0.));
+  pTarget->Clear(D2D1::ColorF(1.0, 1.0, 1.0));
   pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
   
   drawDebugLine(pTarget, getForegroundWindowRect());
@@ -298,11 +301,16 @@ TextOverlay::showText(std::vector<TextInfo> infos) {
     IDWriteTextFormat* textFormat = getTextFormat(RctH(info.rect));
     ID2D1SolidColorBrush* backBrs = nullptr;
     ID2D1SolidColorBrush* fontBrs = nullptr;
-    pTarget->CreateSolidColorBrush(D2D1::ColorF(info.backgroundColor), &backBrs);
-    pTarget->CreateSolidColorBrush(D2D1::ColorF(info.fontColor), &fontBrs);
+    
+    pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.backgroundColor)), &backBrs);
+    pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.fontColor)), &fontBrs);
     D2D1_RECT_F d2Rect = D2D1::RectF(info.rect.left, info.rect.top, info.rect.right, info.rect.bottom);
     pTarget->FillRectangle(d2Rect, backBrs);
-    pTarget->DrawTextA(A2W(info.text.c_str()), info.text.length(), textFormat, d2Rect, fontBrs);
+    if (info.translated) {
+      pTarget->DrawTextA(A2W(info.translatedText.c_str()), info.translatedText.length(), textFormat, d2Rect, fontBrs);
+    } else {
+      pTarget->DrawTextA(A2W(info.ocrText.c_str()), info.ocrText.length(), textFormat, d2Rect, fontBrs);
+    }
   }
 
   pTarget->EndDraw();
