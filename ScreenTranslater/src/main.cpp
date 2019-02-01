@@ -1,6 +1,7 @@
 #include "OCR/src/ocr.h"
 #include "TextOverlay/src/overlay.h"
 #include "Translate/src/translate.h"
+#include "KeyHook/src/keyHook.h"
 
 #include "dwmapi.h"
 
@@ -49,6 +50,13 @@ void translatingText(std::vector<TextInfo>* infos) {
     ::Sleep(100);
   }
 }
+
+void keyHooking() {
+  KeyHook* hook = KeyHook::instnace();
+  hook->registryFunction(KeySeq(true, false, false, 'y'), [] {doYouWantBreakIt = true; });
+  hook->startHook();
+} 
+
 #include <fstream>
 int CALLBACK WinMain(
   _In_ HINSTANCE hInstance,
@@ -61,13 +69,10 @@ int CALLBACK WinMain(
   
   std::vector<TextInfo> infos;
 
-  //Translate tr;
-  //std::string translated = tr.translate(infos[0].text);
-  
-  std::thread st(showingText, &infos);
-  std::thread ft(findingText, &infos);
-  std::thread tt(translatingText, &infos);
-  
+  std::thread showTh(showingText, &infos);
+  std::thread findTh(findingText, &infos);
+  //std::thread translateTh(translatingText, &infos);
+  std::thread hookTh(keyHooking);
   
   while (!doYouWantBreakIt) {
     if (g_msg.empty()) {
@@ -84,8 +89,11 @@ int CALLBACK WinMain(
     g_msg.pop();
   }
 
-  tt.join();
-  st.join();
+  //translateTh.join();
+  showTh.join();
   OCR::instnace()->cancel();
-  ft.join();
+  findTh.join();
+  KeyHook::instnace()->terminateHook();
+  //hookTh.join();
+  return 0;
 }

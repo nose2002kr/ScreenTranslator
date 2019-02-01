@@ -83,6 +83,9 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\KeyHook\KeyHook.vcxproj">
+      <Project>{ab2cfb8a-bd81-47d3-a714-28234f95afa6}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\OCR\OCR.vcxproj">
       <Project>{da3cdfe5-2619-4f6a-8a8c-e97e60e50a90}</Project>
     </ProjectReference>
