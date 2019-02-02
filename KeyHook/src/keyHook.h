@@ -12,8 +12,8 @@ public:
   }
 
   bool operator<(const KeySeq& other) const {
-    unsigned int lhs = (this->ctrl ? 0x01 : 0) + (this->shift ? 0x02 : 0) + (this->alt ? 0x04 : 0) + (this->vkCode >> 8);
-    unsigned int rhs = (other.ctrl ? 0x01 : 0) + (other.shift ? 0x02 : 0) + (other.alt ? 0x04 : 0) + (other.vkCode >> 8);
+    unsigned int lhs = (this->ctrl ? 0x01 : 0) + (this->shift ? 0x02 : 0) + (this->alt ? 0x04 : 0) + (this->vkCode << 8);
+    unsigned int rhs = (other.ctrl ? 0x01 : 0) + (other.shift ? 0x02 : 0) + (other.alt ? 0x04 : 0) + (other.vkCode << 8);
 
     return lhs > rhs;
   }
