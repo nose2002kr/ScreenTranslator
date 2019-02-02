@@ -32,19 +32,13 @@ void showingText(std::vector<TextInfo>* infos) {
 void translatingText(std::vector<TextInfo>* infos) {
   Translate trans;
   while (!termFlag) {
-    std::vector<TextInfo> copies(*infos);
-    for (auto info : copies) {
+    for (int i = 0 ; i < infos->size(); i++) {
+      TextInfo info = infos->at(i);
       if (info.translated) continue;
       info.translatedText = trans.translate(info.ocrText);
       info.translated = true;
       trans.pushHistory(info.ocrText, info.translatedText);
-    }
-    if (copies.size() <= infos->size()) {
-      for (int i = 0; i < copies.size(); i++) {
-        if ((*infos)[i].ocrText == copies[i].ocrText) {
-          (*infos)[i] = copies[i];
-        }
-      }
+      (*infos)[i] = info;
     }
 
     ::Sleep(100);
@@ -53,7 +47,10 @@ void translatingText(std::vector<TextInfo>* infos) {
 
 void keyHooking() {
   KeyHook* hook = KeyHook::instnace();
-  hook->registryFunction(KeySeq(true, true, false, 'q'), [] { termFlag = true; });
+  // Key: Terminate app. [CTRL + ALT + Q]
+  hook->registryFunction(KeySeq(true, false, true, 'q'), [] { termFlag = true; });
+  // Key: Lock & Unlock window (do not switch windows any more). [CTRL + ALT + P]
+  hook->registryFunction(KeySeq(true, false, true, 'p'), [] { TextOverlay::instnace()->toggleWindowLock(); });
   hook->startHook();
 } 
 
@@ -72,7 +69,7 @@ int CALLBACK WinMain(
 
   std::thread showTh(showingText, &infos);
   std::thread findTh(findingText, &infos);
-  //std::thread translateTh(translatingText, &infos);
+  std::thread translateTh(translatingText, &infos);
   std::thread hookTh(keyHooking);
   
   while (!termFlag) {
@@ -90,7 +87,7 @@ int CALLBACK WinMain(
     g_msg.pop();
   }
 
-  //translateTh.join();
+  translateTh.join();
   showTh.join();
   OCR::instnace()->cancel();
   findTh.join();
