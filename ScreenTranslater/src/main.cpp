@@ -9,12 +9,12 @@
 #include <CRTDBG.H>
 #include <atlconv.h>
 
-bool doYouWantBreakIt = false;
+bool termFlag = false;
 
 void findingText(std::vector<TextInfo>* infos) {
   OCR* ocr = OCR::instnace();
   TextOverlay* ov = TextOverlay::instnace();
-  while (!doYouWantBreakIt) {
+  while (!termFlag) {
     ov->requestWindowScreenCapture();
     ocr->findOutTextInfos(ov->getCapturedImage(), infos);
     ::Sleep(100);
@@ -23,7 +23,7 @@ void findingText(std::vector<TextInfo>* infos) {
 
 void showingText(std::vector<TextInfo>* infos) {
   TextOverlay* ov = TextOverlay::instnace();
-  while (!doYouWantBreakIt) {
+  while (!termFlag) {
     ov->showText(*infos);
     ::Sleep(100);
   }
@@ -31,7 +31,7 @@ void showingText(std::vector<TextInfo>* infos) {
 
 void translatingText(std::vector<TextInfo>* infos) {
   Translate trans;
-  while (!doYouWantBreakIt) {
+  while (!termFlag) {
     std::vector<TextInfo> copies(*infos);
     for (auto info : copies) {
       if (info.translated) continue;
@@ -53,7 +53,7 @@ void translatingText(std::vector<TextInfo>* infos) {
 
 void keyHooking() {
   KeyHook* hook = KeyHook::instnace();
-  hook->registryFunction(KeySeq(true, false, false, 'y'), [] {doYouWantBreakIt = true; });
+  hook->registryFunction(KeySeq(true, true, false, 'q'), [] { termFlag = true; });
   hook->startHook();
 } 
 
@@ -64,6 +64,7 @@ int CALLBACK WinMain(
   _In_ LPSTR     lpCmdLine,
   _In_ int       nCmdShow
 ) {
+
   TextOverlay::init(hInstance);
   OCR::init("C:/Users/1004/C++/tesseract/tessdata");
   
@@ -74,7 +75,7 @@ int CALLBACK WinMain(
   //std::thread translateTh(translatingText, &infos);
   std::thread hookTh(keyHooking);
   
-  while (!doYouWantBreakIt) {
+  while (!termFlag) {
     if (g_msg.empty()) {
       ::Sleep(100);
       continue;
