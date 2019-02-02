@@ -116,6 +116,7 @@ Translate::translate(std::string src) {
       fprintf(stderr, "curl_easy_perform() failed: %s\n", s);
       return "";
     } else {
+      
       return node["data"]["translations"][0]["translatedText"].as_string();
     }
   }

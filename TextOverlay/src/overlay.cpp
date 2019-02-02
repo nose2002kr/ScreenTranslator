@@ -15,8 +15,6 @@
 #pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "dwrite.lib")
 
-#include <CRTDBG.H>
-#include <atlconv.h>
 #include <queue>
 
 #define throwIfFail(func, failMsg) {HRESULT hr = func;\
@@ -85,7 +83,7 @@ TextOverlay::screenCapture() {
 
 Image
 TextOverlay::windowScreenCapture() {
-  HWND hWnd = ::GetForegroundWindow();
+  HWND hWnd = getTargetWindow();
   if (isInvalidHwnd(hWnd)) {
     return Image{ 0, };
   }
@@ -225,7 +223,7 @@ TextOverlay::isInvalidHwnd(HWND hWnd) {
 
 void
 TextOverlay::updateCanvasWindow() {
-  RECT rect = getForegroundWindowRect();
+  RECT rect = getTargetWindowRect();
   RECT canvasRect;
   DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
   if (canvasRect.left == rect.left
@@ -271,19 +269,35 @@ TextOverlay::getTextFormat(int fontSize) {
   return textFormat;
 }
 
+HWND
+TextOverlay::getTargetWindow() {
+  if (m_lockWindow && m_lastWnd) {
+    return m_lastWnd;
+  }
+
+  return m_lastWnd = ::GetForegroundWindow();
+}
+
 RECT 
-TextOverlay::getForegroundWindowRect() {
-  HWND hWnd = ::GetForegroundWindow();
+TextOverlay::getTargetWindowRect() {
+  HWND hWnd = getTargetWindow();
   if (isInvalidHwnd(hWnd)) {
     return RECT{ 0, };
   }
 
   RECT rect;
-  throwIfFail(DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT)), "getForegroundWindowRect");
+  throwIfFail(DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &rect, sizeof(RECT)), "getTargetWindowRect");
   return rect;
 }
 
 #define IGNORE_WHITE_COLOR(color) color & 0xFFFFFF == 0xFFFFFF ? 0xFEFEFE : color
+
+std::wstring strToWStr(std::string s) {
+  wchar_t strUnicode[256] = { 0, };
+  int nLen = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.size(), NULL, NULL);
+  MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.size(), strUnicode, nLen);
+  return std::wstring(strUnicode);
+}
 
 void
 TextOverlay::showText(std::vector<TextInfo> infos) {
@@ -294,9 +308,8 @@ TextOverlay::showText(std::vector<TextInfo> infos) {
   pTarget->Clear(D2D1::ColorF(1.0, 1.0, 1.0));
   pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
   
-  drawDebugLine(pTarget, getForegroundWindowRect());
+  drawDebugLine(pTarget, getTargetWindowRect());
   
-  USES_CONVERSION;
   for (auto info : infos) {
     IDWriteTextFormat* textFormat = getTextFormat(RctH(info.rect));
     ID2D1SolidColorBrush* backBrs = nullptr;
@@ -306,11 +319,11 @@ TextOverlay::showText(std::vector<TextInfo> infos) {
     pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.fontColor)), &fontBrs);
     D2D1_RECT_F d2Rect = D2D1::RectF(info.rect.left, info.rect.top, info.rect.right, info.rect.bottom);
     pTarget->FillRectangle(d2Rect, backBrs);
-    if (info.translated) {
-      pTarget->DrawTextA(A2W(info.translatedText.c_str()), info.translatedText.length(), textFormat, d2Rect, fontBrs);
-    } else {
-      pTarget->DrawTextA(A2W(info.ocrText.c_str()), info.ocrText.length(), textFormat, d2Rect, fontBrs);
-    }
+
+    std::wstring drawingText = info.translated ? strToWStr(info.translatedText) : strToWStr(info.ocrText);
+    IDWriteTextLayout* layout;
+    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, m_screenW, m_screenW, &layout);
+    pTarget->DrawTextLayout(D2D1::Point2(info.rect.left, info.rect.top), layout, fontBrs);
   }
 
   pTarget->EndDraw();

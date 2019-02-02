@@ -22,7 +22,7 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
     DWORD dwMsg = 1;
     dwMsg += hooked_key.scanCode << 16;
     dwMsg += hooked_key.flags << 24;
-    wchar_t lpszKeyName[1024] = { 0 };
+    TCHAR lpszKeyName[1024] = { 0 };
 
     int i = GetKeyNameText(dwMsg, (lpszKeyName + 1), 0xFF) + 1;
 
@@ -37,12 +37,6 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
 
       if (GetAsyncKeyState(VK_SHIFT) >= 0) key += 32;
 
-      /*if (CTRL_key != 0 && key == 'y')
-      {
-        MessageBox(NULL, L"CTRL-y was pressed\nLaunch your app here", L"H O T K E Y", MB_OK);
-        CTRL_key = 0;
-        //do stuff here
-      }*/
       auto func = KeyHook::instnace()->findFunction(KeySeq(CTRL_key, SHIFT_key, ALT_key, key));
       if (func) func();
 

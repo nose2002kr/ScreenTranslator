@@ -46,6 +46,7 @@ public:
   void requestWindowScreenCapture() { m_lastImage = Image{ 0, }; g_msg.push(MESSAGE_TO_CAPTURE_SCREEN); }
   void requestUpdateCanvasWindow() { g_msg.push(MESSAGE_TO_UPDATE_CANVAS_WINDOW); }
   Image getCapturedImage();
+  void toggleWindowLock() { m_lockWindow = !m_lockWindow; }
 
 private:
   void buildCanvasWindow(HINSTANCE hInstance);
@@ -64,10 +65,13 @@ private:
   IDWriteFactory* m_writeFac = nullptr;
   std::map<int, IDWriteTextFormat*> m_textFormats;
 
-  RECT getForegroundWindowRect();
-  int m_screenW;
-  int m_screenH;
+  HWND getTargetWindow();
+  RECT getTargetWindowRect();
+  int m_screenW = 0;
+  int m_screenH = 0;
 
   Image m_lastImage;
+  HWND m_lastWnd = nullptr;
+  bool m_lockWindow = false;
 
 };
