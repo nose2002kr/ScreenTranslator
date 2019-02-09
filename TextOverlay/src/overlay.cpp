@@ -292,15 +292,8 @@ TextOverlay::getTargetWindowRect() {
 
 #define IGNORE_WHITE_COLOR(color) color & 0xFFFFFF == 0xFFFFFF ? 0xFEFEFE : color
 
-std::wstring strToWStr(std::string s) {
-  wchar_t strUnicode[256] = { 0, };
-  int nLen = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.size(), NULL, NULL);
-  MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.size(), strUnicode, nLen);
-  return std::wstring(strUnicode);
-}
-
 void
-TextOverlay::showText(std::vector<TextInfo> infos) {
+TextOverlay::showText() {
   requestUpdateCanvasWindow();
 
   ID2D1HwndRenderTarget* pTarget = getRenderTarget(); 
@@ -310,7 +303,8 @@ TextOverlay::showText(std::vector<TextInfo> infos) {
   
   drawDebugLine(pTarget, getTargetWindowRect());
   
-  for (auto info : infos) {
+  for (int i = 0; i < getTextInfoSize(); i++) {
+    TextInfo info = getTextInfo(i);
     IDWriteTextFormat* textFormat = getTextFormat(RctH(info.rect));
     ID2D1SolidColorBrush* backBrs = nullptr;
     ID2D1SolidColorBrush* fontBrs = nullptr;

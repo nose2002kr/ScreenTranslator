@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../../CommonUtil/src/common_util.h"
+#include "common_util.h"
+#include "text_info.h"
 
 #include <exception>
 
@@ -41,7 +42,7 @@ public:
   bool isInvalidHwnd(HWND hWnd);
   void updateCanvasWindow();
 
-  void showText(std::vector<TextInfo> infos);
+  void showText();
 
   void requestWindowScreenCapture() { m_lastImage = Image{ 0, }; g_msg.push(MESSAGE_TO_CAPTURE_SCREEN); }
   void requestUpdateCanvasWindow() { g_msg.push(MESSAGE_TO_UPDATE_CANVAS_WINDOW); }

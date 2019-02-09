@@ -43,11 +43,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir);$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\CommonUtil\src;$(SolutionDir);$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir);$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\CommonUtil\src;$(SolutionDir);$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

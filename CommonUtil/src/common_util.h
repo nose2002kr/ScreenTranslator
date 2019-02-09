@@ -29,4 +29,7 @@ struct Image {
 #define MESSAGE_OCR_CANCEL 200
 
 extern std::queue<int> g_msg;
-extern std::vector<TextInfo> g_textInfo;
+
+// string util
+std::string ANSIToUTF8(std::string ansi);
+std::wstring strToWStr(std::string s);
