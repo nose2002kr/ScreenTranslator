@@ -57,6 +57,7 @@ int CALLBACK WinMain(
   _In_ LPSTR     lpCmdLine,
   _In_ int       nCmdShow
 ) {
+  writeLog(DEBUG, "Running ScreenTranslater.");
 
   TextOverlay::init(hInstance);
   OCR::init("C:/Users/1004/C++/tesseract/tessdata");
@@ -87,5 +88,8 @@ int CALLBACK WinMain(
   findTh.join();
   KeyHook::instnace()->terminateHook();
   //hookTh.join();
+
+  writeLog(DEBUG, "Terminated ScreenTranslater.");
+
   return 0;
 }

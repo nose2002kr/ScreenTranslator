@@ -1,6 +1,8 @@
 #include "common_util.h"
 
 #include <Windows.h>
+#include <time.h>
+#include <fstream>
 
 std::queue<int> g_msg;
 
@@ -24,4 +26,37 @@ std::wstring strToWStr(std::string s) {
   int nLen = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.size(), NULL, NULL);
   MultiByteToWideChar(CP_UTF8, 0, s.c_str(), s.size(), strUnicode, nLen);
   return std::wstring(strUnicode);
+}
+
+std::string getCurrentDateTime(std::string s) {
+  time_t now = time(0);
+  struct tm  tstruct;
+  char  buf[80];
+  localtime_s(&tstruct, &now);
+  if (s == "now")
+    strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
+  else if (s == "date")
+    strftime(buf, sizeof(buf), "%Y-%m-%d", &tstruct);
+  return std::string(buf);
+};
+
+std::string padTo(std::string str, const size_t num, const char paddingChar = ' ') {
+  if (num > str.size())
+    str.insert(0, num - str.size(), paddingChar);
+  return str;
+}
+
+void writeLog(logLevel lv, std::string logMsg) {
+  std::string filePath = "./translater_" + getCurrentDateTime("date") + ".log";
+  std::string now = getCurrentDateTime("now");
+  std::ofstream ofs(filePath.c_str(), std::ios_base::out | std::ios_base::app);
+  ofs << now.c_str() << '\t';
+  switch (lv) {
+    case DEBUG: ofs << padTo("[DEBUG]", 10).c_str(); break;
+    case INFO:  ofs << padTo("[INFO]",  10).c_str(); break;
+    case WARN:  ofs << padTo("[WARN]",  10).c_str(); break;
+    case FATAL: ofs << padTo("[FATAL]", 10).c_str(); break;
+  }
+  ofs << logMsg.c_str() << '\n';
+  ofs.close();
 }
