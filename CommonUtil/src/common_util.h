@@ -21,3 +21,6 @@ extern std::queue<int> g_msg;
 // string util
 std::string ANSIToUTF8(std::string ansi);
 std::wstring strToWStr(std::string s);
+
+enum logLevel {DEBUG, INFO, WARN, FATAL};
+void writeLog(logLevel lv, std::string logMsg);
