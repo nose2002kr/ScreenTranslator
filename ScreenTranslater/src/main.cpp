@@ -10,7 +10,7 @@ void findingText() {
   TextOverlay* ov = TextOverlay::instnace();
   while (!termFlag) {
     ov->requestWindowScreenCapture();
-    ocr->findOutTextInfos(ov->getCapturedImage(), &g_textInfo);
+    ocr->findOutTextInfos(ov->getCapturedImage());
     ::Sleep(100);
   }
 }
@@ -18,7 +18,7 @@ void findingText() {
 void showingText() {
   TextOverlay* ov = TextOverlay::instnace();
   while (!termFlag) {
-    ov->showText(g_textInfo);
+    ov->showText();
     ::Sleep(100);
   }
 }
@@ -26,13 +26,13 @@ void showingText() {
 void translatingText() {
   Translate trans;
   while (!termFlag) {
-    for (int i = 0 ; i < g_textInfo.size(); i++) {
-      TextInfo info = g_textInfo.at(i);
+    for (int i = 0 ; i < getTextInfoSize(); i++) {
+      TextInfo info = getTextInfo(i);
       if (info.translated) continue;
       info.translatedText = trans.translate(info.ocrText);
       info.translated = true;
       trans.pushHistory(info.ocrText, info.translatedText);
-      g_textInfo[i] = info;
+      updateTextInfo(i, info);
     }
 
     ::Sleep(100);
@@ -76,7 +76,7 @@ int CALLBACK WinMain(
       case MESSAGE_TO_CAPTURE_SCREEN: TextOverlay::instnace()->windowScreenCapture(); break;
       case MESSAGE_TO_UPDATE_CANVAS_WINDOW: TextOverlay::instnace()->updateCanvasWindow(); break;
     
-      case MESSAGE_OCR_CANCEL: g_textInfo.clear(); OCR::instnace()->cancel(); break;
+      case MESSAGE_OCR_CANCEL: clearTextInfo(); OCR::instnace()->cancel(); break;
     }
     g_msg.pop();
   }

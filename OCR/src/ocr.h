@@ -3,7 +3,8 @@
 #include <opencv2/opencv.hpp>
 #include <baseapi.h>
 
-#include "../../CommonUtil/src/common_util.h"
+#include "common_util.h"
+#include "text_info.h"
 
 class OCR {
   private:
@@ -28,7 +29,7 @@ public:
 
   void cancel() { m_cancelFlag = true; }
 
-  void findOutTextInfos(Image imgParam, std::vector<TextInfo>* infos);
+  void findOutTextInfos(Image imgParam);
 private:
   bool m_cancelFlag;
 };

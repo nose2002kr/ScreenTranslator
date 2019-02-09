@@ -6,6 +6,7 @@
 #include <iomanip>
 
 #include "../../json/libjson.h"
+#include "common_util.h"
 
 #define CURL_STATICLIB
 #define USE_OPENSSL
@@ -90,9 +91,11 @@ Translate::translate(std::string src) {
   if (curl) {
     std::string s;
     char error_buffer[CURL_ERROR_SIZE] = {};
+    src = ANSIToUTF8(src);
+    std::string encodedSrc = curl_easy_escape(curl, src.c_str(), src.length());
 
     std::string apiKey = "AIzaSyB3MXUyZEcDiw4VQ8tucT3lcvOyr5VbIh0";
-    std::string url = "https://translation.googleapis.com/language/translate/v2?q=" + url_encode(src) + "&target=ko&format=text&source=en&key=" + apiKey;
+    std::string url = "https://translation.googleapis.com/language/translate/v2?q=" + encodedSrc + "&target=ko&format=text&source=en&key=" + apiKey;
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);

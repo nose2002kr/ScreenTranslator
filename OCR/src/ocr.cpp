@@ -410,7 +410,7 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
 
 
 void
-OCR::findOutTextInfos(Image imgParam, std::vector<TextInfo>* infos) {
+OCR::findOutTextInfos(Image imgParam) {
   cv::Mat img(cv::Size(imgParam.width, imgParam.height), CV_8UC4, imgParam.samples);
 
   std::vector<cv::Rect> detectedLetterBoxes = detectLetters(img);
@@ -439,7 +439,7 @@ OCR::findOutTextInfos(Image imgParam, std::vector<TextInfo>* infos) {
     tInfo.fontColor = static_cast<int>(VEC2RGB(vec[0]));
     tInfo.ocrText = ReplaceAll(std::string(textOutput), "\n", "");
     tInfo.rect = C2WRect(*it);
-    infos->push_back(tInfo);
+    pushTextInfo(tInfo);
   }
 
 #ifdef DEBUG_LEVEL2

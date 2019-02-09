@@ -20,9 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common_util.h" />
+    <ClInclude Include="src\text_info.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\common_util.cpp" />
+    <ClCompile Include="src\text_info.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
