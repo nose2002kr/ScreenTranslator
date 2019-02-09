@@ -12,6 +12,7 @@ struct TextInfo {
   int fontColor;
   int backgroundColor;
   std::string ocrText;
+  
   bool translated;
   std::string translatedText;
 };
@@ -26,4 +27,6 @@ struct Image {
 #define MESSAGE_TO_UPDATE_CANVAS_WINDOW 101
 
 #define MESSAGE_OCR_CANCEL 200
+
 extern std::queue<int> g_msg;
+extern std::vector<TextInfo> g_textInfo;
