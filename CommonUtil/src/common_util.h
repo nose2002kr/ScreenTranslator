@@ -1,21 +1,9 @@
 #pragma once
 
-#include <string>
-#include <windows.h>
 #include <queue>
 
-#define RctW(rect) (int) (rect.right - rect.left)
-#define RctH(rect) (int) (rect.bottom - rect.top)
-
-struct TextInfo {
-  RECT rect;
-  int fontColor;
-  int backgroundColor;
-  std::string ocrText;
-  
-  bool translated;
-  std::string translatedText;
-};
+#define RctW(rect) (rect.right - rect.left)
+#define RctH(rect) (rect.bottom - rect.top)
 
 struct Image {
   unsigned char* samples;

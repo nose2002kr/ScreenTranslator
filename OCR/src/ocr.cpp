@@ -16,8 +16,8 @@ cv::Mat get_dominant_palette(std::vector<cv::Vec3b> colors) {
   const int tile_size = 64;
   cv::Mat ret = cv::Mat(tile_size, tile_size*colors.size(), CV_8UC3, cv::Scalar(0));
 
-  for (int i = 0; i < colors.size(); i++) {
-    cv::Rect rect(i*tile_size, 0, tile_size, tile_size);
+  for (size_t i = 0; i < colors.size(); i++) {
+    cv::Rect rect(i * tile_size, 0, tile_size, tile_size);
     cv::rectangle(ret, rect, cv::Scalar(colors[i][0], colors[i][1], colors[i][2]), cv::FILLED);
   }
 
@@ -49,11 +49,11 @@ std::vector<cv::Vec3b> get_dominant_colors(t_color_node *root) {
   std::vector<t_color_node*> leaves = get_leaves(root);
   std::vector<cv::Vec3b> ret;
 
-  for (int i = 0; i < leaves.size(); i++) {
+  for (size_t i = 0; i < leaves.size(); i++) {
     cv::Mat mean = leaves[i]->mean;
-    ret.push_back(cv::Vec3b(mean.at<double>(0)*255.0f,
-      mean.at<double>(1)*255.0f,
-      mean.at<double>(2)*255.0f));
+    ret.push_back(cv::Vec3b((uchar) (mean.at<double>(0) * 255.0f),
+                            (uchar) (mean.at<double>(1) * 255.0f),
+                            (uchar) (mean.at<double>(2) * 255.0f)));
   }
 
   return ret;
@@ -184,11 +184,11 @@ cv::Mat get_quantized_image(cv::Mat classes, t_color_node *root) {
     cv::Vec3b *ptr = ret.ptr<cv::Vec3b>(y);
     for (int x = 0; x < width; x++) {
       uchar pixel_class = ptrClass[x];
-      for (int i = 0; i < leaves.size(); i++) {
+      for (size_t i = 0; i < leaves.size(); i++) {
         if (leaves[i]->classid == pixel_class) {
-          ptr[x] = cv::Vec3b(leaves[i]->mean.at<double>(0) * 255,
-            leaves[i]->mean.at<double>(1) * 255,
-            leaves[i]->mean.at<double>(2) * 255);
+          ptr[x] = cv::Vec3b((uchar) (leaves[i]->mean.at<double>(0) * 255),
+                             (uchar) (leaves[i]->mean.at<double>(1) * 255),
+                             (uchar) (leaves[i]->mean.at<double>(2) * 255));
         }
       }
     }
@@ -320,7 +320,7 @@ detectLetters(cv::Mat img) {
   cv::imwrite("./detect-img_sobel.png", img_sobel);
   cv::imwrite("./detect-img_threshold.png", img_threshold);
 #endif
-  for (int i = 0; i < contours.size(); i++) {
+  for (size_t i = 0; i < contours.size(); i++) {
 #ifdef DEBUG_LEVEL2
     cv::Mat dbgImg = img.clone();
     cv::polylines(dbgImg, contours[i], false, cv::Scalar(0., 255, 0., 255), 1, 8, 0);
@@ -329,9 +329,9 @@ detectLetters(cv::Mat img) {
     if (contours[i].size() > 40) {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
       cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
-      if (appRect.width > appRect.height &&
-          appRect.height < 100)
+      if (appRect.width > appRect.height && appRect.height < 100) {
         boundRect.push_back(appRect);
+      }
     }
   }
   return boundRect;

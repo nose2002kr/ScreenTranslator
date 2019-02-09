@@ -58,6 +58,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -70,6 +72,7 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
     </PreBuildEvent>
     <Lib>
       <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -82,6 +85,8 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -96,6 +101,7 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(Solut
     </PreBuildEvent>
     <Lib>
       <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400.lib;opencv_imgcodecs400.lib;opencv_imgproc400.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
