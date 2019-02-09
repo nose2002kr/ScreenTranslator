@@ -250,7 +250,7 @@ TextOverlay::getWriteFactory() {
 }
 
 IDWriteTextFormat*
-TextOverlay::getTextFormat(int fontSize) {
+TextOverlay::getTextFormat(float fontSize) {
   IDWriteTextFormat* textFormat = m_textFormats[fontSize];
   if (textFormat == NULL) {
     throwIfFail(
@@ -290,7 +290,7 @@ TextOverlay::getTargetWindowRect() {
   return rect;
 }
 
-#define IGNORE_WHITE_COLOR(color) color & 0xFFFFFF == 0xFFFFFF ? 0xFEFEFE : color
+#define IGNORE_WHITE_COLOR(color) (color & 0xFFFFFF) == 0xFFFFFF ? 0xFEFEFE : color
 
 void
 TextOverlay::showText() {
@@ -305,19 +305,19 @@ TextOverlay::showText() {
   
   for (int i = 0; i < getTextInfoSize(); i++) {
     TextInfo info = getTextInfo(i);
-    IDWriteTextFormat* textFormat = getTextFormat(RctH(info.rect));
+    IDWriteTextFormat* textFormat = getTextFormat((float) RctH(info.rect));
     ID2D1SolidColorBrush* backBrs = nullptr;
     ID2D1SolidColorBrush* fontBrs = nullptr;
     
-    pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.backgroundColor)), &backBrs);
-    pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.fontColor)), &fontBrs);
-    D2D1_RECT_F d2Rect = D2D1::RectF(info.rect.left, info.rect.top, info.rect.right, info.rect.bottom);
+    pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.backgroundColor)), (&backBrs));
+    pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.fontColor)), (&fontBrs));
+    D2D1_RECT_F d2Rect = D2D1::RectF((float) info.rect.left, (float) info.rect.top, (float) info.rect.right, (float) info.rect.bottom);
     pTarget->FillRectangle(d2Rect, backBrs);
 
     std::wstring drawingText = info.translated ? strToWStr(info.translatedText) : strToWStr(info.ocrText);
     IDWriteTextLayout* layout;
-    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, m_screenW, m_screenW, &layout);
-    pTarget->DrawTextLayout(D2D1::Point2(info.rect.left, info.rect.top), layout, fontBrs);
+    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, (float) m_screenW, (float) m_screenW, &layout);
+    pTarget->DrawTextLayout(D2D1::Point2<float>((float) info.rect.left, (float) info.rect.top), layout, fontBrs);
   }
 
   pTarget->EndDraw();

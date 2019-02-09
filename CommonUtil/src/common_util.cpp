@@ -1,5 +1,7 @@
 #include "common_util.h"
 
+#include <Windows.h>
+
 std::queue<int> g_msg;
 
 std::string ANSIToUTF8(std::string ansi) {

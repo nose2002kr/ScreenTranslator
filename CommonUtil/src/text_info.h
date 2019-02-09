@@ -1,5 +1,16 @@
 #pragma once
-#include "common_util.h"
+#include <Windows.h>
+#include <vector>
+
+struct TextInfo {
+  RECT rect;
+  int fontColor;
+  int backgroundColor;
+  std::string ocrText;
+
+  bool translated;
+  std::string translatedText;
+};
 
 extern std::vector<TextInfo> g_textInfo;
 

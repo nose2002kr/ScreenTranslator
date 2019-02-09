@@ -57,10 +57,13 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -72,12 +75,17 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006,4098,4099,4255 %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

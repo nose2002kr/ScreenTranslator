@@ -5,10 +5,13 @@
 
 #include <exception>
 
+#pragma warning(push)
+#pragma warning(disable: 4005)
 #include "D2D1.h"
 #include "d3d9.h"
 #include "d3dx9.h"
 #include "dwrite.h"
+#pragma warning(pop)
 
 #include <vector>
 #include <map>
@@ -35,7 +38,7 @@ public:
 
   ID2D1HwndRenderTarget* getRenderTarget() { return m_rt; }
   IDWriteFactory* getWriteFactory();
-  IDWriteTextFormat* getTextFormat(int fontSize);
+  IDWriteTextFormat* getTextFormat(float fontSize);
   
   Image screenCapture();
   Image windowScreenCapture();
@@ -64,7 +67,7 @@ private:
   ID2D1HwndRenderTarget* m_rt = nullptr;
   ID2D1Factory* m_fac = nullptr;
   IDWriteFactory* m_writeFac = nullptr;
-  std::map<int, IDWriteTextFormat*> m_textFormats;
+  std::map<float, IDWriteTextFormat*> m_textFormats;
 
   HWND getTargetWindow();
   RECT getTargetWindowRect();
