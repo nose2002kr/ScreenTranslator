@@ -1,6 +1,7 @@
 #include "text_info.h"
 #include <mutex>
 #include <algorithm>
+#include <iterator>
 
 std::vector<TextInfo> g_textInfo;
 

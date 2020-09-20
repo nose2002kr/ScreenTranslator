@@ -1,6 +1,7 @@
 #pragma once
 #include <Windows.h>
 #include <vector>
+#include <string>
 
 struct TextInfo {
   RECT rect;
