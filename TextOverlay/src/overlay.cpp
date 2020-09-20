@@ -1,4 +1,6 @@
 //#define DEBUG_LEVEL2
+#include "pch.h"
+
 #include "overlay.h"
 
 #include <stdio.h>
@@ -8,11 +10,15 @@
 #include <memory>
 
 #include "dwmapi.h"
-#include "draw_util.h"
+#include "CaptureSnapshot.h"
+#include "SimpleCapture.h"
+
+#include "util/draw_util.h"
+#include "util/d3dHelpers.h"
+#include "util/direct3d11.interop.h"
+#include "util/capture.desktop.interop.h"
 
 #pragma comment(lib, "D2D1.lib")
-#pragma comment(lib, "d3d9.lib")
-#pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "dwrite.lib")
 
 #include <queue>
@@ -29,7 +35,7 @@ TextOverlay::TextOverlay(HINSTANCE hInstance) {
   createRenderTarget();
 }
 
-Image
+/*Image
 TextOverlay::D3SurfaceToImage(IDirect3DSurface9* surface, RECT rect) {
   if (rect.left < 0 || rect.top < 0) {
     int adj = rect.left < rect.top ? rect.left : rect.top;
@@ -60,30 +66,40 @@ TextOverlay::D3SurfaceToImage(IDirect3DSurface9* surface, RECT rect) {
 
   m_lastImage = Image{ pBits, w, h };
   return m_lastImage;
+}*/
+
+void TextOverlay::startCaptureFromItem(winrt::Windows::Graphics::Capture::GraphicsCaptureItem item) {
+    m_capture = std::make_unique<SimpleCapture>(m_device, item, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized);
+
+    auto surface = m_capture->CreateSurface(m_compositor);
+    m_brush.Surface(surface);
+
+    m_capture->StartCapture();
 }
 
-Image
-TextOverlay::screenCapture() {
-  RECT canvasRect;
-  DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
-
-  SetWindowPos(m_canvasWnd, HWND_TOPMOST, INT_MAX, INT_MAX, 0, 0, SWP_NOSIZE);
-  m_pd3dDevice->GetFrontBufferData(0, m_pSurface);
-  SetWindowPos(m_canvasWnd, HWND_TOPMOST, canvasRect.left, canvasRect.top, 0, 0, SWP_NOSIZE);
-#ifdef DEBUG_LEVEL2
-  D3DXSaveSurfaceToFile("./capturedImage.bmp",
-    D3DXIFF_BMP,
-    m_pSurface,
-    NULL,
-    NULL);
-#endif
-  
-  return D3SurfaceToImage(m_pSurface, RECT{ 0, 0, m_screenW, m_screenH });
+void TextOverlay::stopCapture()
+{
+    if (m_capture)
+    {
+        m_capture->Close();
+        m_capture = nullptr;
+        m_brush.Surface(nullptr);
+    }
 }
 
-Image
+winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DSurface>
 TextOverlay::windowScreenCapture() {
-  HWND hWnd = getTargetWindow();
+    HWND hWnd = getTargetWindow();
+    auto item = util::CreateCaptureItemForWindow(hWnd);
+    startCaptureFromItem(item);
+
+    auto frame = co_await CaptureSnapshot::TakeAsync(m_device, item, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized);
+
+    //winrt::fire_and_forget();
+    co_return frame;
+
+    /*
+    HWND hWnd = getTargetWindow();
   if (isInvalidHwnd(hWnd)) {
     return Image{ 0, };
   }
@@ -104,7 +120,7 @@ TextOverlay::windowScreenCapture() {
 
   RECT windowRect;
   DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &windowRect, sizeof(RECT));
-  return D3SurfaceToImage(m_pSurface, windowRect);
+  return D3SurfaceToImage(m_pSurface, windowRect);*/
   
 }
 
@@ -125,33 +141,9 @@ TextOverlay::createRenderTarget() {
 
 HRESULT
 TextOverlay::InitD3D() {
-  D3DDISPLAYMODE ddm;
-  D3DPRESENT_PARAMETERS d3dpp = { 0, };
-
-  if ((m_pD3D = Direct3DCreate9(D3D_SDK_VERSION)) == NULL)
-  {
-    return E_FAIL;
-  }
-
-  throwIfFail(m_pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &ddm), "GetAdapterDisplayMode failure.");
-
-  d3dpp.Windowed = true;
-  d3dpp.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
-  d3dpp.BackBufferFormat = ddm.Format;
-  d3dpp.BackBufferHeight = m_screenW = ddm.Width;
-  d3dpp.BackBufferWidth = m_screenH = ddm.Height;
-  d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
-  d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-  d3dpp.hDeviceWindow = NULL;
-  d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
-  d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-
-  throwIfFail(m_pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, NULL, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &m_pd3dDevice),
-    "CreateDevice failure.");
-
-  //if (FAILED(g_pd3dDevice->CreateOffscreenPlainSurface(ddm.Width, ddm.Height, D3DFMT_R8G8BA8B8G8R8, D3DPOOL_SYSTEMMEM, &g_pSurface, NULL)))
-  throwIfFail(m_pd3dDevice->CreateOffscreenPlainSurface(ddm.Width, ddm.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &m_pSurface, NULL), 
-    "CreateOffscreenPlainSurface failrue.");
+   auto d3dDevice = util::uwp::CreateD3DDevice();
+   auto dxgiDevice = d3dDevice.as<IDXGIDevice>();
+   m_device = CreateDirect3DDevice(dxgiDevice.get());
 
   return S_OK;
 }

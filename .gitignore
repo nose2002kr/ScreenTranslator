@@ -11,3 +11,4 @@ Release/
 # DataFile
 translation.history
 *.log
+packages
