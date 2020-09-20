@@ -19,3 +19,4 @@ TextInfo getTextInfo(size_t i);
 void clearTextInfo();
 void updateTextInfo(size_t i, TextInfo info);
 int getTextInfoSize();
+void removeIntersectRect(RECT rect);

@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
-#include <opencv2/opencv.hpp>
 #include <baseapi.h>
 
 #include "common_util.h"
 #include "text_info.h"
+
+#include "image_util.h"
 
 class OCR {
   private:
@@ -30,6 +31,7 @@ public:
   void cancel() { m_cancelFlag = true; }
 
   void findOutTextInfos(Image imgParam);
+  void findOutTextInfos(cv::Mat img);
 private:
   bool m_cancelFlag;
 };
