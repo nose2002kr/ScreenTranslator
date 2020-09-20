@@ -21,12 +21,18 @@
     <ClInclude Include="src\text_info.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\image_util.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\common_util.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\text_info.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\image_util.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

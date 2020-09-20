@@ -3,14 +3,41 @@
 #include "Translate/src/translate.h"
 #include "KeyHook/src/keyHook.h"
 
+#include "image_util.h"
+
 bool termFlag = false;
 
 void findingText() {
   OCR* ocr = OCR::instnace();
   TextOverlay* ov = TextOverlay::instnace();
+  cv::Mat prevImage;
   while (!termFlag) {
     ov->requestWindowScreenCapture();
-    ocr->findOutTextInfos(ov->getCapturedImage());
+    cv::Mat image = imageUtil::toMat(ov->getCapturedImage());
+    
+    std::vector<cv::Rect> diffRange;
+    if (!prevImage.empty()) {
+      cv::Mat prevImageG, imageG;
+      cvtColor(prevImage, prevImageG, cv::COLOR_BGR2GRAY);
+      cvtColor(image, imageG, cv::COLOR_BGR2GRAY);
+      cv::Mat diff = imageG ^ prevImageG;
+      if (!diff.empty()) {
+        cv::threshold(diff, diff, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
+        diffRange = imageUtil::findContourBounds(diff, 4);
+      }
+    }
+
+    if (diffRange.empty()) {
+      ocr->findOutTextInfos(image);
+    } else {
+      for (auto rect : diffRange) {
+        removeIntersectRect(imageUtil::toWinRect(rect));
+        ocr->findOutTextInfos(image(rect));
+      }
+    }
+
+    prevImage = image;
+    cv::imwrite("./image-0.png", prevImage);
     ::Sleep(100);
   }
 }
@@ -60,11 +87,11 @@ int CALLBACK WinMain(
   writeLog(DEBUG, "Running ScreenTranslater.");
 
   TextOverlay::init(hInstance);
-  OCR::init("C:/Users/1004/C++/tesseract/tessdata");
+  OCR::init("E:/C++/tesseract/tessdata");
   
   std::thread showTh(showingText);
   std::thread findTh(findingText);
-  std::thread translateTh(translatingText);
+  //std::thread translateTh(translatingText);
   std::thread hookTh(keyHooking);
   
   while (!termFlag) {
@@ -82,7 +109,7 @@ int CALLBACK WinMain(
     g_msg.pop();
   }
 
-  translateTh.join();
+  //translateTh.join();
   showTh.join();
   OCR::instnace()->cancel();
   findTh.join();

@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common_util.h" />
+    <ClInclude Include="src\image_util.h" />
     <ClInclude Include="src\text_info.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\common_util.cpp" />
+    <ClCompile Include="src\image_util.cpp" />
     <ClCompile Include="src\text_info.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -31,32 +33,32 @@
     <ProjectGuid>{6E1B5721-084A-4B14-8F83-B0B299EF60B5}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CommonUtil</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -80,12 +82,14 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -98,6 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,6 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
