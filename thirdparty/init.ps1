@@ -53,8 +53,9 @@ cd $scriptPath
 cd leptonica
 mkdir build -ErrorAction SilentlyContinue
 cd build
-cmake -G "Visual Studio 16 2019" -A x64 -DCPPAN_BUILD_SHARED_LIBS=0 –DBUILD_SHARED_LIBS=ON ..
-Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"  -ArgumentList ".\leptonica.sln /Build Release|x64"
+cmake -G "Visual Studio 16 2019" -A x64 -DCPPAN_BUILD_SHARED_LIBS=0 –DBUILD_SHARED_LIBS=ON -DCMAKE_MODULE_LINKER_FLAGS=-whole-archive ..
+Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe" -ArgumentList ".\leptonica.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log"
+ 
 
 ############# install tesseract
 echo build tesseract.....
@@ -63,6 +64,6 @@ cd tesseract
 mkdir build -ErrorAction SilentlyContinue
 cd build
 cmake -G "Visual Studio 16 2019" -A x64 ..
-Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe"  -ArgumentList ".\tesseract.sln /Build Release|x64"
+Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe" -ArgumentList ".\tesseract.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log"
 
 cd $scriptPath

@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <baseapi.h>
+#include "tesseract/baseapi.h"
 
 #include "common_util.h"
 #include "text_info.h"
