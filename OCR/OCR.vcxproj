@@ -70,19 +70,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LibraryPath>..\..\..\tesseract\lib\$(Configuration)\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)\CommonUtil\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LibraryPath>..\..\..\tesseract\lib\$(Configuration)\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)\CommonUtil\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LibraryPath>..\..\..\tesseract\lib\$(Configuration)\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)\CommonUtil\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LibraryPath>..\..\..\tesseract\lib\$(Configuration)\;..\..\..\opencv\build\lib\$(Configuration)\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
     <IncludePath>$(SolutionDir)\CommonUtil\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\thirdparty\tesseract\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -100,14 +100,13 @@
       <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400d.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400d.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(SolutionDir)"
-</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <Lib>
-      <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,7 +115,7 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\thirdparty\tesseract\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -125,14 +124,13 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
       <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400d.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400d.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(SolutionDir)"
-</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <Lib>
-      <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,7 +141,7 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\thirdparty\tesseract\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -155,13 +153,13 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400d.dll" "$(Solu
       <SubSystem>Console</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(SolutionDir)"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <Lib>
-      <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400.lib;opencv_imgcodecs400.lib;opencv_imgproc400.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,7 +170,7 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(Solut
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\..\..\tesseract\include;..\..\..\opencv\include;..\..\..\opencv\build;..\..\..\opencv\modules\calib3d\include;..\..\..\opencv\modules\core\include;..\..\..\opencv\modules\dnn\include;..\..\..\opencv\modules\features2d\include;..\..\..\opencv\modules\flann\include;..\..\..\opencv\modules\gapi\include;..\..\..\opencv\modules\highgui\include;..\..\..\opencv\modules\imgcodecs\include;..\..\..\opencv\modules\imgproc\include;..\..\..\opencv\modules\java\include;..\..\..\opencv\modules\js\include;..\..\..\opencv\modules\ml\include;..\..\..\opencv\modules\objdetect\include;..\..\..\opencv\modules\photo\include;..\..\..\opencv\modules\python\include;..\..\..\opencv\modules\stitching\include;..\..\..\opencv\modules\ts\include;..\..\..\opencv\modules\video\include;..\..\..\opencv\modules\videoio\include;..\..\..\opencv\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\thirdparty\tesseract\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -184,13 +182,13 @@ copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(Solut
       <SubSystem>Console</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_core400.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgcodecs400.dll" "$(SolutionDir)"
-copy "..\..\..\opencv\build\bin\$(Configuration)\opencv_imgproc400.dll" "$(SolutionDir)"</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
     <Lib>
-      <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400.lib;opencv_imgcodecs400.lib;opencv_imgproc400.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

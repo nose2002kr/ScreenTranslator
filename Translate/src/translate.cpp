@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iomanip>
 
-#include "../../json/libjson.h"
+#include "libjson.h"
 #include "common_util.h"
 
 #define CURL_STATICLIB
@@ -14,6 +14,11 @@
 
 #define TRANSLATE_HISTORY_FILE "translation.history"
 #define TRANSLATE_HISTORY_DELIMITER " >>>> "
+
+extern "C"
+{
+    FILE __iob_func[3] = { stdin ,stdout,stderr };
+}
 
 size_t CurlWrite_CallbackFunc_StdString(void *contents, size_t size, size_t nmemb, std::string *s)
 {

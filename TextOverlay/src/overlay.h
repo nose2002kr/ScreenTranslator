@@ -73,6 +73,6 @@ private:
   winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice m_device{ nullptr };
   winrt::Windows::UI::Composition::Compositor m_compositor{ nullptr };
   winrt::Windows::UI::Composition::CompositionSurfaceBrush m_brush{ nullptr };
-  std::unique_ptr<SimpleCapture> m_capture{ nullptr };
+  //std::unique_ptr<SimpleCapture> m_capture{ nullptr };
 
 };
