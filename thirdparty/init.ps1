@@ -66,4 +66,6 @@ cd build
 cmake -G "Visual Studio 16 2019" -A x64 ..
 Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe" -ArgumentList ".\tesseract.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log"
 
+#vcpkg install --triplet x64-windows tesseract
+
 cd $scriptPath

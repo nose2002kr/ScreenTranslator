@@ -95,6 +95,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -106,7 +107,7 @@
     <Lib>
       <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib\$(Configuration);..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -119,6 +120,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <AdditionalDependencies>giflib.lib;libjpeg.lib;liblept.lib;libpng.lib;libtesseract.lib;libtiff.lib;libwebp.lib;openjpeg.lib;zlib.lib;opencv_core400d.lib;opencv_imgcodecs400d.lib;opencv_imgproc400d.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -128,9 +130,9 @@
       </Command>
     </PreBuildEvent>
     <Lib>
-      <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
+      <AdditionalDependencies>gif.lib;jpegd.lib;leptonica-1.78.0d.lib;libpng16d.lib;libwebpmuxd.lib;lzmad.lib;tesseract41d.lib;tiffd.lib;tiffxxd.lib;turbojpegd.lib;webpd.lib;webpdecoderd.lib;webpdemuxd.lib;zlibd.lib;opencv_core440d.lib;opencv_imgcodecs440d.lib;opencv_imgproc440d.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib\$(Configuration);..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -159,7 +161,7 @@
     <Lib>
       <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib\$(Configuration);..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -188,7 +190,7 @@
     <Lib>
       <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib\$(Configuration);..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
