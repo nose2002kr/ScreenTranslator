@@ -11,13 +11,10 @@
 
 #include "dwmapi.h"
 #include "CaptureSnapshot.h"
-#include "SimpleCapture.h"
 
 #include "util/draw_util.h"
-#include "util/d3dHelpers.h"
-#include "util/direct3d11.interop.h"
-#include "util/capture.desktop.interop.h"
 
+#pragma comment(lib, "Dwmapi.lib")
 #pragma comment(lib, "D2D1.lib")
 #pragma comment(lib, "dwrite.lib")
 #pragma comment( lib, "d3d11.lib" )
@@ -32,7 +29,6 @@ TextOverlay *TextOverlay::g_inst = nullptr;
 
 TextOverlay::TextOverlay(HINSTANCE hInstance) {
   buildCanvasWindow(hInstance);
-  InitD3D();
   InitD2D();
   createRenderTarget();
 }
@@ -70,35 +66,15 @@ TextOverlay::D3SurfaceToImage(IDirect3DSurface9* surface, RECT rect) {
   return m_lastImage;
 }*/
 
-void TextOverlay::startCaptureFromItem(winrt::Windows::Graphics::Capture::GraphicsCaptureItem item) {
-    /*m_capture = std::make_unique<SimpleCapture>(m_device, item, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized);
-
-    auto surface = m_capture->CreateSurface(m_compositor);
-    m_brush.Surface(surface);
-
-    m_capture->StartCapture();*/
-}
-
-void TextOverlay::stopCapture()
-{
-    /*if (m_capture)
-    {
-        m_capture->Close();
-        m_capture = nullptr;
-        m_brush.Surface(nullptr);
-    }*/
-}
-
-winrt::Windows::Foundation::IAsyncOperation<winrt::Windows::Graphics::DirectX::Direct3D11::IDirect3DSurface>
+Image*
 TextOverlay::windowScreenCapture() {
     HWND hWnd = getTargetWindow();
-    auto item = util::CreateCaptureItemForWindow(hWnd);
-    startCaptureFromItem(item);
+    return CaptureSnapshot::inst().takeImage(hWnd);
 
-    auto frame = co_await CaptureSnapshot::TakeAsync(m_device, item, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized);
+    //auto frame = co_await CaptureSnapshot::TakeAsync(m_device, item, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized);
 
     //winrt::fire_and_forget();
-    co_return frame;
+    //co_return frame;
 
     /*
     HWND hWnd = getTargetWindow();
@@ -139,15 +115,6 @@ TextOverlay::createRenderTarget() {
       &m_rt),
     "CreateHwndRenderTarget Failure.");
   return m_rt;
-}
-
-HRESULT
-TextOverlay::InitD3D() {
-   auto d3dDevice = util::uwp::CreateD3DDevice();
-   auto dxgiDevice = d3dDevice.as<IDXGIDevice>();
-   m_device = CreateDirect3DDevice(dxgiDevice.get());
-
-  return S_OK;
 }
 
 HRESULT

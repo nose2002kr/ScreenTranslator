@@ -1,3 +1,4 @@
+#pragma once
 #include <exception>
 
 #include "wil/cppwinrt.h"
@@ -16,6 +17,8 @@
 #include <winrt/Windows.System.h>
 #include <winrt/Windows.Graphics.Capture.h>
 #include <winrt/Windows.Graphics.DirectX.h>
+#include <winrt/Windows.Graphics.Imaging.h>
 #include <winrt/Windows.Graphics.DirectX.Direct3d11.h>
+#include <winrt/Windows.Storage.Streams.h>
 
 #include <wincodec.h>

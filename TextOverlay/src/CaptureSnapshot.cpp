@@ -1,27 +1,44 @@
 #include "pch.h"
 #include "CaptureSnapshot.h"
 
+#include "util/d3dHelpers.h"
 #include "util/completionSource.h"
 #include "util/direct3d11.interop.h"
+#include "util/capture.desktop.interop.h"
+#include "util/membuf.interop.h"
 
-namespace winrt
-{
-    using namespace Windows;
-    using namespace Windows::Foundation;
-    using namespace Windows::System;
-    using namespace Windows::Graphics;
-    using namespace Windows::Graphics::Capture;
-    using namespace Windows::Graphics::DirectX;
-    using namespace Windows::Graphics::DirectX::Direct3D11;
-    using namespace Windows::Foundation::Numerics;
-    using namespace Windows::UI;
-    using namespace Windows::UI::Composition;
+CaptureSnapshot::CaptureSnapshot() {
+    auto d3dDevice = util::uwp::CreateD3DDevice();
+    auto dxgiDevice = d3dDevice.as<IDXGIDevice>();
+    m_device = CreateDirect3DDevice(dxgiDevice.get());
 }
 
+Image*
+CaptureSnapshot::takeImage(HWND hWnd) {
+    winrt::IDirect3DSurface surface = takeAsync(hWnd).get();
+    /*AsyncStatus status = Started;
+    oper.Completed([&](auto&& result, AsyncStatus&& status) {
+        surface = result;
+        status = status
+    });*/
+    
+    winrt::SoftwareBitmap img = winrt::SoftwareBitmap::CreateCopyFromSurfaceAsync(surface).get();
+    
+    auto buffer = img.LockBuffer(winrt::BitmapBufferAccessMode::ReadWrite);
+    auto bufferByteAccess = buffer.CreateReference().as<IMemoryBufferByteAccess>();
+    BYTE* data = nullptr;
+    UINT32 capacity = 0;
+    winrt::check_hresult(bufferByteAccess->GetBuffer(&data, &capacity));
+    //byte[] imageBytes = new byte[4 * decoder.PixelWidth * decoder.PixelHeight];
+    //img.CopyToBuffer(buffer);
+    
+    return nullptr;
+}
 winrt::IAsyncOperation<winrt::IDirect3DSurface>
-CaptureSnapshot::TakeAsync(winrt::IDirect3DDevice const& device, winrt::GraphicsCaptureItem const& item, winrt::DirectXPixelFormat const& pixelFormat)
-{
-    auto d3dDevice = GetDXGIInterfaceFromObject<ID3D11Device>(device);
+CaptureSnapshot::takeAsync(HWND hWnd) {
+    auto item = util::CreateCaptureItemForWindow(hWnd);
+    //startCaptureFromItem(item);
+    auto d3dDevice = GetDXGIInterfaceFromObject<ID3D11Device>(m_device);
     winrt::com_ptr<ID3D11DeviceContext> d3dContext;
     d3dDevice->GetImmediateContext(d3dContext.put());
 
@@ -30,8 +47,8 @@ CaptureSnapshot::TakeAsync(winrt::IDirect3DDevice const& device, winrt::Graphics
     // instead of the thread we are currently on. It also disables the
     // DispatcherQueue requirement.
     auto framePool = winrt::Direct3D11CaptureFramePool::CreateFreeThreaded(
-        device,
-        pixelFormat,
+        m_device,
+        winrt::DirectXPixelFormat::B8G8R8A8UIntNormalized,
         1,
         item.Size());
     auto session = framePool.CreateCaptureSession(item);
@@ -66,6 +83,30 @@ CaptureSnapshot::TakeAsync(winrt::IDirect3DDevice const& device, winrt::Graphics
     });
 
     session.StartCapture();
-
+    stopCapture();
     co_return co_await completion;
 }
+
+
+
+void 
+CaptureSnapshot::startCaptureFromItem(winrt::GraphicsCaptureItem item)
+{
+    m_capture = std::make_unique<SimpleCapture>(m_device, item, winrt::DirectXPixelFormat:: B8G8R8A8UIntNormalized);
+
+    auto surface = m_capture->CreateSurface(m_compositor);
+    m_brush.Surface(surface);
+
+    m_capture->StartCapture();
+}
+
+void
+CaptureSnapshot::stopCapture() {
+    if (m_capture)
+    {
+        m_capture->Close();
+        m_capture = nullptr;
+        m_brush.Surface(nullptr);
+    }
+}
+
