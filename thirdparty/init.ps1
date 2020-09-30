@@ -38,6 +38,12 @@ DownloadAndUnzip "https://github.com/opencv/opencv/releases/download/4.4.0/openc
 #DownloadAndUnzip "https://cppan.org/client/cppan-master-Windows-client.zip" "cppan"
 DownloadAndUnzip "https://www.npcglib.org/~stathis/downloads/openssl-1.0.2k-vs2017.7z" "openssl"
 
+############# build libjson
+echo "build libjson....."
+cd $scriptPath
+cd libjson
+Start-Process $MSBuild -ArgumentList ".\libjson.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log" -NoNewWindow -Wait
+
 ############# build libcurl
 echo "build libcurl....."
 cd $scriptPath
