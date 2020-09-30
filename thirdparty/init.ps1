@@ -33,6 +33,7 @@ function DownloadAndUnzip
 
 #DownloadAndUnzip "https://curl.haxx.se/windows/dl-7.72.0_3/curl-7.72.0_3-win64-mingw.zip" "curl"
 DownloadAndUnzip "https://github.com/opencv/opencv/releases/download/4.4.0/opencv-4.4.0-dldt-2020.4-vc16-avx2.zip" "opencv"
+DownloadAndUnzip "https://github.com/opencv/opencv/releases/download/4.4.0/opencv-4.4.0-dldt-2020.4-vc16-avx2-debug.7z" "opencv-debug"
 #DownloadAndUnzip "https://software-network.org/client/sw-master-windows-client.zip" "sw"
 #DownloadAndUnzip "https://cppan.org/client/cppan-master-Windows-client.zip" "cppan"
 DownloadAndUnzip "https://www.npcglib.org/~stathis/downloads/openssl-1.0.2k-vs2017.7z" "openssl"
