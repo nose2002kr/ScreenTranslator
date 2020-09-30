@@ -4,6 +4,8 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 cd $scriptPath
 
+$MSBUILD = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe"
+
 function DownloadAndUnzip
 {
     param([string]$url, [string]$unzipDir)
@@ -11,7 +13,11 @@ function DownloadAndUnzip
     $zipfile = Split-Path $url -leaf
     Invoke-WebRequest -Uri $url -OutFile ./$zipfile
     Remove-Item $unzipDir -ErrorAction SilentlyContinue -r -fo
-    [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $unzipDir)
+    if ($zipfile.EndsWith(".zip")) {
+        [System.IO.Compression.ZipFile]::ExtractToDirectory($zipfile, $unzipDir)
+    } elseif ($zipfile.EndsWith(".7z")) {
+        Start-Process "$env:ProgramFiles\7-Zip\7z.exe" -ArgumentList "x",("-o"+$unzipDir),$zipfile -NoNewWindow -Wait
+    }
 
     $dir = Get-ChildItem $unzipDir
     $directoryInfo =  $dir | Measure-Object
@@ -25,47 +31,34 @@ function DownloadAndUnzip
     rm -fo $zipfile
 }
 
-
-DownloadAndUnzip "https://curl.haxx.se/windows/dl-7.72.0_3/curl-7.72.0_3-win64-mingw.zip" "curl"
+#DownloadAndUnzip "https://curl.haxx.se/windows/dl-7.72.0_3/curl-7.72.0_3-win64-mingw.zip" "curl"
 DownloadAndUnzip "https://github.com/opencv/opencv/releases/download/4.4.0/opencv-4.4.0-dldt-2020.4-vc16-avx2.zip" "opencv"
-DownloadAndUnzip "https://software-network.org/client/sw-master-windows-client.zip" "sw"
-DownloadAndUnzip "https://cppan.org/client/cppan-master-Windows-client.zip" "cppan"
+#DownloadAndUnzip "https://software-network.org/client/sw-master-windows-client.zip" "sw"
+#DownloadAndUnzip "https://cppan.org/client/cppan-master-Windows-client.zip" "cppan"
+DownloadAndUnzip "https://www.npcglib.org/~stathis/downloads/openssl-1.0.2k-vs2017.7z" "openssl"
 
-
-############# install sw
-echo "install sw......"
+############# build libcurl
+echo build libcurl.....
 cd $scriptPath
-cd sw
-.\sw.exe --self-upgrade
-.\sw.exe setup
-$env:Path += ";" + $scriptPath + "\sw"
-
-############# install cppan
-echo "install cppan......"
+cd openssl
+cmd /c "mklink /J .\inc32 .\include64\"
 cd $scriptPath
-cd cppan
-.\cppan.exe --self-upgrade
-$env:Path += ";" + $scriptPath + "\cppan"
+cd curl\projects\Windows\VC16\lib
+Start-Process $MSBuild -ArgumentList ".\libcurl.sln","`"/p:Configuration=LIB Release - LIB OpenSSL`"","/p:Platform=x64","-fl","-flp:logfile=build.log" -NoNewWindow -Wait
+Start-Process $MSBuild -ArgumentList ".\libcurl.sln","`"/p:Configuration=LIB Debug - LIB OpenSSL`"","/p:Platform=x64","-fl","-flp:logfile=build.log" -NoNewWindow -Wait
 
-############# install leptonica
-echo build leptonica.....
+############# build vcpkg
+echo build vcpkg.....
 cd $scriptPath
-cd leptonica
-mkdir build -ErrorAction SilentlyContinue
-cd build
-cmake -G "Visual Studio 16 2019" -A x64 -DCPPAN_BUILD_SHARED_LIBS=0 –DBUILD_SHARED_LIBS=ON -DCMAKE_MODULE_LINKER_FLAGS=-whole-archive ..
-Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe" -ArgumentList ".\leptonica.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log"
- 
-
-############# install tesseract
-echo build tesseract.....
-cd $scriptPath
-cd tesseract
+cd vcpkg
+cd toolsrc
 mkdir build -ErrorAction SilentlyContinue
 cd build
 cmake -G "Visual Studio 16 2019" -A x64 ..
-Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\MSBuild.exe" -ArgumentList ".\tesseract.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log"
+Start-Process $MSBuild -ArgumentList ".\vcpkg.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log" -NoNewWindow -Wait
 
-#vcpkg install --triplet x64-windows tesseract
+############# build tesseract
+echo build tesseract....
+Start-Process ".\Release\vcpkg.exe" -ArgumentList "install","--triplet","x64-windows","tesseract" -NoNewWindow -Wait
 
 cd $scriptPath
