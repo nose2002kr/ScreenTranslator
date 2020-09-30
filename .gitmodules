@@ -1,0 +1,9 @@
+[submodule "thirdparty/curl"]
+	path = thirdparty/curl
+	url = https://github.com/nose2002kr/curl.git
+[submodule "thirdparty/vcpkg"]
+	path = thirdparty/vcpkg
+	url = https://github.com/nose2002kr/vcpkg.git
+[submodule "thirdparty/libjson"]
+	path = thirdparty/libjson
+	url = https://github.com/nose2002kr/libjson.git
