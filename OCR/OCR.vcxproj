@@ -91,7 +91,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\thirdparty\tesseract\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\thirdparty\vcpkg\installed\x64-windows\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -107,7 +107,7 @@
     <Lib>
       <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib\$(Configuration);..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\vcpkg\installed\x64-windows\debug\lib;..\thirdparty\opencv-debug\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,7 +116,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\thirdparty\tesseract\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\thirdparty\vcpkg\installed\x64-windows\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -132,7 +132,7 @@
     <Lib>
       <AdditionalDependencies>gif.lib;jpegd.lib;leptonica-1.78.0d.lib;libpng16d.lib;libwebpmuxd.lib;lzmad.lib;tesseract41d.lib;tiffd.lib;tiffxxd.lib;turbojpegd.lib;webpd.lib;webpdecoderd.lib;webpdemuxd.lib;zlibd.lib;opencv_core440d.lib;opencv_imgcodecs440d.lib;opencv_imgproc440d.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib\$(Configuration);..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\vcpkg\installed\x64-windows\debug\lib;..\thirdparty\opencv-debug\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,7 +143,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\thirdparty\tesseract\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\thirdparty\vcpkg\installed\x64-windows\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -161,7 +161,7 @@
     <Lib>
       <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib\$(Configuration);..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\vcpkg\installed\x64-windows\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -172,7 +172,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\thirdparty\tesseract\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\thirdparty\vcpkg\installed\x64-windows\include;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
@@ -190,7 +190,7 @@
     <Lib>
       <AdditionalDependencies>gif.lib;jpeg.lib;leptonica-1.78.0.lib;libpng16.lib;libwebpmux.lib;lzma.lib;tesseract41.lib;tiff.lib;tiffxx.lib;turbojpeg.lib;webp.lib;webpdecoder.lib;webpdemux.lib;zlib.lib;opencv_core440.lib;opencv_imgcodecs440.lib;opencv_imgproc440.lib</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\tesseract\lib\$(Configuration);..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\vcpkg\installed\x64-windows\lib;..\thirdparty\opencv\build\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

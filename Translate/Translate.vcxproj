@@ -128,7 +128,7 @@
     <Lib>
       <AdditionalDependencies>crypt32.lib;ws2_32.lib;wldap32.lib;libcurld.lib;libjson.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006,4099,4221,4255 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\curl\build\Win64\VC15\LIB $(Configuration) - LIB OpenSSL;..\thirdparty\libjson\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\curl\build\Win64\VC16\LIB $(Configuration) - LIB OpenSSL;..\thirdparty\libjson\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -180,7 +180,7 @@
     <Lib>
       <AdditionalDependencies>crypt32.lib;ws2_32.lib;wldap32.lib;libcurl.lib;libjson.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\thirdparty\curl\build\Win64\VC15\LIB Release - LIB OpenSSL;..\thirdparty\libjson\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\thirdparty\curl\build\Win64\VC16\LIB Release - LIB OpenSSL;..\thirdparty\libjson\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
