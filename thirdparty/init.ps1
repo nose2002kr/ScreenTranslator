@@ -39,7 +39,7 @@ DownloadAndUnzip "https://github.com/opencv/opencv/releases/download/4.4.0/openc
 DownloadAndUnzip "https://www.npcglib.org/~stathis/downloads/openssl-1.0.2k-vs2017.7z" "openssl"
 
 ############# build libcurl
-echo build libcurl.....
+echo "build libcurl....."
 cd $scriptPath
 cd openssl
 cmd /c "mklink /J .\inc32 .\include64\"
@@ -49,7 +49,7 @@ Start-Process $MSBuild -ArgumentList ".\libcurl.sln","`"/p:Configuration=LIB Rel
 Start-Process $MSBuild -ArgumentList ".\libcurl.sln","`"/p:Configuration=LIB Debug - LIB OpenSSL`"","/p:Platform=x64","-fl","-flp:logfile=build.log" -NoNewWindow -Wait
 
 ############# build vcpkg
-echo build vcpkg.....
+echo "build vcpkg....."
 cd $scriptPath
 cd vcpkg
 cd toolsrc
@@ -59,7 +59,7 @@ cmake -G "Visual Studio 16 2019" -A x64 ..
 Start-Process $MSBuild -ArgumentList ".\vcpkg.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log" -NoNewWindow -Wait
 
 ############# build tesseract
-echo build tesseract....
+echo "build tesseract...."
 Start-Process ".\Release\vcpkg.exe" -ArgumentList "install","--triplet","x64-windows","tesseract" -NoNewWindow -Wait
 
 cd $scriptPath
