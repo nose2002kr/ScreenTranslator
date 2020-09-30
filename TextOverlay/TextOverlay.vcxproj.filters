@@ -59,6 +59,9 @@
     <ClInclude Include="src\util\direct3d11.interop.h">
       <Filter>헤더 파일\util</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\membuf.interop.h">
+      <Filter>헤더 파일\util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
