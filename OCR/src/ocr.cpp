@@ -1,5 +1,6 @@
 #include "ocr.h"
 
+//#define DEBUG_LEVEL2
 OCR* OCR::g_inst = nullptr;
 
 OCR::OCR(std::string tessdataPath) {
@@ -54,10 +55,10 @@ OCR::findOutTextInfos(cv::Mat img) {
   }
 
 #ifdef DEBUG_LEVEL2
-  for (int i = 0; i < textInfos.size(); i++) {
-    cv::rectangle(*img, W2CRect(textInfos[i].rect), cv::Scalar(0, 255, 0, 255), 3, 8, 0);
+  for (int i = 0; i < g_textInfo.size(); i++) {
+    cv::rectangle(img, imageUtil::toCVRect(g_textInfo[i].rect), cv::Scalar(0, 255, 0, 255), 3, 8, 0);
   }
-  cv::imwrite("./searchedImage.png", *img);
+  cv::imwrite("./searchedImage.png", img);
 #endif
   return;
 }
