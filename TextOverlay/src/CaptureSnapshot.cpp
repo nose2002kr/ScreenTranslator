@@ -16,11 +16,7 @@ CaptureSnapshot::CaptureSnapshot() {
 Image*
 CaptureSnapshot::takeImage(HWND hWnd) {
     winrt::IDirect3DSurface surface = takeAsync(hWnd).get();
-    /*AsyncStatus status = Started;
-    oper.Completed([&](auto&& result, AsyncStatus&& status) {
-        surface = result;
-        status = status
-    });*/
+    if (!surface) return nullptr;
     
     winrt::SoftwareBitmap img = winrt::SoftwareBitmap::CreateCopyFromSurfaceAsync(surface).get();
     
@@ -41,7 +37,10 @@ CaptureSnapshot::takeImage(HWND hWnd) {
 winrt::IAsyncOperation<winrt::IDirect3DSurface>
 CaptureSnapshot::takeAsync(HWND hWnd) {
     auto item = util::CreateCaptureItemForWindow(hWnd);
-    //startCaptureFromItem(item);
+    if (!item) {
+        co_return nullptr;
+    }
+  
     auto d3dDevice = GetDXGIInterfaceFromObject<ID3D11Device>(m_device);
     winrt::com_ptr<ID3D11DeviceContext> d3dContext;
     d3dDevice->GetImmediateContext(d3dContext.put());
@@ -87,30 +86,5 @@ CaptureSnapshot::takeAsync(HWND hWnd) {
     });
 
     session.StartCapture();
-    stopCapture();
     co_return co_await completion;
 }
-
-
-
-void 
-CaptureSnapshot::startCaptureFromItem(winrt::GraphicsCaptureItem item)
-{
-    m_capture = std::make_unique<SimpleCapture>(m_device, item, winrt::DirectXPixelFormat:: B8G8R8A8UIntNormalized);
-
-    auto surface = m_capture->CreateSurface(m_compositor);
-    m_brush.Surface(surface);
-
-    m_capture->StartCapture();
-}
-
-void
-CaptureSnapshot::stopCapture() {
-    if (m_capture)
-    {
-        m_capture->Close();
-        m_capture = nullptr;
-        m_brush.Surface(nullptr);
-    }
-}
-

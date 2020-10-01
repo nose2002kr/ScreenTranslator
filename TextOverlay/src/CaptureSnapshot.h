@@ -2,7 +2,6 @@
 
 #include "pch.h"
 #include "common_util.h"
-#include "SimpleCapture.h"
 
 namespace winrt
 {
@@ -35,10 +34,4 @@ private:
     CaptureSnapshot();
 
     winrt::IDirect3DDevice m_device{ nullptr };
-    void startCaptureFromItem(winrt::GraphicsCaptureItem item);
-    void stopCapture();
-
-    winrt::Compositor m_compositor{ nullptr };
-    winrt::CompositionSurfaceBrush m_brush{ nullptr };
-    std::unique_ptr<SimpleCapture> m_capture{ nullptr };
 };

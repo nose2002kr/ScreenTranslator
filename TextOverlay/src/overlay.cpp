@@ -1,4 +1,3 @@
-//#define DEBUG_LEVEL2
 #include "pch.h"
 
 #include "overlay.h"
@@ -25,7 +24,7 @@
 #define throwIfFail(func, failMsg) {HRESULT hr = func;\
 if(!SUCCEEDED(hr)) { throw std::exception(failMsg); }}
 
-TextOverlay *TextOverlay::g_inst = nullptr;
+TextOverlay* TextOverlay::g_inst = nullptr;
 
 TextOverlay::TextOverlay(HINSTANCE hInstance) {
   buildCanvasWindow(hInstance);
@@ -33,76 +32,16 @@ TextOverlay::TextOverlay(HINSTANCE hInstance) {
   createRenderTarget();
 }
 
-/*Image
-TextOverlay::D3SurfaceToImage(IDirect3DSurface9* surface, RECT rect) {
-  if (rect.left < 0 || rect.top < 0) {
-    int adj = rect.left < rect.top ? rect.left : rect.top;
-    rect.left -= adj;
-    rect.top -= adj;
-    rect.right += adj;
-    rect.bottom += adj;
-  }
-  int w = RctW(rect);
-  int h = RctH(rect);
-
-  BYTE* pBits = new BYTE[w * h * 4];
-  int scanline = w * 4;
-  RECT screenRect = { 0, 0, m_screenW, m_screenH };
-  D3DLOCKED_RECT	lockedRect;
-  if (FAILED(surface->LockRect(&lockedRect, &screenRect, D3DLOCK_NO_DIRTY_UPDATE | D3DLOCK_NOSYSLOCK | D3DLOCK_READONLY)))
-  {
-    //ErrorMessage("Unable to Lock Front Buffer Surface");	break;
-  }
-
-  for (int i = 0; i < h; i++) {
-    memcpy((BYTE*)pBits + (i * scanline),
-      (BYTE*)lockedRect.pBits + (((rect.top + i) * (m_screenW) + rect.left) * 4),
-      scanline);
-  }
-
-  surface->UnlockRect();
-
-  m_lastImage = Image{ pBits, w, h };
-  return m_lastImage;
-}*/
-
 Image*
 TextOverlay::windowScreenCapture() {
-    HWND hWnd = getTargetWindow();
-    return CaptureSnapshot::inst().takeImage(hWnd);
+  HWND hWnd = getTargetWindow();
+  Image* img = CaptureSnapshot::inst().takeImage(hWnd);
+  if (!img) return nullptr;
+  return &(m_lastImage = *img);
 
-    //auto frame = co_await CaptureSnapshot::TakeAsync(m_device, item, winrt::Windows::Graphics::DirectX::DirectXPixelFormat::B8G8R8A8UIntNormalized);
-
-    //winrt::fire_and_forget();
-    //co_return frame;
-
-    /*
-    HWND hWnd = getTargetWindow();
-  if (isInvalidHwnd(hWnd)) {
-    return Image{ 0, };
-  }
-
-  RECT canvasRect;
-  DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
-
-  SetWindowPos(m_canvasWnd, HWND_TOPMOST, INT_MAX, INT_MAX, 0, 0, SWP_NOSIZE);
-  m_pd3dDevice->GetFrontBufferData(0, m_pSurface);
-  SetWindowPos(m_canvasWnd, HWND_TOPMOST, canvasRect.left, canvasRect.top, 0, 0, SWP_NOSIZE);
-#ifdef DEBUG_LEVEL2
-  D3DXSaveSurfaceToFile("./capturedImage.bmp",
-    D3DXIFF_BMP,
-    m_pSurface,
-    NULL,
-    NULL);
-#endif
-
-  RECT windowRect;
-  DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &windowRect, sizeof(RECT));
-  return D3SurfaceToImage(m_pSurface, windowRect);*/
-  
 }
 
-ID2D1HwndRenderTarget* 
+ID2D1HwndRenderTarget*
 TextOverlay::createRenderTarget() {
 
   RECT rect;
@@ -120,10 +59,10 @@ TextOverlay::createRenderTarget() {
 HRESULT
 TextOverlay::InitD2D() {
   throwIfFail(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &m_fac), "CreateFactory Failure.");
-  
+
   IDWriteFactory* writeFac = nullptr;
   throwIfFail(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&writeFac), "DWriteCreateFactory Failure.");
-  
+
   return S_OK;
 }
 
@@ -141,7 +80,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
 }
 
-void 
+void
 TextOverlay::buildCanvasWindow(HINSTANCE hInstance) {
   WNDCLASSEX wcex;
   wcex.cbSize = sizeof(WNDCLASSEX);
@@ -188,9 +127,9 @@ TextOverlay::updateCanvasWindow() {
   RECT canvasRect;
   DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
   if (canvasRect.left == rect.left
-   && canvasRect.top == rect.top
-   && canvasRect.right == rect.right
-   && canvasRect.bottom == rect.bottom)
+    && canvasRect.top == rect.top
+    && canvasRect.right == rect.right
+    && canvasRect.bottom == rect.bottom)
     return;
 
   if (RctW(canvasRect) != RctW(rect) || RctH(canvasRect) != RctH(rect)) {
@@ -202,7 +141,7 @@ TextOverlay::updateCanvasWindow() {
   SetWindowPos(m_canvasWnd, HWND_TOPMOST, rect.left, rect.top, RctW(rect), RctH(rect), NULL);
 }
 
-IDWriteFactory* 
+IDWriteFactory*
 TextOverlay::getWriteFactory() {
   if (m_writeFac == nullptr) {
     DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), (IUnknown**)&m_writeFac);
@@ -236,10 +175,11 @@ TextOverlay::getTargetWindow() {
     return m_lastWnd;
   }
 
+
   return m_lastWnd = ::GetForegroundWindow();
 }
 
-RECT 
+RECT
 TextOverlay::getTargetWindowRect() {
   HWND hWnd = getTargetWindow();
   if (isInvalidHwnd(hWnd)) {
@@ -257,28 +197,28 @@ void
 TextOverlay::showText() {
   requestUpdateCanvasWindow();
 
-  ID2D1HwndRenderTarget* pTarget = getRenderTarget(); 
+  ID2D1HwndRenderTarget* pTarget = getRenderTarget();
   pTarget->BeginDraw();
   pTarget->Clear(D2D1::ColorF(1.0, 1.0, 1.0));
   pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
-  
+
   drawDebugLine(pTarget, getTargetWindowRect());
-  
+
   for (int i = 0; i < getTextInfoSize(); i++) {
     TextInfo info = getTextInfo(i);
-    IDWriteTextFormat* textFormat = getTextFormat((float) RctH(info.rect));
+    IDWriteTextFormat* textFormat = getTextFormat((float)RctH(info.rect));
     ID2D1SolidColorBrush* backBrs = nullptr;
     ID2D1SolidColorBrush* fontBrs = nullptr;
-    
+
     pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.backgroundColor)), (&backBrs));
     pTarget->CreateSolidColorBrush(D2D1::ColorF(IGNORE_WHITE_COLOR(info.fontColor)), (&fontBrs));
-    D2D1_RECT_F d2Rect = D2D1::RectF((float) info.rect.left, (float) info.rect.top, (float) info.rect.right, (float) info.rect.bottom);
+    D2D1_RECT_F d2Rect = D2D1::RectF((float)info.rect.left, (float)info.rect.top, (float)info.rect.right, (float)info.rect.bottom);
     pTarget->FillRectangle(d2Rect, backBrs);
 
     std::wstring drawingText = info.translated ? strToWStr(info.translatedText) : strToWStr(info.ocrText);
     IDWriteTextLayout* layout;
-    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, (float) m_screenW, (float) m_screenW, &layout);
-    pTarget->DrawTextLayout(D2D1::Point2<float>((float) info.rect.left, (float) info.rect.top), layout, fontBrs);
+    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, (float)m_screenW, (float)m_screenW, &layout);
+    pTarget->DrawTextLayout(D2D1::Point2<float>((float)info.rect.left, (float)info.rect.top), layout, fontBrs);
   }
 
   pTarget->EndDraw();
@@ -290,7 +230,7 @@ TextOverlay::getCapturedImage() {
     ::Sleep(10);
   }
   return m_lastImage;
-}}
+}
 
 void
 TextOverlay::setTargetWindow(HWND hWnd) {

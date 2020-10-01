@@ -2,7 +2,12 @@
 
 #include "common_util.h"
 #include "text_info.h"
-//#include "SimpleCapture.h"
+
+#include <D2d1_1.h>
+#include <D3d11_4.h>
+#include <Dwrite.h>
+
+#include <map>
 
 class SimpleCapture;
 
@@ -59,6 +64,7 @@ private:
   std::map<float, IDWriteTextFormat*> m_textFormats;
 
   HWND getTargetWindow();
+  
   RECT getTargetWindowRect();
   int m_screenW = 0;
   int m_screenH = 0;

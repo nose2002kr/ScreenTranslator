@@ -184,7 +184,6 @@
   <ItemGroup>
     <ClCompile Include="src\CaptureSnapshot.cpp" />
     <ClCompile Include="src\overlay.cpp" />
-    <ClCompile Include="src\SimpleCapture.cpp" />
     <ClCompile Include="src\util\draw_util.cpp" />
   </ItemGroup>
   <ItemGroup>

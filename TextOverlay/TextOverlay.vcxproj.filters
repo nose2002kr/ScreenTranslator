@@ -27,9 +27,6 @@
     <ClCompile Include="src\CaptureSnapshot.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\SimpleCapture.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\util\draw_util.cpp">
       <Filter>소스 파일\util</Filter>
     </ClCompile>

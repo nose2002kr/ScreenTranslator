@@ -3,13 +3,12 @@
 
 #include "wil/cppwinrt.h"
 
+#include <vector>
+#include <map>
+
 #include <D2d1_1.h>
 #include <D3d11_4.h>
 #include <Dwrite.h>
-
-
-#include <vector>
-#include <map>
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Foundation.Collections.h>
