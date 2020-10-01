@@ -29,10 +29,14 @@ CaptureSnapshot::takeImage(HWND hWnd) {
     BYTE* data = nullptr;
     UINT32 capacity = 0;
     winrt::check_hresult(bufferByteAccess->GetBuffer(&data, &capacity));
-    //byte[] imageBytes = new byte[4 * decoder.PixelWidth * decoder.PixelHeight];
+    byte* samples = new byte[capacity];
+    memcpy(samples, data, capacity);
     //img.CopyToBuffer(buffer);
-    
-    return nullptr;
+    Image* image = new Image();
+    image->width = img.PixelWidth();
+    image->height = img.PixelHeight();
+    image->samples = samples;
+    return image;
 }
 winrt::IAsyncOperation<winrt::IDirect3DSurface>
 CaptureSnapshot::takeAsync(HWND hWnd) {
