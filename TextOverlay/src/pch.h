@@ -21,3 +21,9 @@
 #include <winrt/Windows.Storage.Streams.h>
 
 #include <wincodec.h>
+
+#include "util/d3dHelpers.h"
+#include "util/completionSource.h"
+#include "util/direct3d11.interop.h"
+#include "util/capture.desktop.interop.h"
+#include "util/membuf.interop.h"
