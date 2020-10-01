@@ -290,4 +290,10 @@ TextOverlay::getCapturedImage() {
     ::Sleep(10);
   }
   return m_lastImage;
+}}
+
+void
+TextOverlay::setTargetWindow(HWND hWnd) {
+  m_lockWindow = true;
+  m_lastWnd = hWnd;
 }

@@ -67,4 +67,6 @@ private:
   HWND m_lastWnd = nullptr;
   bool m_lockWindow = false;
 
+public:
+  void setTargetWindow(HWND hWnd);
 };

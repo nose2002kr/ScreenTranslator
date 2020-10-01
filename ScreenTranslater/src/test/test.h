@@ -1,6 +1,6 @@
 #pragma once
 
 namespace test {
-	void thread();
-	void imageProcess();
+  void thread();
+  void imageProcess();
 }
