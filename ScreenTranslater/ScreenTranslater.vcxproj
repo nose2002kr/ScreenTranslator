@@ -70,20 +70,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)\CommonUtil\src;$(SolutionDir);$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)CommonUtil\src;$(SolutionDir);$(ProjectDir)src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)\CommonUtil\src;$(SolutionDir);$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)CommonUtil\src;$(SolutionDir);$(ProjectDir)src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(SolutionDir)\CommonUtil\src;$(SolutionDir);$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)CommonUtil\src;$(SolutionDir);$(ProjectDir)src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\CommonUtil\src;$(SolutionDir);$(DXSDK_DIR)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)\Lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)CommonUtil\src;$(SolutionDir);$(ProjectDir)src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -245,6 +245,8 @@ copy /Y ..\thirdparty\openssl\bin64\ssleay32MD.dll $(TargetDir)</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\test\test_image_process.cpp" />
+    <ClCompile Include="src\test\test_thread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KeyHook\KeyHook.vcxproj">
@@ -259,6 +261,9 @@ copy /Y ..\thirdparty\openssl\bin64\ssleay32MD.dll $(TargetDir)</Command>
     <ProjectReference Include="..\Translate\Translate.vcxproj">
       <Project>{be63a238-3446-405c-a08a-47d66b491fed}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\test\test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
