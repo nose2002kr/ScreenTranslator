@@ -202,7 +202,8 @@ TextOverlay::showText() {
   pTarget->Clear(D2D1::ColorF(1.0, 1.0, 1.0));
   pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-  drawDebugLine(pTarget, getTargetWindowRect());
+  RECT windowsRect = getTargetWindowRect();
+  drawDebugLine(pTarget, windowsRect);
 
   for (int i = 0; i < getTextInfoSize(); i++) {
     TextInfo info = getTextInfo(i);
@@ -216,8 +217,8 @@ TextOverlay::showText() {
     pTarget->FillRectangle(d2Rect, backBrs);
 
     std::wstring drawingText = info.translated ? strToWStr(info.translatedText) : strToWStr(info.ocrText);
-    IDWriteTextLayout* layout;
-    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, (float)m_screenW, (float)m_screenW, &layout);
+    IDWriteTextLayout* layout = nullptr;
+    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, RctW(windowsRect), RctH(windowsRect), &layout);
     pTarget->DrawTextLayout(D2D1::Point2<float>((float)info.rect.left, (float)info.rect.top), layout, fontBrs);
   }
 
