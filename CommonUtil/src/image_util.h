@@ -23,4 +23,6 @@ namespace imageUtil {
   cv::Mat toMat(Image *imgParam);
 
   cv::Rect normalize(const cv::Mat& img, cv::Rect rect);
+  
+  std::vector<cv::Rect> findDiffRange(cv::Mat first, cv::Mat second);
 };

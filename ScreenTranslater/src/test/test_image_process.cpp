@@ -17,24 +17,15 @@ BOOL CALLBACK findNotepadWindow(HWND hwnd, LPARAM lParam) {
 }
 
 void test::imageProcess() {
-  if (EnumWindows(findNotepadWindow, NULL)) {
-    return;
-  }
-
-  TextOverlay::instnace()->setTargetWindow(foundHWnd);
+  
   Image* img = TextOverlay::instnace()->windowScreenCapture();
   if (!img) {
     return;
   }
 
   cv::Mat image = imageUtil::toMat(img);
-  cv::imwrite("./snap.png", image);
+  //cv::imwrite("./snap.png", image);
 
   OCR::instnace()->findOutTextInfos(image);
   delete img;
-
-  TextOverlay::instnace()->updateCanvasWindow();
-  TextOverlay::instnace()->showText();
-
-  Sleep(100000000);
 }

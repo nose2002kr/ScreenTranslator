@@ -415,4 +415,22 @@ cv::Mat toMat(Image* imgParam) {
   return cv::Mat(cv::Size(imgParam->width, imgParam->height), CV_8UC4, imgParam->samples);
 }
 
+std::vector<cv::Rect>
+findDiffRange(cv::Mat first, cv::Mat second) {
+  std::vector<cv::Rect> diffRange;
+  if (second.empty()) {
+    return diffRange;
+  }
+
+  cv::Mat prevImageG, imageG;
+  cvtColor(first, prevImageG, cv::COLOR_BGR2GRAY);
+  cvtColor(second, imageG, cv::COLOR_BGR2GRAY);
+  cv::Mat diff = imageG ^ prevImageG;
+  if (!diff.empty()) {
+    cv::threshold(diff, diff, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
+    diffRange = imageUtil::findContourBounds(diff, 4);
+  }
+  return diffRange;
+}
+
 } // namespace imageUtil
