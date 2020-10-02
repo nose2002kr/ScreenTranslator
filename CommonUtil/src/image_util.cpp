@@ -326,6 +326,10 @@ std::vector<cv::Rect> findContourBounds(cv::Mat binaryImage, size_t contourCompl
   return boundRect;
 }
 
+static inline cv::Rect inflate(cv::Rect rect, float x, float y) {
+  return cv::Rect(rect.x - x, rect.y - y, rect.width + x * 2, rect.height + y * 2);
+}
+
 std::vector<cv::Rect>
 detectLetters(cv::Mat img) {
   cv::Mat img_gray;
@@ -353,6 +357,7 @@ std::vector<cv::Rect> reorganizeText(std::vector<cv::Rect> src) {
   std::vector<cv::Rect> dst;
 
   for (auto st = src.begin(); st != src.end(); st++) {
+    *st = inflate(*st, st->width * 0.1, st->height * 0.1);
     int pv = dst.size();
     for (size_t i = 0; i < dst.size(); i++) {
       cv::Rect* dt = &dst[i];
