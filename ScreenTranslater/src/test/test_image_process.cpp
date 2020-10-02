@@ -26,8 +26,15 @@ void test::imageProcess() {
   if (!img) {
     return;
   }
-  cv::Mat image = imageUtil::toMat(*img);
+
+  cv::Mat image = imageUtil::toMat(img);
+  cv::imwrite("./snap.png", image);
+
   OCR::instnace()->findOutTextInfos(image);
+  delete img;
 
+  TextOverlay::instnace()->updateCanvasWindow();
+  TextOverlay::instnace()->showText();
 
+  Sleep(100000000);
 }

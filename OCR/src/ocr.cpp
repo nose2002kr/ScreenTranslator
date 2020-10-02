@@ -18,7 +18,7 @@ OCR::~OCR() {
 }
 
 void
-OCR::findOutTextInfos(Image imgParam) {
+OCR::findOutTextInfos(Image *imgParam) {
   findOutTextInfos(imageUtil::toMat(imgParam));
 }
 
@@ -33,7 +33,7 @@ OCR::findOutTextInfos(cv::Mat img) {
       return;
     }
 
-    cv::Mat cropImg = img(*it);
+    cv::Mat cropImg = img(imageUtil::normalize(img, *it));
     resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
 #ifdef DEBUG_LEVEL2
     cv::imwrite("./crop.png", cropImg);

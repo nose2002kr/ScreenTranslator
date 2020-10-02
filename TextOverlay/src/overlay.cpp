@@ -37,7 +37,7 @@ TextOverlay::windowScreenCapture() {
   HWND hWnd = getTargetWindow();
   Image* img = CaptureSnapshot::inst().takeImage(hWnd);
   if (!img) return nullptr;
-  return &(m_lastImage = *img);
+  return img;
 
 }
 

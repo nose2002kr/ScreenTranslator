@@ -20,5 +20,7 @@ namespace imageUtil {
   
   int Vec2Rgb(cv::Vec3b vec);
   
-  cv::Mat toMat(Image imgParam);
+  cv::Mat toMat(Image *imgParam);
+
+  cv::Rect normalize(const cv::Mat& img, cv::Rect rect);
 };

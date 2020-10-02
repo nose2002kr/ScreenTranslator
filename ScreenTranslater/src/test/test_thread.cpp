@@ -19,7 +19,7 @@ void findingText() {
       Sleep(100);
       continue;
     }
-    cv::Mat image = imageUtil::toMat(*img);
+    cv::Mat image = imageUtil::toMat(img);
 
     //delete[] img->samples;
     //delete img;

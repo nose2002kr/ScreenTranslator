@@ -30,7 +30,7 @@ public:
 
   void cancel() { m_cancelFlag = true; }
 
-  void findOutTextInfos(Image imgParam);
+  void findOutTextInfos(Image *imgParam);
   void findOutTextInfos(cv::Mat img);
 private:
   bool m_cancelFlag;

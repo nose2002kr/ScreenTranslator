@@ -7,6 +7,9 @@
 #define RctH(rect) (rect.bottom - rect.top)
 
 struct Image {
+  ~Image() {
+    if (samples) delete[] samples;
+  }
   unsigned char* samples;
   int width;
   int height;

@@ -330,6 +330,14 @@ static inline cv::Rect inflate(cv::Rect rect, float x, float y) {
   return cv::Rect(rect.x - x, rect.y - y, rect.width + x * 2, rect.height + y * 2);
 }
 
+cv::Rect normalize(const cv::Mat &img, cv::Rect rect) {
+  int x = rect.x < 0 ? 0 : rect.x;
+  int y = rect.x < 0 ? 0 : rect.y;
+  int w = rect.width + x > img.cols ? img.cols - x : rect.width;
+  int h = rect.height + y > img.rows ? img.rows - y : rect.height;
+  return cv::Rect(x, y, w, h);
+}
+
 std::vector<cv::Rect>
 detectLetters(cv::Mat img) {
   cv::Mat img_gray;
@@ -396,8 +404,8 @@ int Vec2Rgb(cv::Vec3b vec) {
   return vec[2] << 16 | vec[1] << 8 | vec[0];
 }
 
-cv::Mat toMat(Image imgParam) {
-  return cv::Mat(cv::Size(imgParam.width, imgParam.height), CV_8UC4, imgParam.samples);
+cv::Mat toMat(Image* imgParam) {
+  return cv::Mat(cv::Size(imgParam->width, imgParam->height), CV_8UC4, imgParam->samples);
 }
 
 } // namespace imageUtil
