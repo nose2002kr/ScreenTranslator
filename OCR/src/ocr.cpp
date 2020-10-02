@@ -40,7 +40,11 @@ OCR::findOutTextInfos(cv::Mat img) {
 #endif
     api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, cropImg.channels(), cropImg.step1());
     char* textOutput = api->GetUTF8Text();     // Get the text 
-    if (strlen(textOutput) == 0) continue;
+    if (!textOutput) continue;
+    if (strlen(textOutput) == 0) {
+      delete[] textOutput;
+      continue;
+    }
 #ifdef DEBUG_LEVEL2
     std::cout << textOutput << std::endl; // Destroy used object and release memory ocr->End();
 #endif
@@ -52,6 +56,7 @@ OCR::findOutTextInfos(cv::Mat img) {
     tInfo.ocrText = replaceAll(std::string(textOutput), "\n", "");
     tInfo.rect = imageUtil::toWinRect(*it);
     pushTextInfo(tInfo);
+    delete[] textOutput;
   }
 
 #ifdef DEBUG_LEVEL2
