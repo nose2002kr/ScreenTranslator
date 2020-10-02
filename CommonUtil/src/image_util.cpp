@@ -8,6 +8,11 @@ typedef struct t_color_node {
 
   t_color_node  *left;
   t_color_node  *right;
+  ~t_color_node() {
+    if (left) delete left;
+    if (right) delete right;
+  }
+
 } t_color_node;
 
 cv::Mat getDominantPalette(std::vector<cv::Vec3b> colors) {
@@ -284,6 +289,8 @@ std::vector<cv::Vec3b> findDominantColors(cv::Mat img, int count) {
   }
 
   std::vector<cv::Vec3b> colors = getDominantColors(root);
+  
+  delete root;
 
 #ifdef DEBUG_LEVEL2
   cv::Mat quantized = getQuantizedImage(classes, root);
