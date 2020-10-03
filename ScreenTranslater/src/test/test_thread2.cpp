@@ -25,7 +25,15 @@ BOOL CALLBACK findNotepadWindow(HWND hwnd, LPARAM lParam);
 
 void findingText2() {
   while (true) {
-    test::imageProcess();
+    Image* img = TextOverlay::instnace()->windowScreenCapture();
+    if (!img) {
+      continue;
+    }
+
+    cv::Mat image = imageUtil::toMat(img);
+    OCR::instnace()->findOutTextInfos(image);
+    delete img;
+
     Sleep(100);
   }
 }

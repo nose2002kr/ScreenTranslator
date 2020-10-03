@@ -31,7 +31,9 @@ public:
   void cancel() { m_cancelFlag = true; }
 
   void findOutTextInfos(Image *imgParam);
-  void findOutTextInfos(cv::Mat img);
+  void findOutTextInfos(cv::Mat img, int relx = 0, int rely = 0, bool useDiff = true);
 private:
   bool m_cancelFlag;
+  cv::Mat m_lastImage;
+  std::mutex m_mtx;
 };
