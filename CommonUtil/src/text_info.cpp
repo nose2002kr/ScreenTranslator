@@ -44,10 +44,11 @@ static bool contain(RECT lhs, RECT rhs) {
 }
 
 static bool intersect(RECT lhs, RECT rhs) {
-  bool intersected = (lhs.left < rhs.left && lhs.right > rhs.left
-                   || rhs.left < lhs.left && rhs.right > lhs.left)
-                  && (lhs.top < rhs.top && lhs.bottom > rhs.top
-                   || rhs.top< lhs.top&& rhs.bottom > lhs.top);
+
+  bool intersected = (lhs.left <= rhs.left && lhs.right >= rhs.left
+                   || rhs.left <= lhs.left && rhs.right >= lhs.left)
+                  && (lhs.top <= rhs.top && lhs.bottom >= rhs.top
+                   || rhs.top <= lhs.top&& rhs.bottom >= lhs.top);
   return intersected;
 }
 
