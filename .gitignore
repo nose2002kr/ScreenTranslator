@@ -12,3 +12,6 @@ Release/
 translation.history
 *.log
 packages
+
+# Generated debug files
+/*.png
