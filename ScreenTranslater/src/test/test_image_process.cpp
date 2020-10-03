@@ -25,7 +25,8 @@ void test::imageProcess() {
   }
 
   cv::Mat image = imageUtil::toMat(img);*/
-  OCR::instnace()->findOutTextInfos(cv::imread("./test-src/debug-sobel.png"));
+  imageUtil::detectLetters(cv::imread("./test-src/debug-sobel1.png"));
+  imageUtil::detectLetters(cv::imread("./test-src/debug-sobel2.png"));
 
   //cv::imwrite("./snap.png", image);
 
