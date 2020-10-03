@@ -339,7 +339,7 @@ static inline cv::Rect inflate(cv::Rect rect, float x, float y) {
 
 cv::Rect normalize(const cv::Mat &img, cv::Rect rect) {
   int x = rect.x < 0 ? 0 : rect.x;
-  int y = rect.x < 0 ? 0 : rect.y;
+  int y = rect.y < 0 ? 0 : rect.y;
   int w = rect.width + x > img.cols ? img.cols - x : rect.width;
   int h = rect.height + y > img.rows ? img.rows - y : rect.height;
   return cv::Rect(x, y, w, h);
