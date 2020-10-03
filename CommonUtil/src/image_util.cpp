@@ -388,7 +388,8 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
   std::vector<cv::Rect> dst;
 
   for (auto el : src) {
-    cv::Rect rect = inflate(el, el.width * 0.1, el. height * 0.1);
+    //cv::Rect rect = inflate(el, el.width * 0.1, el. height * 0.1);
+    cv::Rect rect = el;
     int pv = dst.size();
     for (size_t i = 0; i < dst.size(); i++) {
       cv::Rect* dt = &dst[i];
