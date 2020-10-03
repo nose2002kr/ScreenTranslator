@@ -356,8 +356,8 @@ cv::Mat sobelToBinrayImage(const cv::Mat &img) { // for extract linked text cont
   }
   cv::Mat img_sobelX;
   cv::Mat img_sobelY;
-  cv::Sobel(img_gray, img_sobelX, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_CONSTANT);
-  cv::Sobel(img_gray, img_sobelY, CV_8U, 0, 1, 3, 1, 0, cv::BORDER_CONSTANT);
+  cv::Sobel(img_gray, img_sobelX, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT);
+  cv::Sobel(img_gray, img_sobelY, CV_8U, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT);
   cv::Mat img_sobel = img_sobelX + img_sobelY;
   cv::Mat img_threshold;
   cv::threshold(img_sobel, img_threshold, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
