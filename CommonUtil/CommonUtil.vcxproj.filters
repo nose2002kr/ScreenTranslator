@@ -24,6 +24,9 @@
     <ClInclude Include="src\image_util.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="src\debug_util.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\common_util.cpp">
