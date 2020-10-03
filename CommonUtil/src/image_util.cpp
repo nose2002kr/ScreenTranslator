@@ -17,7 +17,7 @@ typedef struct t_color_node {
 
 } t_color_node;
 
-cv::Mat getDominantPalette(std::vector<cv::Vec3b> colors) {
+static cv::Mat getDominantPalette(std::vector<cv::Vec3b> colors) {
   const int tile_size = 64;
   cv::Mat ret = cv::Mat(tile_size, tile_size*colors.size(), CV_8UC3, cv::Scalar(0));
 
@@ -29,7 +29,7 @@ cv::Mat getDominantPalette(std::vector<cv::Vec3b> colors) {
   return ret;
 }
 
-std::vector<t_color_node*> getLeaves(t_color_node *root) {
+static std::vector<t_color_node*> getLeaves(t_color_node *root) {
   std::vector<t_color_node*> ret;
   std::queue<t_color_node*> queue;
   queue.push(root);
@@ -50,7 +50,7 @@ std::vector<t_color_node*> getLeaves(t_color_node *root) {
   return ret;
 }
 
-std::vector<cv::Vec3b> getDominantColors(t_color_node *root) {
+static std::vector<cv::Vec3b> getDominantColors(t_color_node *root) {
   std::vector<t_color_node*> leaves = getLeaves(root);
   std::vector<cv::Vec3b> ret;
 
@@ -64,7 +64,7 @@ std::vector<cv::Vec3b> getDominantColors(t_color_node *root) {
   return ret;
 }
 
-int getNextClassid(t_color_node *root) {
+static int getNextClassid(t_color_node *root) {
   int maxid = 0;
   std::queue<t_color_node*> queue;
   queue.push(root);
@@ -86,7 +86,7 @@ int getNextClassid(t_color_node *root) {
   return maxid + 1;
 }
 
-void getClassMeanCov(cv::Mat img, cv::Mat classes, t_color_node *node) {
+static void getClassMeanCov(const cv::Mat &img, const cv::Mat &classes, t_color_node *node) {
   const int width = img.cols;
   const int height = img.rows;
   const uchar classid = node->classid;
@@ -97,8 +97,8 @@ void getClassMeanCov(cv::Mat img, cv::Mat classes, t_color_node *node) {
   // We start out with the average color
   double pixcount = 0;
   for (int y = 0; y < height; y++) {
-    cv::Vec3b* ptr = img.ptr<cv::Vec3b>(y);
-    uchar* ptrClass = classes.ptr<uchar>(y);
+    const cv::Vec3b* ptr = img.ptr<cv::Vec3b>(y);
+    const uchar* ptrClass = classes.ptr<uchar>(y);
     for (int x = 0; x < width; x++) {
       if (ptrClass[x] != classid)
         continue;
@@ -126,7 +126,7 @@ void getClassMeanCov(cv::Mat img, cv::Mat classes, t_color_node *node) {
   return;
 }
 
-void partitionClass(cv::Mat img, cv::Mat classes, uchar nextid, t_color_node *node) {
+static void partitionClass(const cv::Mat &img, cv::Mat classes, uchar nextid, t_color_node *node) {
   const int width = img.cols;
   const int height = img.rows;
   const int classid = node->classid;
@@ -150,7 +150,7 @@ void partitionClass(cv::Mat img, cv::Mat classes, uchar nextid, t_color_node *no
 
   // We start out with the average color
   for (int y = 0; y < height; y++) {
-    cv::Vec3b* ptr = img.ptr<cv::Vec3b>(y);
+    const cv::Vec3b* ptr = img.ptr<cv::Vec3b>(y);
     uchar* ptrClass = classes.ptr<uchar>(y);
     for (int x = 0; x < width; x++) {
       if (ptrClass[x] != classid)
@@ -177,7 +177,7 @@ void partitionClass(cv::Mat img, cv::Mat classes, uchar nextid, t_color_node *no
   return;
 }
 
-cv::Mat getQuantizedImage(cv::Mat classes, t_color_node *root) {
+static cv::Mat getQuantizedImage(const cv::Mat &classes, t_color_node *root) {
   std::vector<t_color_node*> leaves = getLeaves(root);
 
   const int height = classes.rows;
@@ -185,7 +185,7 @@ cv::Mat getQuantizedImage(cv::Mat classes, t_color_node *root) {
   cv::Mat ret(height, width, CV_8UC3, cv::Scalar(0));
 
   for (int y = 0; y < height; y++) {
-    uchar *ptrClass = classes.ptr<uchar>(y);
+    const uchar *ptrClass = classes.ptr<uchar>(y);
     cv::Vec3b *ptr = ret.ptr<cv::Vec3b>(y);
     for (int x = 0; x < width; x++) {
       uchar pixel_class = ptrClass[x];
@@ -202,7 +202,7 @@ cv::Mat getQuantizedImage(cv::Mat classes, t_color_node *root) {
   return ret;
 }
 
-cv::Mat getViewableImage(cv::Mat classes) {
+static cv::Mat getViewableImage(const cv::Mat &classes) {
   const int height = classes.rows;
   const int width = classes.cols;
 
@@ -224,7 +224,7 @@ cv::Mat getViewableImage(cv::Mat classes) {
   cv::Mat ret = cv::Mat(height, width, CV_8UC3, cv::Scalar(0, 0, 0));
   for (int y = 0; y < height; y++) {
     cv::Vec3b *ptr = ret.ptr<cv::Vec3b>(y);
-    uchar *ptrClass = classes.ptr<uchar>(y);
+    const  uchar *ptrClass = classes.ptr<uchar>(y);
     for (int x = 0; x < width; x++) {
       int color = ptrClass[x];
       if (color >= max_color_count) {
@@ -238,7 +238,7 @@ cv::Mat getViewableImage(cv::Mat classes) {
   return ret;
 }
 
-t_color_node* getMaxEigenvalueNode(t_color_node *current) {
+static t_color_node* getMaxEigenvalueNode(t_color_node *current) {
   double max_eigen = -1;
   cv::Mat eigenvalues, eigenvectors;
 
@@ -270,7 +270,7 @@ t_color_node* getMaxEigenvalueNode(t_color_node *current) {
   return ret;
 }
 
-std::vector<cv::Vec3b> findDominantColors(cv::Mat img, int count) {
+std::vector<cv::Vec3b> findDominantColors(const cv::Mat &img, int count) {
   const int width = img.cols;
   const int height = img.rows;
 
@@ -306,7 +306,7 @@ std::vector<cv::Vec3b> findDominantColors(cv::Mat img, int count) {
   return colors;
 }
 
-std::vector<cv::Rect> findContourBounds(cv::Mat binaryImage, size_t contourComplexity) {
+std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t contourComplexity) {
   std::vector<cv::Rect> boundRect;
 
   std::vector< std::vector< cv::Point> > contours;
@@ -366,7 +366,7 @@ cv::Mat sobelToBinrayImage(const cv::Mat &img) { // for extract linked text cont
 }
 
 std::vector<cv::Rect>
-detectLetters(cv::Mat img) {
+detectLetters(const cv::Mat &img) {
   return findContourBounds(sobelToBinrayImage(img), 40);
 }
 
@@ -378,21 +378,21 @@ cv::Rect mergeRect(cv::Rect lhs, cv::Rect rhs) {
   return cv::Rect(left, top, right - left, bottom - top);
 }
 
-std::vector<cv::Rect> reorganizeText(std::vector<cv::Rect> src) {
+std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
   std::vector<cv::Rect> dst;
 
-  for (auto st = src.begin(); st != src.end(); st++) {
-    *st = inflate(*st, st->width * 0.1, st->height * 0.1);
+  for (auto el : src) {
+    cv::Rect rect = inflate(el, el.width * 0.1, el. height * 0.1);
     int pv = dst.size();
     for (size_t i = 0; i < dst.size(); i++) {
       cv::Rect* dt = &dst[i];
-      double spacing = st->height * 0.4;
-      if (st->y - spacing < dt->y &&
-        st->y + spacing > dt->y &&
-        st->x < dt->x) {
+      double spacing = rect.height * 0.4;
+      if (rect.y - spacing < dt->y &&
+        rect.y + spacing > dt->y &&
+        rect.x < dt->x) {
 
-        if (st->br().x + spacing > dt->x) {
-          dst[i] = imageUtil::mergeRect(*dt, *st);
+        if (rect.br().x + spacing > dt->x) {
+          dst[i] = imageUtil::mergeRect(*dt, rect);
           pv = -1;
         } else {
           pv = i;
@@ -403,7 +403,7 @@ std::vector<cv::Rect> reorganizeText(std::vector<cv::Rect> src) {
 
     if (pv < 0) continue;
     
-    dst.insert(dst.begin() + pv, *st);
+    dst.insert(dst.begin() + pv, rect);
   }
 
   return dst;
@@ -426,7 +426,7 @@ cv::Mat toMat(Image* imgParam) {
 }
 
 std::vector<cv::Rect>
-findDiffRange(cv::Mat first, cv::Mat second) {
+findDiffRange(const cv::Mat &first, const cv::Mat &second) {
   std::vector<cv::Rect> diffRange;
   if (second.empty()) {
     return diffRange;
