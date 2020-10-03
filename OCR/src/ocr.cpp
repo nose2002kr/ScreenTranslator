@@ -92,6 +92,9 @@ OCR::findOutTextInfos(cv::Mat img, int relx, int rely, bool useDiff) {
         cv::imwrite(DEBUG_LEVEL1"crop.png", crop);
 #endif
         bool foundFromParticle = OCR::instnace()->findOutTextInfos(crop, relx + rect.x, rely + rect.y, false);
+        if (!foundFromParticle) {
+          removeIntersectRect(imageUtil::toWinRect(rect));
+        }
         found = found | foundFromParticle;
       }
     }

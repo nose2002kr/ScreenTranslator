@@ -12,10 +12,12 @@ void pushTextInfo(TextInfo info) {
 }
 
 TextInfo getTextInfo(size_t i) {
+  textInfoMutex.lock();
+  TextInfo info;
   if (i < g_textInfo.size())
-    return g_textInfo[i];
-  else
-    return TextInfo();
+    info = g_textInfo[i];
+  textInfoMutex.unlock();
+  return info;
 }
 
 void clearTextInfo() {
@@ -35,9 +37,18 @@ int getTextInfoSize() {
   return g_textInfo.size();
 }
 
-bool intersect(RECT lhs, RECT rhs) {
-  return (lhs.left < rhs.right && lhs.right > rhs.left &&
-          lhs.top > rhs.bottom && lhs.bottom < rhs.top);
+static bool contain(RECT lhs, RECT rhs) {
+  bool contained = (lhs.left < rhs.right&& lhs.right > rhs.left &&
+                    lhs.top > rhs.bottom && lhs.bottom < rhs.top);
+  return contained;
+}
+
+static bool intersect(RECT lhs, RECT rhs) {
+  bool intersected = (lhs.left < rhs.left && lhs.right > rhs.left
+                   || rhs.left < lhs.left && rhs.right > lhs.left)
+                  && (lhs.top < rhs.top && lhs.bottom > rhs.top
+                   || rhs.top< lhs.top&& rhs.bottom > lhs.top);
+  return intersected;
 }
 
 void removeIntersectRect(RECT rect) {
