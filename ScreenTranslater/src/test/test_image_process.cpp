@@ -26,6 +26,10 @@ void test::imageProcess() {
   cv::Mat image = imageUtil::toMat(img);
   //cv::imwrite("./snap.png", image);
 
-  OCR::instnace()->findOutTextInfos(image);
+  cv::Mat dbg1 = cv::imread("./debug1.png");
+  cv::Mat dbg2 = cv::imread("./debug2.png");
+
+  OCR::instnace()->findOutTextInfos(dbg2);
+  OCR::instnace()->findOutTextInfos(dbg1);
   delete img;
 }

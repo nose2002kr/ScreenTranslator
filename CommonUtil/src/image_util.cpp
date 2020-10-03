@@ -1,5 +1,7 @@
 #include "image_util.h"
 
+#define DEBUG_LEVEL2
+
 namespace imageUtil {
 typedef struct t_color_node {
   cv::Mat       mean;       // The mean of this node
@@ -290,8 +292,6 @@ std::vector<cv::Vec3b> findDominantColors(cv::Mat img, int count) {
 
   std::vector<cv::Vec3b> colors = getDominantColors(root);
   
-  delete root;
-
 #ifdef DEBUG_LEVEL2
   cv::Mat quantized = getQuantizedImage(classes, root);
   cv::Mat viewable = getViewableImage(classes);
@@ -301,6 +301,7 @@ std::vector<cv::Vec3b> findDominantColors(cv::Mat img, int count) {
   cv::imwrite("./quantized.png", quantized);
   cv::imwrite("./palette.png", dom);
 #endif
+  delete root;
 
   return colors;
 }
@@ -312,13 +313,13 @@ std::vector<cv::Rect> findContourBounds(cv::Mat binaryImage, size_t contourCompl
   cv::findContours(binaryImage, contours, 0, 1);
   std::vector<std::vector<cv::Point> > contours_poly(contours.size());
 #ifdef DEBUG_LEVEL2
-  cv::imwrite("./detect-img_gray.png", img_gray);
-  cv::imwrite("./detect-img_sobel.png", img_sobel);
-  cv::imwrite("./detect-img_threshold.png", img_threshold);
+  cv::imwrite("./detect-img_gray.png", binaryImage);
 #endif
   for (size_t i = 0; i < contours.size(); i++) {
 #ifdef DEBUG_LEVEL2
-    cv::Mat dbgImg = img.clone();
+    
+    cv::Mat dbgImg = binaryImage.clone();
+    cvtColor(dbgImg, dbgImg, cv::COLOR_GRAY2BGR);
     cv::polylines(dbgImg, contours[i], false, cv::Scalar(0., 255, 0., 255), 1, 8, 0);
     cv::imwrite("./detect-contours.png", dbgImg);
 #endif
@@ -345,10 +346,14 @@ cv::Rect normalize(const cv::Mat &img, cv::Rect rect) {
   return cv::Rect(x, y, w, h);
 }
 
-std::vector<cv::Rect>
-detectLetters(cv::Mat img) {
+static inline 
+cv::Mat sobelToBinrayImage(const cv::Mat &img) { // for extract linked text contour.
   cv::Mat img_gray;
-  cvtColor(img, img_gray, cv::COLOR_BGR2GRAY);
+  if (img.type() != CV_8U) {
+    cvtColor(img, img_gray, cv::COLOR_BGR2GRAY);
+  } else {
+    img_gray = img;
+  }
   cv::Mat img_sobelX;
   cv::Mat img_sobelY;
   cv::Sobel(img_gray, img_sobelX, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_CONSTANT);
@@ -357,7 +362,12 @@ detectLetters(cv::Mat img) {
   cv::Mat img_threshold;
   cv::threshold(img_sobel, img_threshold, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
   cv::morphologyEx(img_threshold, img_threshold, cv::MORPH_CLOSE, getStructuringElement(cv::MORPH_RECT, cv::Size(3, 1))); //Does the trick
-  return findContourBounds(img_threshold, 40);
+  return img_threshold;
+}
+
+std::vector<cv::Rect>
+detectLetters(cv::Mat img) {
+  return findContourBounds(sobelToBinrayImage(img), 40);
 }
 
 cv::Rect mergeRect(cv::Rect lhs, cv::Rect rhs) {
@@ -427,8 +437,7 @@ findDiffRange(cv::Mat first, cv::Mat second) {
   cvtColor(second, imageG, cv::COLOR_BGR2GRAY);
   cv::Mat diff = imageG ^ prevImageG;
   if (!diff.empty()) {
-    cv::threshold(diff, diff, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
-    diffRange = imageUtil::findContourBounds(diff, 4);
+    diffRange = imageUtil::findContourBounds(sobelToBinrayImage(diff), 4);
   }
   return diffRange;
 }

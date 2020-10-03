@@ -18,8 +18,8 @@ int CALLBACK WinMain(
   writeLog(DEBUG, "Running ScreenTranslater.");
 
   //test::thread();
-  //test::imageProcess();
-  test::thread2();
+  test::imageProcess();
+  //test::thread2();
 
 
   TextOverlay::instnace()->updateCanvasWindow();

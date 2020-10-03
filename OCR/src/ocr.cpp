@@ -17,15 +17,16 @@ OCR::~OCR() {
   delete api;
 }
 
-void
+bool
 OCR::findOutTextInfos(Image *imgParam) {
-  findOutTextInfos(imageUtil::toMat(imgParam));
+  return findOutTextInfos(imageUtil::toMat(imgParam));
 }
 
-void
+bool
 OCR::findOutTextInfos(cv::Mat img, int relx, int rely, bool useDiff) {
-  std::unique_lock<std::mutex> lock(m_mtx, std::try_to_lock);
+  bool found = false;
 
+  std::unique_lock<std::mutex> lock(m_mtx, std::try_to_lock);
   if (!useDiff 
     || m_lastImage.empty() 
     || img.cols * img.rows != m_lastImage.cols * m_lastImage.rows) {
@@ -36,7 +37,7 @@ OCR::findOutTextInfos(cv::Mat img, int relx, int rely, bool useDiff) {
       if (m_cancelFlag) {
         m_cancelFlag = false;
         m_lastImage = cv::Mat();
-        return;
+        return found;
       }
 
       cv::Mat cropImg = img(imageUtil::normalize(img, *it));
@@ -60,13 +61,14 @@ OCR::findOutTextInfos(cv::Mat img, int relx, int rely, bool useDiff) {
 #endif
       std::vector<cv::Vec3b> vec = imageUtil::findDominantColors(cropImg, 2);
       TextInfo tInfo{ 0, };
-
+      
       tInfo.backgroundColor = static_cast<int>(imageUtil::Vec2Rgb(vec[1]));
       tInfo.fontColor = static_cast<int>(imageUtil::Vec2Rgb(vec[0]));
       tInfo.ocrText = replaceAll(std::string(textOutput), "\n", "");
       tInfo.rect = imageUtil::toWinRect(*it);
       pushTextInfo(tInfo);
       delete[] textOutput;
+      found = true;
     }
 
 #ifdef DEBUG_LEVEL2
@@ -81,16 +83,18 @@ OCR::findOutTextInfos(cv::Mat img, int relx, int rely, bool useDiff) {
     cv::imwrite("./img.png", img);
     cv::imwrite("./lastImage.png", m_lastImage);
 #endif
-    std::vector<cv::Rect> diffRange = imageUtil::findDiffRange(img, m_lastImage);
+    std::vector<cv::Rect> diffRange = imageUtil::findDiffRange(m_lastImage, img);
     if (!diffRange.empty()) {
       for (auto rect : diffRange) {
         cv::Mat crop = img(rect);
 #ifdef DEBUG_LEVEL2
         cv::imwrite("./crop.png", crop);
 #endif
-        OCR::instnace()->findOutTextInfos(crop, relx + rect.x, rely + rect.y, false);
+        found = found | OCR::instnace()->findOutTextInfos(crop, relx + rect.x, rely + rect.y, false);
       }
     }
   }
-  m_lastImage = img.clone();
+  if (found) {
+    m_lastImage = img.clone();
+  }
 }
