@@ -18,4 +18,5 @@ void drawDebugLine(ID2D1RenderTarget* pTarget, RECT rect) {
 
   pTarget->DrawLine(D2D1::Point2<float>((float) RctW(rect), (float) RctH(rect)), D2D1::Point2<float>((float) RctW(rect) - 30, (float) RctH(rect)), brush, 4.0);
   pTarget->DrawLine(D2D1::Point2<float>((float) RctW(rect), (float) RctH(rect)), D2D1::Point2<float>((float) RctW(rect), (float) RctH(rect) - 30), brush, 4.0);
+  brush->Release();
 }

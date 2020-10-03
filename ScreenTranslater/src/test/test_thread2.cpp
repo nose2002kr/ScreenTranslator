@@ -47,9 +47,9 @@ test::thread2() {
   TextOverlay::instnace()->setTargetWindow(foundHWnd2);
 
   std::thread findTh(findingText2);
-  //std::thread showTh(showingText2);
+  std::thread showTh(showingText2);
 
- /* while (true) {
+ while (true) {
     if (g_msg.empty()) {
       ::Sleep(100);
       continue;
@@ -62,6 +62,6 @@ test::thread2() {
     g_msg.pop();
   }
 
-  showTh.join();*/
+  showTh.join();
   findTh.join();
 }

@@ -220,6 +220,9 @@ TextOverlay::showText() {
     IDWriteTextLayout* layout = nullptr;
     m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, RctW(windowsRect), RctH(windowsRect), &layout);
     pTarget->DrawTextLayout(D2D1::Point2<float>((float)info.rect.left, (float)info.rect.top), layout, fontBrs);
+    layout->Release();
+    backBrs->Release();
+    fontBrs->Release();
   }
 
   pTarget->EndDraw();
