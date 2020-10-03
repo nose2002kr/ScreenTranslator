@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common_util.h" />
+    <ClInclude Include="src\debug_util.h" />
     <ClInclude Include="src\image_util.h" />
     <ClInclude Include="src\text_info.h" />
   </ItemGroup>

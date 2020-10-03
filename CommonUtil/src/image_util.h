@@ -4,8 +4,6 @@
 #include <opencv2/opencv.hpp>
 #include <Windows.h>
 
-//#define DEBUG_LEVEL2
-
 namespace imageUtil {
   std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t contourComplexity);
   std::vector<cv::Rect> detectLetters(const cv::Mat &img);

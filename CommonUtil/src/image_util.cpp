@@ -1,6 +1,6 @@
 #include "image_util.h"
 
-#define DEBUG_LEVEL2
+#include "debug_util.h"
 
 namespace imageUtil {
 typedef struct t_color_node {
@@ -292,14 +292,14 @@ std::vector<cv::Vec3b> findDominantColors(const cv::Mat &img, int count) {
 
   std::vector<cv::Vec3b> colors = getDominantColors(root);
   
-#ifdef DEBUG_LEVEL2
+#ifdef DEBUG_LEVEL3
   cv::Mat quantized = getQuantizedImage(classes, root);
   cv::Mat viewable = getViewableImage(classes);
   cv::Mat dom = getDominantPalette(colors);
 
-  cv::imwrite("./classification.png", viewable);
-  cv::imwrite("./quantized.png", quantized);
-  cv::imwrite("./palette.png", dom);
+  cv::imwrite(DEBUG_LEVEL3"classification.png", viewable);
+  cv::imwrite(DEBUG_LEVEL3"quantized.png", quantized);
+  cv::imwrite(DEBUG_LEVEL3"palette.png", dom);
 #endif
   delete root;
 
@@ -313,7 +313,7 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
   cv::findContours(binaryImage, contours, 0, 1);
   std::vector<std::vector<cv::Point> > contours_poly(contours.size());
 #ifdef DEBUG_LEVEL2
-  cv::imwrite("./detect-img_gray.png", binaryImage);
+  cv::imwrite(DEBUG_LEVEL2"detect-img_gray.png", binaryImage);
 #endif
   for (size_t i = 0; i < contours.size(); i++) {
 #ifdef DEBUG_LEVEL2
@@ -321,7 +321,7 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
     cv::Mat dbgImg = binaryImage.clone();
     cvtColor(dbgImg, dbgImg, cv::COLOR_GRAY2BGR);
     cv::polylines(dbgImg, contours[i], false, cv::Scalar(0., 255, 0., 255), 1, 8, 0);
-    cv::imwrite("./detect-contours.png", dbgImg);
+    cv::imwrite(DEBUG_LEVEL2"detect-contours.png", dbgImg);
 #endif
     if (contours[i].size() > contourComplexity) {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
@@ -361,6 +361,12 @@ cv::Mat sobelToBinrayImage(const cv::Mat &img) { // for extract linked text cont
   cv::Mat img_sobel = img_sobelX + img_sobelY;
   cv::Mat img_threshold;
   cv::threshold(img_sobel, img_threshold, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
+#ifdef DEBUG_LEVEL3
+  cv::imwrite(DEBUG_LEVEL3"sobelX.png", img_sobelX);
+  cv::imwrite(DEBUG_LEVEL3"sobelY.png", img_sobelY);
+  cv::imwrite(DEBUG_LEVEL3"sobel.png", img_sobel);
+  cv::imwrite(DEBUG_LEVEL3"threshold.png", img_threshold);
+#endif
   cv::morphologyEx(img_threshold, img_threshold, cv::MORPH_CLOSE, getStructuringElement(cv::MORPH_RECT, cv::Size(3, 1))); //Does the trick
   return img_threshold;
 }
