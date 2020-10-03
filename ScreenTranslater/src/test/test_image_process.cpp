@@ -18,18 +18,22 @@ BOOL CALLBACK findNotepadWindow(HWND hwnd, LPARAM lParam) {
 
 void test::imageProcess() {
   
+  /*
   Image* img = TextOverlay::instnace()->windowScreenCapture();
   if (!img) {
     return;
   }
 
-  cv::Mat image = imageUtil::toMat(img);
+  cv::Mat image = imageUtil::toMat(img);*/
+  OCR::instnace()->findOutTextInfos(cv::imread("./test-src/debug-sobel.png"));
+
   //cv::imwrite("./snap.png", image);
 
-  cv::Mat dbg1 = cv::imread("./debug1.png");
-  cv::Mat dbg2 = cv::imread("./debug2.png");
+  cv::Mat dbg1 = cv::imread("./test-src/debug1.png");
+  cv::Mat dbg2 = cv::imread("./test-src/debug2.png");
+  cv::Mat dbg3 = cv::imread("./test-src/debug3.png");
 
-  OCR::instnace()->findOutTextInfos(dbg2);
   OCR::instnace()->findOutTextInfos(dbg1);
-  delete img;
+  OCR::instnace()->findOutTextInfos(dbg2);
+  OCR::instnace()->findOutTextInfos(dbg3);
 }
