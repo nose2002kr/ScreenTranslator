@@ -245,6 +245,8 @@ copy /Y ..\thirdparty\openssl\bin64\ssleay32MD.dll $(TargetDir)</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\messageHandler.cpp" />
+    <ClCompile Include="src\screenTranslator.cpp" />
     <ClCompile Include="src\test\test_image_process.cpp" />
     <ClCompile Include="src\test\test_thread.cpp" />
     <ClCompile Include="src\test\test_thread2.cpp" />
@@ -264,6 +266,8 @@ copy /Y ..\thirdparty\openssl\bin64\ssleay32MD.dll $(TargetDir)</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\messageHandler.h" />
+    <ClInclude Include="src\screenTranslator.h" />
     <ClInclude Include="src\test\test.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
