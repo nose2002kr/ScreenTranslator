@@ -23,7 +23,7 @@ OCR::findOutTextInfos(Image *imgParam) {
 }
 
 bool
-OCR::findOutTextInfos(cv::Mat img, int relx, int rely, bool useDiff) {
+OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
   bool found = false;
   if (img.empty()) return found;
 
@@ -42,7 +42,7 @@ OCR::findOutTextInfos(cv::Mat img, int relx, int rely, bool useDiff) {
       }
 
       cv::Mat cropImg = img(imageUtil::normalize(img, *it));
-      resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
+      //resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
       
       it->x += relx;
       it->y += rely;
