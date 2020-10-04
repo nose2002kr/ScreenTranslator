@@ -1,6 +1,6 @@
 #pragma once
 
-#define DEBUG_LEVEL3
+#define DEBUG_LEVEL1
 
 #ifdef DEBUG_LEVEL3
 #define DEBUG_LEVEL3 "lv3_"

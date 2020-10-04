@@ -11,6 +11,7 @@
 #include "dwmapi.h"
 #include "CaptureSnapshot.h"
 
+#include "debug_util.h"
 #include "util/draw_util.h"
 
 #pragma comment(lib, "Dwmapi.lib")
@@ -203,7 +204,9 @@ TextOverlay::showText() {
   pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
   RECT windowsRect = getTargetWindowRect();
+#ifdef DEBUG_LEVEL1
   drawDebugLine(pTarget, windowsRect);
+#endif
 
   for (int i = 0; i < getTextInfoSize(); i++) {
     TextInfo info = getTextInfo(i);
