@@ -330,9 +330,7 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
     if (contours[i].size() > contourComplexity) {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
       cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
-      if (appRect.width > appRect.height && appRect.height < 100) {
-        boundRect.push_back(appRect);
-      }
+      boundRect.push_back(appRect);
     }
   }
   return boundRect;
@@ -377,7 +375,20 @@ cv::Mat sobelToBinrayImage(const cv::Mat &img) { // for extract linked text cont
 
 std::vector<cv::Rect>
 detectLetters(const cv::Mat &img) {
-  return findContourBounds(sobelToBinrayImage(img), 40);
+  auto letters = findContourBounds(sobelToBinrayImage(img), 40);
+  for (auto it = letters.begin(); it != letters.end(); ) {
+    cv::Rect letter = *it;
+    if (letter.width < letter.height
+      || letter.height > 100
+      || letter.height < 5
+      || letter.width < 2) {
+      it = letters.erase(it);
+    }
+    else {
+      ++it;
+    }
+  }
+  return letters;
 }
 
 cv::Rect mergeRect(cv::Rect lhs, cv::Rect rhs) {
