@@ -274,6 +274,10 @@ std::vector<cv::Vec3b> findDominantColors(const cv::Mat &img, int count) {
   const int width = img.cols;
   const int height = img.rows;
 
+  cv::Mat img3C = img;
+  if (img.channels() == 4) {
+    cv::cvtColor(img, img3C, cv::COLOR_RGBA2RGB);
+  } 
   cv::Mat classes = cv::Mat(height, width, CV_8UC1, cv::Scalar(1));
   t_color_node *root = new t_color_node();
 
@@ -282,12 +286,12 @@ std::vector<cv::Vec3b> findDominantColors(const cv::Mat &img, int count) {
   root->right = NULL;
 
   t_color_node *next = root;
-  getClassMeanCov(img, classes, root);
+  getClassMeanCov(img3C, classes, root);
   for (int i = 0; i < count - 1; i++) {
     next = getMaxEigenvalueNode(root);
-    partitionClass(img, classes, getNextClassid(root), next);
-    getClassMeanCov(img, classes, next->left);
-    getClassMeanCov(img, classes, next->right);
+    partitionClass(img3C, classes, getNextClassid(root), next);
+    getClassMeanCov(img3C, classes, next->left);
+    getClassMeanCov(img3C, classes, next->right);
   }
 
   std::vector<cv::Vec3b> colors = getDominantColors(root);
