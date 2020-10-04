@@ -25,8 +25,9 @@ void test::imageProcess() {
   }
 
   cv::Mat image = imageUtil::toMat(img);*/
-  imageUtil::detectLetters(cv::imread("./test-src/debug-sobel1.png"));
+  //imageUtil::detectLetters(cv::imread("./test-src/debug-sobel1.png"));
   imageUtil::detectLetters(cv::imread("./test-src/debug-sobel2.png"));
+
 
   //cv::imwrite("./snap.png", image);
 
@@ -37,4 +38,7 @@ void test::imageProcess() {
   OCR::instnace()->findOutTextInfos(dbg1);
   OCR::instnace()->findOutTextInfos(dbg2);
   OCR::instnace()->findOutTextInfos(dbg3);
+
+  imageUtil::findDominantColors(cv::imread("./test-src/debug-dominant-color.png"), 2);
+
 }
