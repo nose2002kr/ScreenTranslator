@@ -210,6 +210,7 @@ TextOverlay::showText() {
 
   for (int i = 0; i < getTextInfoSize(); i++) {
     TextInfo info = getTextInfo(i);
+    if (isEmpty(info.rect)) continue;
     IDWriteTextFormat* textFormat = getTextFormat((float)RctH(info.rect));
     ID2D1SolidColorBrush* backBrs = nullptr;
     ID2D1SolidColorBrush* fontBrs = nullptr;

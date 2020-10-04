@@ -2,6 +2,7 @@
 #include <mutex>
 #include <algorithm>
 #include <iterator>
+#include "common_util.h"
 
 std::vector<TextInfo> g_textInfo;
 
@@ -13,7 +14,7 @@ void pushTextInfo(TextInfo info) {
 
 TextInfo getTextInfo(size_t i) {
   textInfoMutex.lock();
-  TextInfo info;
+  TextInfo info = { 0, };
   if (i < g_textInfo.size())
     info = g_textInfo[i];
   textInfoMutex.unlock();
@@ -59,4 +60,8 @@ void removeIntersectRect(RECT rect) {
   g_textInfo.clear();
   g_textInfo.assign(filtered.begin(), filtered.end());
   textInfoMutex.unlock();
+}
+
+bool isEmpty(RECT rect) {
+  return RctW(rect) * RctH(rect) == 0;
 }
