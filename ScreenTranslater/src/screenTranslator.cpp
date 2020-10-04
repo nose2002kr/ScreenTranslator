@@ -14,6 +14,7 @@ ScreenTranslator::ScreenTranslator(HINSTANCE hInstance) {
   runFindTextThread();
   runShowTextThread();
   installKeyHook();
+  runMessagwHandler();
 }
 
 ScreenTranslator::~ScreenTranslator() {
