@@ -1,6 +1,8 @@
 #include "ocr.h"
 
 #include "debug_util.h"
+#include "rect_util.h"
+
 OCR* OCR::g_inst = nullptr;
 
 OCR::OCR(std::string tessdataPath) {
@@ -14,7 +16,7 @@ OCR::OCR(std::string tessdataPath) {
 }
 
 OCR::~OCR() {
-  delete api;
+  if (api) delete api;
 }
 
 bool
@@ -58,7 +60,7 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
         continue;
       }
 
-      removeIntersectRect(imageUtil::toWinRect(*it));
+      removeIntersectRect(rectUtil::toWinRect(*it));
 
       std::vector<cv::Vec3b> vec = imageUtil::findDominantColors(cropImg, 2);
       TextInfo tInfo{ 0, };
@@ -66,7 +68,7 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
       tInfo.backgroundColor = static_cast<int>(imageUtil::Vec2Rgb(vec[1]));
       tInfo.fontColor = static_cast<int>(imageUtil::Vec2Rgb(vec[0]));
       tInfo.ocrText = replaceAll(std::string(textOutput), "\n", "");
-      tInfo.rect = imageUtil::toWinRect(*it);
+      tInfo.rect = rectUtil::toWinRect(*it);
       pushTextInfo(tInfo);
       delete[] textOutput;
       found = true;
@@ -93,7 +95,7 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
 #endif
         bool foundFromParticle = OCR::instnace()->findOutTextInfos(crop, relx + rect.x, rely + rect.y, false);
         if (!foundFromParticle) {
-          removeIntersectRect(imageUtil::toWinRect(rect));
+          removeIntersectRect(rectUtil::toWinRect(rect));
         }
         found = found | foundFromParticle;
       }

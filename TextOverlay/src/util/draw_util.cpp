@@ -2,6 +2,7 @@
 
 #include "draw_util.h"
 #include "common_util.h"
+#include "rect_util.h"
 
 void drawDebugLine(ID2D1RenderTarget* pTarget, RECT rect) {
   ID2D1SolidColorBrush* brush = nullptr;
