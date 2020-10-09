@@ -62,6 +62,19 @@ Translate::~Translate() {
   curl_global_cleanup();
 }
 
+void setPapagoNmtAPIHeader(CURL* curl, struct curl_slist* &header) {
+  std::string headerClientId = std::string("X-Naver-Client-Id: ") + std::getenv("TRANSLATE_PAPAGO_API_ID");
+  std::string headerClientSecret = std::string("X-Naver-Client-Secret: ") + std::getenv("TRANSLATE_PAPAGO_API_SECRET");
+  curl_easy_setopt(curl, CURLOPT_URL, "https://openapi.naver.com/v1/papago/n2mt");
+  header = curl_slist_append(header, "Content-Type: application/x-www-form-urlencoded; charset=UTF-8");
+  header = curl_slist_append(header, headerClientId.c_str());
+  header = curl_slist_append(header, headerClientSecret.c_str());
+  curl_easy_setopt(curl, CURLOPT_POST, 1L);
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "source=en&target=ko&text=HelloWorld"); 
+  curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
+
+}
+
 std::string 
 Translate::translate(std::string src) {
   if (!m_transHistory[src].empty()) {
@@ -78,15 +91,22 @@ Translate::translate(std::string src) {
 
     std::string apiKey = "AIzaSyB3MXUyZEcDiw4VQ8tucT3lcvOyr5VbIh0";
     std::string url = "https://translation.googleapis.com/language/translate/v2?q=" + encodedSrc + "&target=ko&format=text&source=en&key=" + apiKey;
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    //curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    struct curl_slist* header = nullptr;
+    setPapagoNmtAPIHeader(curl, header);
+   
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, CurlWrite_CallbackFunc_StdString);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
     curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, error_buffer);
 
+
     /* Perform the request, res will get the return code */
     res = curl_easy_perform(curl);
+    if (header) {
+      curl_slist_free_all(header);
+    }
     /* Check for errors */
     if (res != CURLE_OK)
       fprintf(stderr, "curl_easy_perform() failed: %s\n",

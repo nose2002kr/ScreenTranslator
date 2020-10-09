@@ -36,6 +36,9 @@
     <ClCompile Include="src\messageHandler.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="test_translate.cpp">
+      <Filter>소스 파일\test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\test\test.h">
