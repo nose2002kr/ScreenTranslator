@@ -39,6 +39,7 @@ namespace rectUtil {
   bool contains(RectWrapper lhs, RectWrapper rhs);
   RectWrapper mergeRect(RectWrapper lhs, RectWrapper rhs);
   bool intersected(RectWrapper lhs, RectWrapper rhs);
+  RectWrapper intersect(RectWrapper lhs, RectWrapper rhs);
   bool isEmpty(RectWrapper rect);
 };
 
