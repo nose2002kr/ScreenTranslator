@@ -48,7 +48,8 @@ TextOverlay::createRenderTarget() {
 
   RECT rect;
   GetClientRect(m_canvasWnd, &rect);
-  D2D1_SIZE_U winSize = D2D1::SizeU(RctW(rect), RctH(rect));
+  RectWrapper rectWrapper(rect);
+  D2D1_SIZE_U winSize = D2D1::SizeU(rectWrapper.w(), rectWrapper.h());
   throwIfFail(
     m_fac->CreateHwndRenderTarget(
       D2D1::RenderTargetProperties(),
@@ -134,13 +135,17 @@ TextOverlay::updateCanvasWindow() {
     && canvasRect.bottom == rect.bottom)
     return;
 
-  if (RctW(canvasRect) != RctW(rect) || RctH(canvasRect) != RctH(rect)) {
+  RectWrapper rectWrapper(rect);
+  RectWrapper canvasRectWrapper(canvasRect);
+  int w = rectWrapper.w();
+  int h = rectWrapper.h();
+  if (canvasRectWrapper.w() != w || canvasRectWrapper.h() != h) {
     g_msg.push(MESSAGE_OCR_CANCEL);
   }
 
-  m_rt->Resize(D2D1::SizeU(RctW(rect), RctH(rect)));
+  m_rt->Resize(D2D1::SizeU(w, h));
   ShowWindow(m_canvasWnd, true);
-  SetWindowPos(m_canvasWnd, HWND_TOPMOST, rect.left, rect.top, RctW(rect), RctH(rect), NULL);
+  SetWindowPos(m_canvasWnd, HWND_TOPMOST, rect.left, rect.top, w, h, NULL);
 }
 
 IDWriteFactory*
@@ -204,7 +209,7 @@ TextOverlay::showText() {
   pTarget->Clear(D2D1::ColorF(1.0, 1.0, 1.0));
   pTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 
-  RECT windowsRect = getTargetWindowRect();
+  RectWrapper windowsRect = getTargetWindowRect();
 #ifdef DEBUG_LEVEL1
   drawDebugLine(pTarget, windowsRect);
 #endif
@@ -212,7 +217,8 @@ TextOverlay::showText() {
   for (int i = 0; i < getTextInfoSize(); i++) {
     TextInfo info = getTextInfo(i);
     if (rectUtil::isEmpty(info.rect)) continue;
-    IDWriteTextFormat* textFormat = getTextFormat((float)RctH(info.rect));
+    RectWrapper rect(info.rect);
+    IDWriteTextFormat* textFormat = getTextFormat((float) rect.h());
     ID2D1SolidColorBrush* backBrs = nullptr;
     ID2D1SolidColorBrush* fontBrs = nullptr;
 
@@ -223,7 +229,7 @@ TextOverlay::showText() {
 
     std::wstring drawingText = info.translated ? strToWStr(info.translatedText) : strToWStr(info.ocrText);
     IDWriteTextLayout* layout = nullptr;
-    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, RctW(windowsRect), RctH(windowsRect), &layout);
+    m_writeFac->CreateTextLayout(drawingText.c_str(), drawingText.length(), textFormat, windowsRect.w(), windowsRect.h(), &layout);
     pTarget->DrawTextLayout(D2D1::Point2<float>((float)info.rect.left, (float)info.rect.top), layout, fontBrs);
     layout->Release();
     backBrs->Release();

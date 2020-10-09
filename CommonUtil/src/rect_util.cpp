@@ -11,11 +11,11 @@ RectWrapper mergeRect(RectWrapper lhs, RectWrapper rhs) {
 }
 
 cv::Rect toCVRect(RECT rect) {
-  return cv::Rect(rect.left, rect.top, RctW(rect), RctH(rect));
+  return RectWrapper(rect).toCVRect();
 }
 
 RECT toWinRect(cv::Rect rect) {
-  return RECT{ rect.x, rect.y, rect.br().x, rect.br().y };
+  return RectWrapper(rect).toWinRect();
 }
 
 

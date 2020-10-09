@@ -3,9 +3,6 @@
 #include <opencv2/opencv.hpp>
 #include "Windows.h"
 
-#define RctW(rect) (rect.right - rect.left)
-#define RctH(rect) (rect.bottom - rect.top)
-
 class RectWrapper {
 public:
   RectWrapper() = delete;
