@@ -39,10 +39,24 @@ int getTextInfoSize() {
   return g_textInfo.size();
 }
 
+static inline
+float getDiagonal(const RectWrapper &rect) {
+  if (rectUtil::isEmpty(rect)) {
+    return 0.f;
+  }
+  return sqrt(pow((float) rect.w(), 2.f) + pow((float) rect.h(), 2.f));
+}
+
 void removeIntersectRect(RECT rect) {
   textInfoMutex.lock();
   std::vector<TextInfo> filtered;
-  std::copy_if(g_textInfo.begin(), g_textInfo.end(), std::back_inserter(filtered), [&rect](TextInfo info) { return !rectUtil::intersected(info.rect, rect); });
+  std::copy_if(
+    g_textInfo.begin(), g_textInfo.end(), 
+    std::back_inserter(filtered), 
+      [&rect](TextInfo info) { 
+      RectWrapper intersectRect = rectUtil::intersect(info.rect, rect);
+      return getDiagonal(intersectRect) < getDiagonal(info.rect) * 0.5f;
+    });
   g_textInfo.clear();
   g_textInfo.assign(filtered.begin(), filtered.end());
   textInfoMutex.unlock();
