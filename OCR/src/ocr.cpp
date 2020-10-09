@@ -77,7 +77,7 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
 #ifdef DEBUG_LEVEL1
     cv::Mat debugImg = img.clone();
     for (int i = 0; i < g_textInfo.size(); i++) {
-      cv::rectangle(debugImg, imageUtil::toCVRect(g_textInfo[i].rect), cv::Scalar(0, 255, 0, 255), 3, 8, 0);
+      cv::rectangle(debugImg, rectUtil::toCVRect(g_textInfo[i].rect), cv::Scalar(0, 255, 0, 255), 3, 8, 0);
     }
     cv::imwrite(DEBUG_LEVEL1"searchedImage.png", debugImg);
 #endif

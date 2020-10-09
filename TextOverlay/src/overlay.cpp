@@ -211,7 +211,7 @@ TextOverlay::showText() {
 
   RectWrapper windowsRect = getTargetWindowRect();
 #ifdef DEBUG_LEVEL1
-  drawDebugLine(pTarget, windowsRect);
+  drawDebugLine(pTarget, windowsRect.toWinRect());
 #endif
 
   for (int i = 0; i < getTextInfoSize(); i++) {
