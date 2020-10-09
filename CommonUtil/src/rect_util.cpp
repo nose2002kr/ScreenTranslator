@@ -19,13 +19,13 @@ RECT toWinRect(cv::Rect rect) {
 }
 
 
-bool contain(RectWrapper lhs, RectWrapper rhs) {
-  bool contained = (lhs.l() < rhs.r() && lhs.r() > rhs.l() &&
+bool contains(RectWrapper lhs, RectWrapper rhs) {
+  bool contains = (lhs.l() < rhs.r() && lhs.r() > rhs.l() &&
                     lhs.t() > rhs.b() && lhs.b() < rhs.t());
-  return contained;
+  return contains;
 }
 
-bool intersect(RectWrapper lhs, RectWrapper rhs) {
+bool intersected(RectWrapper lhs, RectWrapper rhs) {
 
   bool intersected = (lhs.l() <= rhs.l() && lhs.r() >= rhs.l()
                   || rhs.l() <= lhs.l() && rhs.r() >= lhs.l())

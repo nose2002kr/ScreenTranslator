@@ -36,9 +36,9 @@ namespace rectUtil {
   cv::Rect toCVRect(RECT rect);
   RECT toWinRect(cv::Rect rect);
 
-  bool contain(RectWrapper lhs, RectWrapper rhs);
+  bool contains(RectWrapper lhs, RectWrapper rhs);
   RectWrapper mergeRect(RectWrapper lhs, RectWrapper rhs);
-  bool intersect(RectWrapper lhs, RectWrapper rhs);
+  bool intersected(RectWrapper lhs, RectWrapper rhs);
   bool isEmpty(RectWrapper rect);
 };
 
