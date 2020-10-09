@@ -57,7 +57,7 @@ RectWrapper::RectWrapper(cv::Rect rect) {
   m_cvRect = rect;
   m_type = CV_RECT;
 }
-int RectWrapper::x() {
+int RectWrapper::x() const {
   switch (m_type) {
   case WIN_RECT: return m_winRect.left;
   case CV_RECT:  return m_cvRect.x;
@@ -65,7 +65,7 @@ int RectWrapper::x() {
   }
 }
 
-int RectWrapper::y() {
+int RectWrapper::y() const {
   switch (m_type) {
   case WIN_RECT: return m_winRect.top;
   case CV_RECT:  return m_cvRect.y;
@@ -73,7 +73,7 @@ int RectWrapper::y() {
   }
 }
 
-int RectWrapper::w() {
+int RectWrapper::w() const {
   switch (m_type) {
   case WIN_RECT: return m_winRect.right - m_winRect.left;
   case CV_RECT:  return m_cvRect.width;
@@ -81,7 +81,7 @@ int RectWrapper::w() {
   }
 }
 
-int RectWrapper::h() {
+int RectWrapper::h() const {
   switch (m_type) {
   case WIN_RECT: return m_winRect.bottom - m_winRect.top;
   case CV_RECT:  return m_cvRect.height;
@@ -89,7 +89,7 @@ int RectWrapper::h() {
   }
 }
 
-int RectWrapper::l() {
+int RectWrapper::l() const {
   switch (m_type) {
   case WIN_RECT: return m_winRect.left;
   case CV_RECT:  return m_cvRect.x;
@@ -97,7 +97,7 @@ int RectWrapper::l() {
   }
 }
 
-int RectWrapper::t() {
+int RectWrapper::t() const {
   switch (m_type) {
   case WIN_RECT: return m_winRect.top;
   case CV_RECT:  return m_cvRect.y;
@@ -105,7 +105,7 @@ int RectWrapper::t() {
   }
 }
 
-int RectWrapper::r() {
+int RectWrapper::r() const {
   switch (m_type) {
   case WIN_RECT: return m_winRect.right;
   case CV_RECT:  return m_cvRect.width + m_cvRect.x;
@@ -113,7 +113,7 @@ int RectWrapper::r() {
   }
 }
 
-int RectWrapper::b() {
+int RectWrapper::b() const {
   switch (m_type) {
   case WIN_RECT: return m_winRect.bottom;
   case CV_RECT:  return m_cvRect.height + m_cvRect.y;
@@ -121,9 +121,9 @@ int RectWrapper::b() {
   }
 }
 
-RECT RectWrapper::toWinRect() {
+RECT RectWrapper::toWinRect() const {
   return RECT{ l(), t(), r(), b() };
 }
-cv::Rect RectWrapper::toCVRect() {
+cv::Rect RectWrapper::toCVRect() const {
   return cv::Rect(x(), y(), w(), h());
 }
