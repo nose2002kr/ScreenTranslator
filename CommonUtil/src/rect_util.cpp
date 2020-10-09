@@ -37,8 +37,8 @@ bool intersected(RectWrapper lhs, RectWrapper rhs) {
 RectWrapper intersect(RectWrapper lhs, RectWrapper rhs) {
   RECT ret;
   ret.left =   max(lhs.l(), rhs.l());
-  ret.top =    max(lhs.r(), rhs.r());
-  ret.right =  min(lhs.t(), rhs.t());
+  ret.top =    max(lhs.t(), rhs.t());
+  ret.right =  min(lhs.r(), rhs.r());
   ret.bottom = min(lhs.b(), rhs.b());
   return (ret.right < ret.left || ret.bottom < ret.top) ? RECT{ 0, } : ret;
 }
