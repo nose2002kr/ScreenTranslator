@@ -19,5 +19,5 @@ void pushTextInfo(TextInfo info);
 TextInfo getTextInfo(size_t i);
 void clearTextInfo();
 void updateTextInfo(size_t i, TextInfo info);
-int getTextInfoSize();
+size_t getTextInfoSize();
 void removeIntersectRect(RECT rect);

@@ -35,7 +35,7 @@ void updateTextInfo(size_t i, TextInfo info) {
   textInfoMutex.unlock();
 }
 
-int getTextInfoSize() {
+size_t getTextInfoSize() {
   return g_textInfo.size();
 }
 
