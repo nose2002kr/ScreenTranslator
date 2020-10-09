@@ -22,7 +22,8 @@ int CALLBACK WinMain(
   //test::thread();
   //test::imageProcess();
   //test::thread2();
-  ScreenTranslator *translator = new ScreenTranslator(hInstance);
+  test::translate();
+  //ScreenTranslator *translator = new ScreenTranslator(hInstance);
 
 
   TextOverlay::instnace()->updateCanvasWindow();
