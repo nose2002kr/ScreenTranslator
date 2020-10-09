@@ -9,18 +9,18 @@ public:
   RectWrapper(RECT rect);
   RectWrapper(cv::Rect rect);
 
-  int x();
-  int y();
-  int w();
-  int h();
+  int x() const;
+  int y() const;
+  int w() const;
+  int h() const;
   
-  int l();
-  int t();
-  int r();
-  int b();
+  int l() const;
+  int t() const;
+  int r() const;
+  int b() const;
 
-  RECT toWinRect();
-  cv::Rect toCVRect();
+  RECT toWinRect() const;
+  cv::Rect toCVRect() const;
 private:
   enum Type {
     UNDEFINED = 0,
