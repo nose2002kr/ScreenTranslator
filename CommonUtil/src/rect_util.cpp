@@ -34,6 +34,15 @@ bool intersected(RectWrapper lhs, RectWrapper rhs) {
   return intersected;
 }
 
+RectWrapper intersect(RectWrapper lhs, RectWrapper rhs) {
+  RECT ret;
+  ret.left =   max(lhs.l(), rhs.l());
+  ret.top =    max(lhs.r(), rhs.r());
+  ret.right =  min(lhs.t(), rhs.t());
+  ret.bottom = min(lhs.b(), rhs.b());
+  return (ret.right < ret.left || ret.bottom < ret.top) ? RECT{ 0, } : ret;
+}
+
 bool isEmpty(RectWrapper rect) {
   return rect.w() * rect.h() == 0;
 }
