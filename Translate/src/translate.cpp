@@ -62,7 +62,7 @@ Translate::~Translate() {
   curl_global_cleanup();
 }
 
-void setPapagoNmtAPIHeader(CURL* curl, struct curl_slist* &header) {
+void setPapagoNmtAPIHeader(CURL* curl, struct curl_slist* &header, const char *param) {
   std::string headerClientId = std::string("X-Naver-Client-Id: ") + std::getenv("TRANSLATE_PAPAGO_API_ID");
   std::string headerClientSecret = std::string("X-Naver-Client-Secret: ") + std::getenv("TRANSLATE_PAPAGO_API_SECRET");
   curl_easy_setopt(curl, CURLOPT_URL, "https://openapi.naver.com/v1/papago/n2mt");
@@ -70,7 +70,7 @@ void setPapagoNmtAPIHeader(CURL* curl, struct curl_slist* &header) {
   header = curl_slist_append(header, headerClientId.c_str());
   header = curl_slist_append(header, headerClientSecret.c_str());
   curl_easy_setopt(curl, CURLOPT_POST, 1L);
-  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "source=en&target=ko&text=HelloWorld"); 
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, param);
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
 
 }
@@ -93,7 +93,8 @@ Translate::translate(std::string src) {
     std::string url = "https://translation.googleapis.com/language/translate/v2?q=" + encodedSrc + "&target=ko&format=text&source=en&key=" + apiKey;
     //curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     struct curl_slist* header = nullptr;
-    setPapagoNmtAPIHeader(curl, header);
+    std::string param = "source=en&target=ko&text=" + encodedSrc;
+    setPapagoNmtAPIHeader(curl, header, param.c_str());
    
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -121,7 +122,7 @@ Translate::translate(std::string src) {
       return "";
     } else {
       
-      return node["data"]["translations"][0]["translatedText"].as_string();
+      return node["message"]["result"]["translatedText"].as_string();
     }
   }
   
