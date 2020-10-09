@@ -4,7 +4,6 @@
 
 #include "common_util.h"
 #include "text_info.h"
-
 #include "image_util.h"
 
 class OCR {
@@ -33,7 +32,7 @@ public:
   bool findOutTextInfos(Image *imgParam);
   bool findOutTextInfos(const cv::Mat &img, int relx = 0, int rely = 0, bool useDiff = true);
 private:
-  bool m_cancelFlag;
+  bool m_cancelFlag = false;
   cv::Mat m_lastImage;
   std::mutex m_mtx;
 };

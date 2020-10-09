@@ -13,6 +13,7 @@
 
 #include "debug_util.h"
 #include "util/draw_util.h"
+#include "rect_util.h"
 
 #pragma comment(lib, "Dwmapi.lib")
 #pragma comment(lib, "D2D1.lib")
@@ -210,7 +211,7 @@ TextOverlay::showText() {
 
   for (int i = 0; i < getTextInfoSize(); i++) {
     TextInfo info = getTextInfo(i);
-    if (isEmpty(info.rect)) continue;
+    if (rectUtil::isEmpty(info.rect)) continue;
     IDWriteTextFormat* textFormat = getTextFormat((float)RctH(info.rect));
     ID2D1SolidColorBrush* backBrs = nullptr;
     ID2D1SolidColorBrush* fontBrs = nullptr;

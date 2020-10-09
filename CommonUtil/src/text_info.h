@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-bool isEmpty(RECT rect);
-
 struct TextInfo {
   RECT rect;
   int fontColor;

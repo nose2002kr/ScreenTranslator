@@ -7,6 +7,8 @@
 
 #include <thread>
 
+#include "rect_util.h"
+
 bool termFlag = false;
 
 void findingText() {
@@ -41,7 +43,7 @@ void findingText() {
     }
     else {
       for (auto rect : diffRange) {
-        removeIntersectRect(imageUtil::toWinRect(rect));
+        removeIntersectRect(rectUtil::toWinRect(rect));
         ocr->findOutTextInfos(image(rect));
       }
     }

@@ -22,11 +22,13 @@
     <ClInclude Include="src\common_util.h" />
     <ClInclude Include="src\debug_util.h" />
     <ClInclude Include="src\image_util.h" />
+    <ClInclude Include="src\rect_util.h" />
     <ClInclude Include="src\text_info.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\common_util.cpp" />
     <ClCompile Include="src\image_util.cpp" />
+    <ClCompile Include="src\rect_util.cpp" />
     <ClCompile Include="src\text_info.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

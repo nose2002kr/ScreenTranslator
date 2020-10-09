@@ -3,9 +3,6 @@
 #include <queue>
 #include <string>
 
-#define RctW(rect) (rect.right - rect.left)
-#define RctH(rect) (rect.bottom - rect.top)
-
 struct Image {
   ~Image() {
     if (samples) delete[] samples;

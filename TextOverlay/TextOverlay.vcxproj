@@ -94,7 +94,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(ProjectDir)$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>..\CommonUtil\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CommonUtil\src;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/await %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -117,7 +117,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(ProjectDir)$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>..\CommonUtil\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CommonUtil\src;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/await %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -144,7 +144,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(ProjectDir)$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>..\CommonUtil\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CommonUtil\src;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -169,7 +169,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(ProjectDir)$(IntDir)pch.pch</PrecompiledHeaderOutputFile>
-      <AdditionalIncludeDirectories>..\CommonUtil\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\CommonUtil\src;..\thirdparty\opencv\build\include;..\thirdparty\opencv\build\modules\calib3d\include;..\thirdparty\opencv\build\modules\core\include;..\thirdparty\opencv\build\modules\dnn\include;..\thirdparty\opencv\build\modules\features2d\include;..\thirdparty\opencv\build\modules\flann\include;..\thirdparty\opencv\build\modules\gapi\include;..\thirdparty\opencv\build\modules\highgui\include;..\thirdparty\opencv\build\modules\imgcodecs\include;..\thirdparty\opencv\build\modules\imgproc\include;..\thirdparty\opencv\build\modules\java\include;..\thirdparty\opencv\build\modules\js\include;..\thirdparty\opencv\build\modules\ml\include;..\thirdparty\opencv\build\modules\objdetect\include;..\thirdparty\opencv\build\modules\photo\include;..\thirdparty\opencv\build\modules\python\include;..\thirdparty\opencv\build\modules\stitching\include;..\thirdparty\opencv\build\modules\ts\include;..\thirdparty\opencv\build\modules\video\include;..\thirdparty\opencv\build\modules\videoio\include;..\thirdparty\opencv\build\modules\world\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

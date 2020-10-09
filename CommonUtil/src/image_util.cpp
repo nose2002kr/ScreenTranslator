@@ -1,5 +1,6 @@
 #include "image_util.h"
 
+#include "rect_util.h"
 #include "debug_util.h"
 
 namespace imageUtil {
@@ -391,14 +392,6 @@ detectLetters(const cv::Mat &img) {
   return letters;
 }
 
-cv::Rect mergeRect(cv::Rect lhs, cv::Rect rhs) {
-  int left = min(lhs.x, rhs.x);
-  int top = min(lhs.y, rhs.y);
-  int right = max(lhs.x + lhs.width, rhs.x + rhs.width);
-  int bottom = max(lhs.y + lhs.height, rhs.y + rhs.height);
-  return cv::Rect(left, top, right - left, bottom - top);
-}
-
 std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
   std::vector<cv::Rect> dst;
 
@@ -414,7 +407,7 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
         rect.x < dt->x) {
 
         if (rect.br().x + spacing > dt->x) {
-          dst[i] = imageUtil::mergeRect(*dt, rect);
+          dst[i] = rectUtil::mergeRect(*dt, rect).toCVRect();
           pv = -1;
         } else {
           pv = i;
@@ -429,14 +422,6 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
   }
 
   return dst;
-}
-
-cv::Rect toCVRect(RECT rect) {
-  return cv::Rect(rect.left, rect.top, RctW(rect), RctH(rect));
-}
-
-RECT toWinRect(cv::Rect rect) {
-  return RECT{ rect.x, rect.y, rect.br().x, rect.br().y };
 }
 
 int Vec2Rgb(cv::Vec3b vec) {
