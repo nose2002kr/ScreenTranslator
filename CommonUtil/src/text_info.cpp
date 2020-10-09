@@ -42,7 +42,7 @@ int getTextInfoSize() {
 void removeIntersectRect(RECT rect) {
   textInfoMutex.lock();
   std::vector<TextInfo> filtered;
-  std::copy_if(g_textInfo.begin(), g_textInfo.end(), std::back_inserter(filtered), [&rect](TextInfo info) { return !rectUtil::intersect(info.rect, rect); });
+  std::copy_if(g_textInfo.begin(), g_textInfo.end(), std::back_inserter(filtered), [&rect](TextInfo info) { return !rectUtil::intersected(info.rect, rect); });
   g_textInfo.clear();
   g_textInfo.assign(filtered.begin(), filtered.end());
   textInfoMutex.unlock();
