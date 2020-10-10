@@ -57,7 +57,7 @@ std::string padTo(std::string str, const size_t num, const char paddingChar = ' 
 }
 
 void writeLog(logLevel lv, std::string logMsg) {
-  std::string filePath = "./translater_" + getCurrentDateTime("date") + ".log";
+  std::string filePath = "./translator_" + getCurrentDateTime("date") + ".log";
   std::string now = getCurrentDateTime("now");
   std::ofstream ofs(filePath.c_str(), std::ios_base::out | std::ios_base::app);
   ofs << now.c_str() << '\t';
