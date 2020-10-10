@@ -1,6 +1,11 @@
 ﻿[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
+######################################################################
+# !Should be prepared CMake, 7z, Visual Studio 2019(*with eng pack)! #
+######################################################################
+
+
 $scriptPath = split-path -parent $MyInvocation.MyCommand.Definition
 cd $scriptPath
 
@@ -32,7 +37,7 @@ function DownloadAndUnzip
 }
 
 #DownloadAndUnzip "https://curl.haxx.se/windows/dl-7.72.0_3/curl-7.72.0_3-win64-mingw.zip" "curl"
-DownloadAndUnzip "https://github.com/opencv/opencv/releases/download/4.4.0/opencv-4.4.0-dldt-2020.4-vc16-avx2.zip" "opencv"
+DownloadAndUnzip "https://github.com/opencv/opencv/releases/download/4.4.0/opencv-4.4.0-dldt-2020.3-vc16-avx2.7z" "opencv"
 DownloadAndUnzip "https://github.com/opencv/opencv/releases/download/4.4.0/opencv-4.4.0-dldt-2020.4-vc16-avx2-debug.7z" "opencv-debug"
 #DownloadAndUnzip "https://software-network.org/client/sw-master-windows-client.zip" "sw"
 #DownloadAndUnzip "https://cppan.org/client/cppan-master-Windows-client.zip" "cppan"
@@ -43,6 +48,7 @@ echo "build libjson....."
 cd $scriptPath
 cd libjson
 Start-Process $MSBuild -ArgumentList ".\libjson.sln","/p:Configuration=Release","-fl","-flp:logfile=build.log" -NoNewWindow -Wait
+Start-Process $MSBuild -ArgumentList ".\libjson.sln","/p:Configuration=Debug","-fl","-flp:logfile=build.log" -NoNewWindow -Wait
 
 ############# build libcurl
 echo "build libcurl....."
