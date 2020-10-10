@@ -63,14 +63,12 @@ void showingText() {
 }
 
 void translatingText() {
-  Translate trans;
   while (!termFlag) {
     for (int i = 0; i < getTextInfoSize(); i++) {
       TextInfo info = getTextInfo(i);
       if (info.translated) continue;
-      info.translatedText = trans.translate(info.ocrText);
+      info.translatedText = Translate::instance().translate(info.ocrText);
       info.translated = true;
-      trans.pushHistory(info.ocrText, info.translatedText);
       updateTextInfo(i, info);
     }
 
