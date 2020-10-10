@@ -121,8 +121,9 @@ Translate::translate(std::string src) {
       fprintf(stderr, "curl_easy_perform() failed: %s\n", s);
       return "";
     } else {
-      
-      return node["message"]["result"]["translatedText"].as_string();
+      std::string translatedText = node["message"]["result"]["translatedText"].as_string();
+      pushHistory(src, translatedText);
+      return translatedText;
     }
   }
   
