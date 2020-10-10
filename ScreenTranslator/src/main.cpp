@@ -17,7 +17,7 @@ int CALLBACK WinMain(
 ) {
   //TextOverlay::init(hInstance);
   //OCR::init("C:/Users/KS/cpp/tesseract-/tessdata");
-  writeLog(DEBUG, "Running ScreenTranslater.");
+  writeLog(DEBUG, "Running ScreenTranslator.");
 
   //test::thread();
   //test::imageProcess();
@@ -31,7 +31,7 @@ int CALLBACK WinMain(
 
   Sleep(100000000);
 
-  writeLog(DEBUG, "Terminated ScreenTranslater.");
+  writeLog(DEBUG, "Terminated ScreenTranslator.");
 
   return 0;
 }
