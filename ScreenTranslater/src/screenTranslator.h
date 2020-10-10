@@ -12,6 +12,7 @@ public:
 private:
   void runShowTextThread();
   void runFindTextThread();
+  void runTranslateTextThread();
   void installKeyHook();
   void runMessagwHandler();
 
@@ -19,4 +20,5 @@ private:
 
   std::thread m_findTxhread;
   std::thread m_showTxThread;
+  std::thread m_translateTxThread;
 };
