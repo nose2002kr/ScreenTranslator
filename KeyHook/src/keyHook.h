@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <map>
+#include <thread>
 
 class KeySeq {
 public:
@@ -47,4 +48,5 @@ public:
 
 private:
   std::map<KeySeq, generalFunc> funcMap;
+  std::thread m_hookThread;
 };

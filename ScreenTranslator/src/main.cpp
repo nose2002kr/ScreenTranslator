@@ -26,10 +26,10 @@ int CALLBACK WinMain(
   ScreenTranslator *translator = new ScreenTranslator(hInstance);
 
 
-  TextOverlay::instnace()->updateCanvasWindow();
+  /*TextOverlay::instnace()->updateCanvasWindow();
   TextOverlay::instnace()->showText();
 
-  Sleep(100000000);
+  Sleep(100000000);*/
 
   writeLog(DEBUG, "Terminated ScreenTranslator.");
 

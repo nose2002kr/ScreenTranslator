@@ -65,13 +65,21 @@ ScreenTranslator::runTranslateTextThread() {
     }
   });
 }
+
 void
 ScreenTranslator::installKeyHook() {
+  KeyHook* hook = KeyHook::instnace();
 
+  // Key: Terminate app. [CTRL + ALT + Q]
+  hook->registryFunction(KeySeq(true, false, true, 'q'), [&] { m_terminate = true; MessageHandler().terminate(); });
+  // Key: Lock & Unlock window (do not switch windows any more). [CTRL + ALT + P]
+  hook->registryFunction(KeySeq(true, false, true, 'p'), [] { TextOverlay::instnace()->toggleWindowLock(); });
+
+  hook->startHook();
 }
 
 void
 ScreenTranslator::runMessagwHandler() {
   MessageHandler handler;
-  handler.handle();
+  handler.start();
 }

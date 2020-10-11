@@ -17,6 +17,8 @@ struct Image {
 
 #define MESSAGE_OCR_CANCEL 200
 
+#define MESSAGE_TERMINATE 999
+
 extern std::queue<int> g_msg;
 
 // string util
