@@ -20,9 +20,9 @@ typedef struct t_color_node {
 
 static cv::Mat getDominantPalette(std::vector<cv::Vec3b> colors) {
   const int tile_size = 64;
-  cv::Mat ret = cv::Mat(tile_size, tile_size*colors.size(), CV_8UC3, cv::Scalar(0));
+  cv::Mat ret = cv::Mat(tile_size, (int) (tile_size*colors.size()), CV_8UC3, cv::Scalar(0));
 
-  for (size_t i = 0; i < colors.size(); i++) {
+  for (int i = 0; i < (int) colors.size(); i++) {
     cv::Rect rect(i * tile_size, 0, tile_size, tile_size);
     cv::rectangle(ret, rect, cv::Scalar(colors[i][0], colors[i][1], colors[i][2]), cv::FILLED);
   }
@@ -311,6 +311,19 @@ std::vector<cv::Vec3b> findDominantColors(const cv::Mat &img, int count) {
   return colors;
 }
 
+bool isSameLine(cv::Rect prev, cv::Rect cur) {
+  int h = min(prev.height, cur.height);
+  return prev.y - h * 0.8f < cur.y
+      && prev.y + h * 0.8f > cur.y;
+}
+
+bool isForward(cv::Rect prev, cv::Rect cur) {
+  /*if (!isSameLine(prev, cur)) {
+    return false;
+  }*/
+  return cur.x < prev.x;
+}
+
 std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t contourComplexity) {
   std::vector<cv::Rect> boundRect;
 
@@ -320,9 +333,9 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
 #ifdef DEBUG_LEVEL2
   cv::imwrite(DEBUG_LEVEL2"detect-img_gray.png", binaryImage);
 #endif
-  for (size_t i = 0; i < contours.size(); i++) {
+  // it is should be sort by position. (in y order, then in x order.)
+  for (int i = (int) contours.size() - 1; i >= 0; i--) {
 #ifdef DEBUG_LEVEL2
-    
     cv::Mat dbgImg = binaryImage.clone();
     cvtColor(dbgImg, dbgImg, cv::COLOR_GRAY2BGR);
     cv::polylines(dbgImg, contours[i], false, cv::Scalar(0., 255, 0., 255), 1, 8, 0);
@@ -331,14 +344,34 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
     if (contours[i].size() > contourComplexity) {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
       cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
-      boundRect.push_back(appRect);
+      int insertIndex = -1;
+      int xDistance = INT_MAX;
+      for (int j = (int) boundRect.size() - 1; j >= 0; j--) {
+        if (!isSameLine(boundRect[j], appRect)) {
+          break;
+        }
+        if (isForward(boundRect[j], appRect)) {
+          if (xDistance > appRect.x - boundRect[j].x) {
+            insertIndex = j;
+          }
+        }
+      }
+      if (insertIndex == -1) {
+        boundRect.push_back(appRect);
+      } else {
+        boundRect.insert(boundRect.begin() + insertIndex, appRect);
+      }
     }
   }
   return boundRect;
 }
 
 static inline cv::Rect inflate(cv::Rect rect, float x, float y) {
-  return cv::Rect(rect.x - x, rect.y - y, rect.width + x * 2, rect.height + y * 2);
+  return cv::Rect(
+    (int) (rect.x - x),
+    (int) (rect.y - y),
+    (int) (rect.width + x * 2),
+    (int) (rect.height + y * 2));
 }
 
 cv::Rect normalize(const cv::Mat &img, cv::Rect rect) {
@@ -359,18 +392,19 @@ cv::Mat sobelToBinrayImage(const cv::Mat &img) { // for extract linked text cont
   }
   cv::Mat img_sobelX;
   cv::Mat img_sobelY;
-  cv::Sobel(img_gray, img_sobelX, CV_8U, 1, 0, 3, 1, 0, cv::BORDER_DEFAULT);
-  cv::Sobel(img_gray, img_sobelY, CV_8U, 0, 1, 3, 1, 0, cv::BORDER_DEFAULT);
+  cv::Sobel(img_gray, img_sobelX, CV_8U, 1, 0, 3, 2., 1, cv::BORDER_DEFAULT);
+  cv::Sobel(img_gray, img_sobelY, CV_8U, 0, 1, 3, 2., 1, cv::BORDER_DEFAULT);
   cv::Mat img_sobel = img_sobelX + img_sobelY;
   cv::Mat img_threshold;
   cv::threshold(img_sobel, img_threshold, 0, 255, cv::THRESH_OTSU + cv::THRESH_BINARY);
 #ifdef DEBUG_LEVEL3
+  cv::imwrite(DEBUG_LEVEL3"sobel_src.png", img_gray);
   cv::imwrite(DEBUG_LEVEL3"sobelX.png", img_sobelX);
   cv::imwrite(DEBUG_LEVEL3"sobelY.png", img_sobelY);
   cv::imwrite(DEBUG_LEVEL3"sobel.png", img_sobel);
   cv::imwrite(DEBUG_LEVEL3"threshold.png", img_threshold);
 #endif
-  cv::morphologyEx(img_threshold, img_threshold, cv::MORPH_CLOSE, getStructuringElement(cv::MORPH_RECT, cv::Size(3, 1))); //Does the trick
+  cv::morphologyEx(img_threshold, img_threshold, cv::MORPH_CLOSE, getStructuringElement(cv::MORPH_RECT, cv::Size(2, 1))); //Does the trick
   return img_threshold;
 }
 
@@ -384,8 +418,7 @@ detectLetters(const cv::Mat &img) {
       || letter.height < 5
       || letter.width < 2) {
       it = letters.erase(it);
-    }
-    else {
+    } else {
       ++it;
     }
   }
@@ -398,8 +431,8 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
   for (auto el : src) {
     //cv::Rect rect = inflate(el, el.width * 0.1, el. height * 0.1);
     cv::Rect rect = el;
-    int pv = dst.size();
-    for (size_t i = 0; i < dst.size(); i++) {
+    int pv = (int) dst.size();
+    for (int i = 0; i < (int) dst.size(); i++) {
       cv::Rect* dt = &dst[i];
       double spacing = rect.height * 0.4;
       if (rect.y - spacing < dt->y &&
