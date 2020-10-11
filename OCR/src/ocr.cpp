@@ -35,8 +35,8 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
     || img.cols * img.rows != m_lastImage.cols * m_lastImage.rows) {
 
     std::vector<cv::Rect> detectedLetterBoxes = imageUtil::detectLetters(img);
-    std::vector<cv::Rect> letterBBoxes = imageUtil::reorganizeText(detectedLetterBoxes);
-    for (auto it = letterBBoxes.rbegin(); it != letterBBoxes.rend(); ++it) {
+    std::vector<cv::Rect> letterBBoxes = detectedLetterBoxes;// imageUtil::reorganizeText(detectedLetterBoxes);
+    for (auto it = letterBBoxes.begin(); it != letterBBoxes.end(); ++it) {
       if (m_cancelFlag) {
         m_cancelFlag = false;
         m_lastImage = cv::Mat();

@@ -311,17 +311,48 @@ std::vector<cv::Vec3b> findDominantColors(const cv::Mat &img, int count) {
   return colors;
 }
 
+static inline
 bool isSameLine(cv::Rect prev, cv::Rect cur) {
   int h = min(prev.height, cur.height);
   return prev.y - h * 0.8f < cur.y
       && prev.y + h * 0.8f > cur.y;
 }
 
+static inline
 bool isForward(cv::Rect prev, cv::Rect cur) {
-  /*if (!isSameLine(prev, cur)) {
-    return false;
-  }*/
   return cur.x < prev.x;
+}
+
+static inline
+int findNearstRect(const std::vector<cv::Rect>& boundRect, cv::Rect cur, bool onlyForward = true, int* distance = nullptr) {
+  int foundIndex = -1;
+  int xDistance = INT_MAX;
+  for (int j = (int)boundRect.size() - 1; j >= 0; j--) {
+    if (!isSameLine(boundRect[j], cur)) {
+      break;
+    }
+    if ((!onlyForward) || (onlyForward && isForward(boundRect[j], cur))) {
+      if (abs(xDistance) > abs(cur.x - (boundRect[j].x + boundRect[j].width))) {
+        xDistance = cur.x - (boundRect[j].x + +boundRect[j].width);
+        foundIndex = j;
+        if (distance) *distance = xDistance;
+      }
+    }
+  }
+  return foundIndex;
+}
+
+static inline
+int findForwardRect(const std::vector<cv::Rect>& boundRect, cv::Rect cur, int* distance = nullptr) {
+  return findNearstRect(boundRect, cur, true, distance);
+}
+
+static inline
+int findJustAroundRect(const std::vector<cv::Rect> &boundRect, cv::Rect cur) {
+  int distance = INT_MAX;
+  int foundIndex = findNearstRect(boundRect, cur, false, &distance);
+  return abs(distance) < cur.height * 0.8f  ? -1 : 
+    (distance < 0 ? foundIndex + 1 : foundIndex);
 }
 
 std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t contourComplexity) {
@@ -344,22 +375,19 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
     if (contours[i].size() > contourComplexity) {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
       cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
-      int insertIndex = -1;
-      int xDistance = INT_MAX;
-      for (int j = (int) boundRect.size() - 1; j >= 0; j--) {
-        if (!isSameLine(boundRect[j], appRect)) {
-          break;
-        }
-        if (isForward(boundRect[j], appRect)) {
-          if (xDistance > appRect.x - boundRect[j].x) {
-            insertIndex = j;
-          }
-        }
-      }
-      if (insertIndex == -1) {
+      
+      int forwardRectIndex = findForwardRect(boundRect, appRect);
+      if (forwardRectIndex == -1) {
         boundRect.push_back(appRect);
       } else {
-        boundRect.insert(boundRect.begin() + insertIndex, appRect);
+        boundRect.insert(boundRect.begin() + forwardRectIndex, appRect);
+      }
+    } else {
+      cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
+      cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
+      int forwardRectIndex = findJustAroundRect(boundRect, appRect);
+      if (forwardRectIndex != -1) {
+        boundRect.insert(boundRect.begin() + forwardRectIndex, appRect);
       }
     }
   }
@@ -411,6 +439,7 @@ cv::Mat sobelToBinrayImage(const cv::Mat &img) { // for extract linked text cont
 std::vector<cv::Rect>
 detectLetters(const cv::Mat &img) {
   auto letters = findContourBounds(sobelToBinrayImage(img), 40);
+  letters = imageUtil::reorganizeText(letters);
   for (auto it = letters.begin(); it != letters.end(); ) {
     cv::Rect letter = *it;
     if (letter.width < letter.height
@@ -431,27 +460,16 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
   for (auto el : src) {
     //cv::Rect rect = inflate(el, el.width * 0.1, el. height * 0.1);
     cv::Rect rect = el;
-    int pv = (int) dst.size();
-    for (int i = 0; i < (int) dst.size(); i++) {
-      cv::Rect* dt = &dst[i];
-      double spacing = rect.height * 0.4;
-      if (rect.y - spacing < dt->y &&
-        rect.y + spacing > dt->y &&
-        rect.x < dt->x) {
+    if (rect.height > 100) { continue; }
 
-        if (rect.br().x + spacing > dt->x) {
-          dst[i] = rectUtil::mergeRect(*dt, rect).toCVRect();
-          pv = -1;
-        } else {
-          pv = i;
-        }
-        break;
-      }
+    int distance = INT_MAX;
+    int foundIndex = findNearstRect(dst, rect, false, &distance);
+    double spacing = rect.height * 0.8;
+    if (foundIndex != -1 && 0 <= distance && distance < spacing) {
+      dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
+    } else {
+      dst.push_back(rect);
     }
-
-    if (pv < 0) continue;
-    
-    dst.insert(dst.begin() + pv, rect);
   }
 
   return dst;
