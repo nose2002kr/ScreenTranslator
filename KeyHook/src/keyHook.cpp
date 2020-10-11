@@ -60,8 +60,10 @@ void MessageLoop()
 
 void 
 KeyHook::startHook() {
-  hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, (HOOKPROC) KeyboardEvent, GetModuleHandle(NULL), NULL);
-  MessageLoop();
+  m_hookThread = std::thread([] {
+    hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, (HOOKPROC)KeyboardEvent, GetModuleHandle(NULL), NULL);
+    MessageLoop(); 
+  });
   
 }
 

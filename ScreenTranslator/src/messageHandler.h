@@ -2,5 +2,7 @@
 
 class MessageHandler {
 public:
-  void handle();
+  void start();
+  void terminate();
+private:
 };
