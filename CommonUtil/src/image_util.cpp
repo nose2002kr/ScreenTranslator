@@ -351,8 +351,8 @@ static inline
 int findJustAroundRect(const std::vector<cv::Rect> &boundRect, cv::Rect cur) {
   int distance = INT_MAX;
   int foundIndex = findNearstRect(boundRect, cur, false, &distance);
-  return abs(distance) < cur.height * 0.8f  ? -1 : 
-    (distance < 0 ? foundIndex + 1 : foundIndex);
+  return abs(distance) < cur.height * 0.8f ? (distance < 0 ? foundIndex + 1 : foundIndex)
+    : -1;
 }
 
 std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t contourComplexity) {
@@ -465,7 +465,7 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
     int distance = INT_MAX;
     int foundIndex = findNearstRect(dst, rect, false, &distance);
     double spacing = rect.height * 0.8;
-    if (foundIndex != -1 && 0 <= distance && distance < spacing) {
+    if (foundIndex != -1 && abs(distance) < spacing) {
       dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
     } else {
       dst.push_back(rect);
