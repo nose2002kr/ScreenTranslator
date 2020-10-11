@@ -351,7 +351,7 @@ static inline
 int findJustAroundRect(const std::vector<cv::Rect> &boundRect, cv::Rect cur) {
   int distance = INT_MAX;
   int foundIndex = findNearstRect(boundRect, cur, false, &distance);
-  return abs(distance) < cur.height * 0.8f ? (distance < 0 ? foundIndex + 1 : foundIndex)
+  return abs(distance) < cur.height * 0.8f ? (distance >= 0 ? foundIndex + 1 : foundIndex)
     : -1;
 }
 
