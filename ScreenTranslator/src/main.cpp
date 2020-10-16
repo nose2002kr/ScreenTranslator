@@ -16,7 +16,7 @@ int CALLBACK WinMain(
   _In_ int       nCmdShow
 ) {
   //TextOverlay::init(hInstance);
-  //OCR::init("C:/Users/KS/cpp/tesseract-/tessdata");
+  //OCR::init("./res/tessdata");
   writeLog(DEBUG, "Running ScreenTranslator.");
 
   //test::thread();

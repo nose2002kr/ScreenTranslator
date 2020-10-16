@@ -9,8 +9,7 @@
 
 ScreenTranslator::ScreenTranslator(HINSTANCE hInstance) {
   TextOverlay::init(hInstance);
-  //OCR::init("C:/Users/KS/cpp/tesseract-/tessdata"); 
-  OCR::init("E:/C++/tesseract__/tessdata");
+  OCR::init("./res/tessdata");
 
   runFindTextThread();
   runShowTextThread();
