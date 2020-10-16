@@ -19,9 +19,9 @@ RECT toWinRect(cv::Rect rect) {
 }
 
 
-bool contains(RectWrapper lhs, RectWrapper rhs) {
-  bool contains = (lhs.l() < rhs.r() && lhs.r() > rhs.l() &&
-                    lhs.t() > rhs.b() && lhs.b() < rhs.t());
+bool contains(RectWrapper super, RectWrapper sub) {
+  bool contains = (super.l() < sub.l() && super.r() > sub.r() &&
+                    super.t() < sub.t() && super.b() > sub.b());
   return contains;
 }
 
