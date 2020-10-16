@@ -13,7 +13,7 @@ OCR::OCR(std::string tessdataPath) {
   }
 
   api->SetPageSegMode(tesseract::PSM_SINGLE_LINE);
-  api->SetVariable("tessedit_char_whitelist", "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+[],./<>?`~;'\"{}\\|-");
+  api->SetVariable("tessedit_char_whitelist", "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+[],./<>?`~;'\"{}\\|- ");
 }
 
 OCR::~OCR() {
