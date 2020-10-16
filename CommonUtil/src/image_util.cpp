@@ -495,8 +495,7 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
 
   for (size_t i = 0; i < src.size(); i++) {
     auto el = src[i];
-    cv::Rect rect = inflate(el, el.width * 0.1f, el. height * 0.1f);
-    //cv::Rect rect = el;
+    cv::Rect rect = el;
     if (rect.height > 100) { continue; }
     if (isOverwrapRect(src, i)) {
       continue;
@@ -505,11 +504,16 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
     int distance = INT_MAX;
     int foundIndex = findNearstRect(dst, rect, false, &distance);
     double spacing = rect.height * 0.8;
+    
     if (foundIndex != -1 && abs(distance) < spacing) {
       dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
     } else {
       dst.push_back(rect);
     }
+  }
+
+  for (size_t i = 0; i < dst.size(); i++) {
+    dst[i] = inflate(dst[i], dst[i].width * 0.1f, dst[i].height * 0.1f);
   }
 
   return dst;
