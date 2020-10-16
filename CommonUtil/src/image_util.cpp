@@ -461,7 +461,7 @@ detectLetters(const cv::Mat &img) {
   for (int i = 0; i < letters.size(); i++) {
     cv::rectangle(debugImg, letters[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
   }
-  cv::imwrite(DEBUG_LEVEL3"reoragnizeLetters.png", debugImg);
+  cv::imwrite(DEBUG_LEVEL3"reorganizeLetters.png", debugImg);
 #endif
   for (auto it = letters.begin(); it != letters.end(); ) {
     cv::Rect letter = *it;
