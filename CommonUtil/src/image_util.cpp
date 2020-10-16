@@ -477,13 +477,30 @@ detectLetters(const cv::Mat &img) {
   return letters;
 }
 
+bool isOverwrapRect(const std::vector<cv::Rect>& src, size_t index) {
+  cv::Rect targetRect = src[index];
+  for (size_t i = index + 1; i < src.size(); i++) {
+    if (targetRect.y + targetRect.height < src[i].y) {
+      break;
+    }
+    if (rectUtil::contains(targetRect, src[i])) {
+      return true;
+    }
+  }
+  return false;
+}
+
 std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
   std::vector<cv::Rect> dst;
 
-  for (auto el : src) {
+  for (size_t i = 0; i < src.size(); i++) {
+    auto el = src[i];
     cv::Rect rect = inflate(el, el.width * 0.1f, el. height * 0.1f);
     //cv::Rect rect = el;
     if (rect.height > 100) { continue; }
+    if (isOverwrapRect(src, i)) {
+      continue;
+    }
 
     int distance = INT_MAX;
     int foundIndex = findNearstRect(dst, rect, false, &distance);
