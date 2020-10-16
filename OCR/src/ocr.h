@@ -1,5 +1,9 @@
 #pragma once
 #include <vector>
+
+#define HUNSPELL_STATIC
+#include "hunspell.h"
+
 #include "tesseract/baseapi.h"
 
 #include "common_util.h"
@@ -14,6 +18,7 @@ class OCR {
     ~OCR();
 
     tesseract::TessBaseAPI* api;
+    Hunhandle* spellObj;
 public:
   static void init(std::string tessdataPath) {
     if (g_inst == nullptr) {
@@ -27,7 +32,6 @@ public:
     return g_inst;
   }
 
-  bool ocrText(const cv::Mat& image, cv::Rect cropRect, int relx, int rely);
   void cancel() { m_cancelFlag = true; }
 
   bool findOutTextInfos(Image *imgParam);
@@ -36,6 +40,4 @@ private:
   bool m_cancelFlag = false;
   cv::Mat m_lastImage;
   std::mutex m_mtx;
-
-  bool isTranslatable(std::string str);
 };

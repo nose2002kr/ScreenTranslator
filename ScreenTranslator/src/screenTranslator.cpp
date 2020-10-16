@@ -9,11 +9,11 @@
 
 ScreenTranslator::ScreenTranslator(HINSTANCE hInstance) {
   TextOverlay::init(hInstance);
-  OCR::init("./res/tessdata");
+  OCR::init("./res");
 
   runFindTextThread();
   runShowTextThread();
-  runTranslateTextThread();
+  //runTranslateTextThread();
   installKeyHook();
   runMessagwHandler();
 }

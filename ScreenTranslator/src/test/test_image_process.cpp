@@ -31,7 +31,7 @@ void test::imageProcess() {
 
   //cv::imwrite("./snap.png", image);
 
-  cv::Mat dbg1 = cv::imread("./test-src/debug5.png");
+  cv::Mat dbg1 = cv::imread("./test-src/debug1.png");
   //cv::Mat dbg2 = cv::imread("./test-src/debug2.png");
   //cv::Mat dbg3 = cv::imread("./test-src/debug3.png");
 

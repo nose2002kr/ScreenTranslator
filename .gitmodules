@@ -7,3 +7,6 @@
 [submodule "thirdparty/libjson"]
 	path = thirdparty/libjson
 	url = https://github.com/nose2002kr/libjson.git
+[submodule "thirdparty/hunspell"]
+	path = thirdparty/hunspell
+	url = https://github.com/nose2002kr/hunspell.git
