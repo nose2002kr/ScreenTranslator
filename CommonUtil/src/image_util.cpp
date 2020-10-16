@@ -375,6 +375,9 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
     if (contours[i].size() > contourComplexity) {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
       cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
+      if (binaryImage.rows == appRect.height && binaryImage.cols == appRect.width) {
+        continue;
+      }
       
       int forwardRectIndex = findForwardRect(boundRect, appRect);
       if (forwardRectIndex == -1) {
@@ -487,6 +490,9 @@ std::vector<cv::Rect>
 findDiffRange(const cv::Mat &first, const cv::Mat &second) {
   std::vector<cv::Rect> diffRange;
   if (second.empty()) {
+    return diffRange;
+  }
+  if (first.rows * first.cols != second.rows * second.cols) {
     return diffRange;
   }
 
