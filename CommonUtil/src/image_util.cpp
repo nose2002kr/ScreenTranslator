@@ -3,6 +3,10 @@
 #include "rect_util.h"
 #include "debug_util.h"
 
+#ifdef DEBUG_LEVEL3
+#include <string> // for to_string
+#endif
+
 namespace imageUtil {
 typedef struct t_color_node {
   cv::Mat       mean;       // The mean of this node
@@ -394,7 +398,16 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
       }
     }
   }
-  return boundRect;
+#ifdef DEBUG_LEVEL3
+  cv::Mat debugImg = binaryImage.clone();
+  cvtColor(debugImg, debugImg, cv::COLOR_GRAY2BGR);
+  for (int i = 0; i < boundRect.size(); i++) {
+    cv::rectangle(debugImg, boundRect[i], cv::Scalar(0, 255, 0, 255), 1, 8, 0);
+    cv::putText(debugImg, std::to_string(i), boundRect[i].tl(), cv::FONT_HERSHEY_PLAIN, 0.6f, cv::Scalar(0, 255, 0, 255));
+  }
+  cv::imwrite(DEBUG_LEVEL3"boundRect.png", debugImg);
+#endif
+   return boundRect;
 }
 
 static inline cv::Rect inflate(cv::Rect rect, float x, float y) {
@@ -443,6 +456,13 @@ std::vector<cv::Rect>
 detectLetters(const cv::Mat &img) {
   auto letters = findContourBounds(sobelToBinrayImage(img), 40);
   letters = imageUtil::reorganizeText(letters);
+#ifdef DEBUG_LEVEL3
+  cv::Mat debugImg = img.clone();
+  for (int i = 0; i < letters.size(); i++) {
+    cv::rectangle(debugImg, letters[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
+  }
+  cv::imwrite(DEBUG_LEVEL3"reoragnizeLetters.png", debugImg);
+#endif
   for (auto it = letters.begin(); it != letters.end(); ) {
     cv::Rect letter = *it;
     if (letter.width < letter.height
