@@ -55,7 +55,7 @@ void removeIntersectRect(RECT rect) {
     std::back_inserter(filtered), 
       [&rect](TextInfo info) { 
       RectWrapper intersectRect = rectUtil::intersect(info.rect, rect);
-      return getDiagonal(intersectRect) < getDiagonal(info.rect) * 0.5f;
+      return (intersectRect.w() * intersectRect.h()) / (float)(RectWrapper(info.rect).w() * RectWrapper(info.rect).h()) < 0.1f;
     });
   g_textInfo.clear();
   g_textInfo.assign(filtered.begin(), filtered.end());
