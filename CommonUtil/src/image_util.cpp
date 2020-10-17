@@ -317,7 +317,7 @@ std::vector<cv::Vec3b> findDominantColors(const cv::Mat &img, int count) {
 
 static inline
 bool isSameLine(cv::Rect prev, cv::Rect cur) {
-  int h = min(prev.height, cur.height);
+  int h = max(prev.height, cur.height);
   return prev.y - h * 0.8f < cur.y
       && prev.y + h * 0.8f > cur.y;
 }
