@@ -1,7 +1,7 @@
 #include "common_util.h"
 
 #include <Windows.h>
-#include <time.h>
+#include <chrono>
 #include <fstream>
 
 std::queue<int> g_msg;
@@ -39,14 +39,21 @@ std::string replaceAll(std::string str, const std::string& from, const std::stri
 }
 
 std::string getCurrentDateTime(std::string s) {
-  time_t now = time(0);
-  struct tm  tstruct;
-  char  buf[80];
-  localtime_s(&tstruct, &now);
+  auto now = std::chrono::system_clock::now();
+  auto seconds = std::chrono::time_point_cast<std::chrono::seconds>(now);
+  auto fraction = now - seconds;
+  auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(fraction);
+
+  time_t tnow = std::chrono::system_clock::to_time_t(now);
+  struct tm ptm;
+  localtime_s(&ptm, &tnow);
+
+  char buf[40] = { 0, };
   if (s == "now")
-    strftime(buf, sizeof(buf), "%Y-%m-%d %X", &tstruct);
+    sprintf_s(buf, "%d-%d-%d %d:%d:%d.%d", ptm.tm_year + 1900, ptm.tm_mon + 1, ptm.tm_mday, ptm.tm_hour, ptm.tm_min, ptm.tm_sec, (int) milliseconds.count());
   else if (s == "date")
-    strftime(buf, sizeof(buf), "%Y-%m-%d", &tstruct);
+    sprintf_s(buf, "%d-%d-%d", ptm.tm_year + 1900, ptm.tm_mon + 1, ptm.tm_mday);
+  
   return std::string(buf);
 };
 
