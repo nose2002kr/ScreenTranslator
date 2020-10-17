@@ -27,6 +27,7 @@ public:
     return g_inst;
   }
 
+  bool ocrText(const cv::Mat& image, cv::Rect cropRect, int relx, int rely);
   void cancel() { m_cancelFlag = true; }
 
   bool findOutTextInfos(Image *imgParam);
