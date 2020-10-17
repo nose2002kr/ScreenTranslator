@@ -355,8 +355,14 @@ static inline
 int findJustAroundRect(const std::vector<cv::Rect> &boundRect, cv::Rect cur) {
   int distance = INT_MAX;
   int foundIndex = findNearstRect(boundRect, cur, false, &distance);
-  return abs(distance) < cur.height * 0.8f ? (distance >= 0 ? foundIndex + 1 : foundIndex)
-    : -1;
+  if (abs(distance) > cur.height * 0.8f) { // too far
+    return -1;
+  }
+
+  if (distance + boundRect[foundIndex].height / 2 >= 0) { // its mean backword char.
+    foundIndex++;
+  }
+  return foundIndex;
 }
 
 std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t contourComplexity) {
