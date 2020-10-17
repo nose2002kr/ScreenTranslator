@@ -26,6 +26,39 @@ OCR::findOutTextInfos(Image *imgParam) {
 }
 
 bool
+OCR::ocrText(const cv::Mat &image, cv::Rect cropRect, int relx, int rely) {
+  cv::Mat cropImg = image(imageUtil::normalize(image, cropRect));
+  //resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
+
+  cropRect.x += relx;
+  cropRect.y += rely;
+
+#ifdef DEBUG_LEVEL1
+  cv::imwrite(DEBUG_LEVEL1"letterBox.png", cropImg);
+#endif
+  api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, cropImg.channels(), cropImg.step1());
+  char* textOutput = api->GetUTF8Text();     // Get the text 
+  if (!textOutput) return false;
+  if (strlen(textOutput) == 0) {
+    delete[] textOutput;
+    return false;
+  }
+
+  removeIntersectRect(rectUtil::toWinRect(cropRect));
+
+  std::vector<cv::Vec3b> vec = imageUtil::findDominantColors(cropImg, 2);
+  TextInfo tInfo{ 0, };
+
+  tInfo.backgroundColor = static_cast<int>(imageUtil::Vec2Rgb(vec[1]));
+  tInfo.fontColor = static_cast<int>(imageUtil::Vec2Rgb(vec[0]));
+  tInfo.ocrText = replaceAll(std::string(textOutput), "\n", "");
+  tInfo.rect = rectUtil::toWinRect(cropRect);
+  pushTextInfo(tInfo);
+  delete[] textOutput;
+  return true;
+}
+
+bool
 OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
   bool found = false;
   if (img.empty()) return found;
@@ -44,35 +77,7 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
         return found;
       }
 
-      cv::Mat cropImg = img(imageUtil::normalize(img, *it));
-      //resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
-      
-      it->x += relx;
-      it->y += rely;
-
-#ifdef DEBUG_LEVEL1
-      cv::imwrite(DEBUG_LEVEL1"letterBox.png", cropImg);
-#endif
-      api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, cropImg.channels(), cropImg.step1());
-      char* textOutput = api->GetUTF8Text();     // Get the text 
-      if (!textOutput) continue;
-      if (strlen(textOutput) == 0) {
-        delete[] textOutput;
-        continue;
-      }
-
-      removeIntersectRect(rectUtil::toWinRect(*it));
-
-      std::vector<cv::Vec3b> vec = imageUtil::findDominantColors(cropImg, 2);
-      TextInfo tInfo{ 0, };
-      
-      tInfo.backgroundColor = static_cast<int>(imageUtil::Vec2Rgb(vec[1]));
-      tInfo.fontColor = static_cast<int>(imageUtil::Vec2Rgb(vec[0]));
-      tInfo.ocrText = replaceAll(std::string(textOutput), "\n", "");
-      tInfo.rect = rectUtil::toWinRect(*it);
-      pushTextInfo(tInfo);
-      delete[] textOutput;
-      found = true;
+      ocrText(img, *it, relx, rely);
     }
 
 #ifdef DEBUG_LEVEL1
