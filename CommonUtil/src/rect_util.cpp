@@ -47,6 +47,14 @@ bool isEmpty(RectWrapper rect) {
   return rect.w() * rect.h() == 0;
 }
 
+std::string
+toString(RectWrapper rect) {
+  return std::to_string(rect.l()) + ", "
+       + std::to_string(rect.t()) + ", "
+       + std::to_string(rect.r()) + ", "
+       + std::to_string(rect.b());
+}
+
 } // namespace rectUtil
 
 RectWrapper::RectWrapper(RECT rect) {

@@ -36,11 +36,12 @@ TextOverlay::TextOverlay(HINSTANCE hInstance) {
 
 Image*
 TextOverlay::windowScreenCapture() {
+  writeLog(DEBUG, "try screen capture");
   HWND hWnd = getTargetWindow();
   Image* img = CaptureSnapshot::inst().takeImage(hWnd);
   if (!img) return nullptr;
+  writeLog(DEBUG, "success screen capture");
   return img;
-
 }
 
 ID2D1HwndRenderTarget*
@@ -126,6 +127,8 @@ TextOverlay::isInvalidHwnd(HWND hWnd) {
 
 void
 TextOverlay::updateCanvasWindow() {
+  //writeLog(DEBUG, "update canvas window");
+  
   RECT rect = getTargetWindowRect();
   RECT canvasRect;
   DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
@@ -140,12 +143,14 @@ TextOverlay::updateCanvasWindow() {
   int w = rectWrapper.w();
   int h = rectWrapper.h();
   if (canvasRectWrapper.w() != w || canvasRectWrapper.h() != h) {
+    writeLog(INFO, "detect changed window!");
     g_msg.push(MESSAGE_OCR_CANCEL);
   }
 
   m_rt->Resize(D2D1::SizeU(w, h));
   ShowWindow(m_canvasWnd, true);
   SetWindowPos(m_canvasWnd, HWND_TOPMOST, rect.left, rect.top, w, h, NULL);
+  writeLog(INFO, "detect moved window!");
 }
 
 IDWriteFactory*
@@ -202,6 +207,7 @@ TextOverlay::getTargetWindowRect() {
 
 void
 TextOverlay::showText() {
+  //writeLog(DEBUG, "try show text");
   requestUpdateCanvasWindow();
 
   ID2D1HwndRenderTarget* pTarget = getRenderTarget();
@@ -237,6 +243,7 @@ TextOverlay::showText() {
   }
 
   pTarget->EndDraw();
+  //writeLog(DEBUG, "complete show text");
 }
 
 Image

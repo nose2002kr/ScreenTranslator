@@ -44,6 +44,7 @@ OCR::ocrText(const cv::Mat &image, cv::Rect cropRect, int relx, int rely) {
     return false;
   }
 
+  writeLog(DEBUG, std::string("  detected text: ") + textOutput);
   removeIntersectRect(rectUtil::toWinRect(cropRect));
 
   std::vector<cv::Vec3b> vec = imageUtil::findDominantColors(cropImg, 2);
@@ -60,6 +61,7 @@ OCR::ocrText(const cv::Mat &image, cv::Rect cropRect, int relx, int rely) {
 
 bool
 OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
+  writeLog(DEBUG, "try find out text infos");
   bool found = false;
   if (img.empty()) return found;
 
@@ -70,8 +72,10 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
 
     std::vector<cv::Rect> detectedLetterBoxes = imageUtil::detectLetters(img);
     std::vector<cv::Rect> letterBBoxes = detectedLetterBoxes;// imageUtil::reorganizeText(detectedLetterBoxes);
+    writeLog(DEBUG, "detected letter boxes(" + std::to_string(letterBBoxes.size()) + ")");
     for (auto it = letterBBoxes.begin(); it != letterBBoxes.end(); ++it) {
       if (m_cancelFlag) {
+        writeLog(INFO, "canceled ocr");
         m_cancelFlag = false;
         m_lastImage = cv::Mat();
         return found;
@@ -99,6 +103,8 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
 #ifdef DEBUG_LEVEL1
         cv::imwrite(DEBUG_LEVEL1"crop.png", crop);
 #endif
+        
+        writeLog(DEBUG, "partitial find out text infos [" + rectUtil::toString(rect) + "]");
         bool foundFromParticle = OCR::instnace()->findOutTextInfos(crop, relx + rect.x, rely + rect.y, false);
         if (!foundFromParticle) {
           removeIntersectRect(rectUtil::toWinRect(rect));
@@ -110,5 +116,6 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
   if (found) {
     m_lastImage = img.clone();
   }
+  writeLog(DEBUG, "complete find out text infos");
   return found;
 }
