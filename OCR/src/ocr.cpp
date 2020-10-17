@@ -44,7 +44,10 @@ OCR::ocrText(const cv::Mat &image, cv::Rect cropRect, int relx, int rely) {
     return false;
   }
 
-  writeLog(DEBUG, std::string("  detected text: ") + textOutput);
+  std::string ocrText = replaceAll(std::string(textOutput), "\n", "");
+  delete[] textOutput;
+  
+  writeLog(DEBUG, "  detected text: " + ocrText);
   removeIntersectRect(rectUtil::toWinRect(cropRect));
 
   std::vector<cv::Vec3b> vec = imageUtil::findDominantColors(cropImg, 2);
@@ -52,10 +55,9 @@ OCR::ocrText(const cv::Mat &image, cv::Rect cropRect, int relx, int rely) {
 
   tInfo.backgroundColor = static_cast<int>(imageUtil::Vec2Rgb(vec[1]));
   tInfo.fontColor = static_cast<int>(imageUtil::Vec2Rgb(vec[0]));
-  tInfo.ocrText = replaceAll(std::string(textOutput), "\n", "");
+  tInfo.ocrText = ocrText;
   tInfo.rect = rectUtil::toWinRect(cropRect);
   pushTextInfo(tInfo);
-  delete[] textOutput;
   return true;
 }
 
@@ -84,6 +86,7 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
       ocrText(img, *it, relx, rely);
     }
 
+    m_lastImage = img;
 #ifdef DEBUG_LEVEL1
     cv::Mat debugImg = img.clone();
     for (int i = 0; i < g_textInfo.size(); i++) {
