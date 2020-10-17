@@ -513,7 +513,8 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
   }
 
   for (size_t i = 0; i < dst.size(); i++) {
-    dst[i] = inflate(dst[i], dst[i].width * 0.1f, dst[i].height * 0.1f);
+    float amount = dst[i].height * 0.1f;
+    dst[i] = inflate(dst[i], amount, amount);
   }
 
   return dst;
