@@ -41,5 +41,7 @@ namespace rectUtil {
   bool intersected(RectWrapper lhs, RectWrapper rhs);
   RectWrapper intersect(RectWrapper lhs, RectWrapper rhs);
   bool isEmpty(RectWrapper rect);
+
+  std::string toString(RectWrapper rect);
 };
 
