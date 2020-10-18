@@ -13,7 +13,7 @@ ScreenTranslator::ScreenTranslator(HINSTANCE hInstance) {
 
   runFindTextThread();
   runShowTextThread();
-  runTranslateTextThread();
+  //runTranslateTextThread();
   installKeyHook();
   runMessagwHandler();
 }
@@ -44,9 +44,10 @@ void
 ScreenTranslator::runShowTextThread() {
   m_showTxThread = std::thread([&] {
     while (!m_terminate) {
-    TextOverlay::instnace()->showText();
-    Sleep(100);
-  }});
+      TextOverlay::instnace()->showText();
+      Sleep(10);
+    }
+  });
 }
 
 void 
@@ -73,6 +74,8 @@ ScreenTranslator::installKeyHook() {
   hook->registryFunction(KeySeq(true, false, true, 'q'), [&] { m_terminate = true; MessageHandler().terminate(); });
   // Key: Lock & Unlock window (do not switch windows any more). [CTRL + ALT + P]
   hook->registryFunction(KeySeq(true, false, true, 'p'), [] { TextOverlay::instnace()->toggleWindowLock(); });
+  // Key: Clear All [CTRL + SHIFT + R]
+  hook->registryFunction(KeySeq(true, true, false, 'r'), [] {  OCR::instnace()->cancel(); clearTextInfo(); });
 
   hook->startHook();
 }

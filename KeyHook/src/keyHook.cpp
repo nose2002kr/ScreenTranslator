@@ -35,7 +35,7 @@ __declspec(dllexport) LRESULT CALLBACK KeyboardEvent(int nCode, WPARAM wParam, L
     if (key >= 'A' && key <= 'Z')
     {
 
-      if (GetAsyncKeyState(VK_SHIFT) >= 0) key += 32;
+      if (SHIFT_key >= 0) key += 32;
 
       auto func = KeyHook::instnace()->findFunction(KeySeq(CTRL_key, SHIFT_key, ALT_key, key));
       if (func) func();
