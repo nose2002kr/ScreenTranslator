@@ -17,6 +17,8 @@ private:
   void runMessagwHandler();
 
   bool m_terminate = false;
+  bool m_disableTranslate = true;
+  bool m_disableOCR = false;
 
   std::thread m_findTxhread;
   std::thread m_showTxThread;
