@@ -83,10 +83,12 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
         return found;
       }
 
-      ocrText(img, *it, relx, rely);
+      found |= ocrText(img, *it, relx, rely);
     }
 
-    m_lastImage = img;
+    if (useDiff) {
+      m_lastImage = img.clone();
+    }
 #ifdef DEBUG_LEVEL1
     cv::Mat debugImg = img.clone();
     for (int i = 0; i < g_textInfo.size(); i++) {
@@ -115,6 +117,8 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
         found = found | foundFromParticle;
       }
     }
+    m_lastImage = img.clone();
+
   }
   if (found) {
     m_lastImage = img.clone();
