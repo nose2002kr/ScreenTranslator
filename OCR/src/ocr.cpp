@@ -104,12 +104,20 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
     std::vector<cv::Rect> diffRange = imageUtil::findDiffRange(m_lastImage, img);
     if (!diffRange.empty()) {
       for (auto rect : diffRange) {
+        
+        for (size_t i = 0; i < getTextInfoSize(); i++) {
+          RectWrapper intersectedRect = rectUtil::intersect(rect, getTextInfo(i).rect);
+          if (intersectedRect.w() * intersectedRect.h() > rect.width * rect.height * 0.8f) {
+            rect = rectUtil::toCVRect(getTextInfo(i).rect);
+          }
+        }
         cv::Mat crop = img(rect);
 #ifdef DEBUG_LEVEL1
         cv::imwrite(DEBUG_LEVEL1"crop.png", crop);
 #endif
         
         writeLog(DEBUG, "partitial find out text infos [" + rectUtil::toString(rect) + "]");
+        
         bool foundFromParticle = OCR::instnace()->findOutTextInfos(crop, relx + rect.x, rely + rect.y, false);
         if (!foundFromParticle) {
           removeIntersectRect(rectUtil::toWinRect(rect));
