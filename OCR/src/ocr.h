@@ -36,4 +36,6 @@ private:
   bool m_cancelFlag = false;
   cv::Mat m_lastImage;
   std::mutex m_mtx;
+
+  bool isTranslatable(std::string str);
 };

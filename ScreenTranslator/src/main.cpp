@@ -15,8 +15,8 @@ int CALLBACK WinMain(
   _In_ LPSTR     lpCmdLine,
   _In_ int       nCmdShow
 ) {
-  //TextOverlay::init(hInstance);
-  //OCR::init("./res/tessdata");
+  TextOverlay::init(hInstance);
+  OCR::init("./res/tessdata");
   writeLog(DEBUG, "Running ScreenTranslator.");
 
   //test::thread();
@@ -24,7 +24,6 @@ int CALLBACK WinMain(
   //test::thread2();
   //test::translate();
   ScreenTranslator *translator = new ScreenTranslator(hInstance);
-
 
   /*TextOverlay::instnace()->updateCanvasWindow();
   TextOverlay::instnace()->showText();

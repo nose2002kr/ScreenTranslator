@@ -44,7 +44,7 @@ Translate::Translate() {
   char buf[1024];
   while (!inFile.eof()) {
     inFile.getline(buf, 1024);
-    if (strlen(buf) == 0) continue;
+    if (strlen(buf) == 0) break;
     std::string src(buf);
     std::string key = src.substr(0, src.find(TRANSLATE_HISTORY_DELIMITER));
     std::string val = src.substr(src.find(TRANSLATE_HISTORY_DELIMITER) + 6);
@@ -62,7 +62,8 @@ Translate::~Translate() {
   curl_global_cleanup();
 }
 
-void setPapagoNmtAPIHeader(CURL* curl, struct curl_slist* &header, const char *param) {
+void setPapagoNmtAPIHeader(CURL* curl, struct curl_slist* &header, std::string param) {
+  std::string postdata = std::string("source=en&target=ko&text=") + param;
   std::string headerClientId = std::string("X-Naver-Client-Id: ") + std::getenv("TRANSLATE_PAPAGO_API_ID");
   std::string headerClientSecret = std::string("X-Naver-Client-Secret: ") + std::getenv("TRANSLATE_PAPAGO_API_SECRET");
   curl_easy_setopt(curl, CURLOPT_URL, "https://openapi.naver.com/v1/papago/n2mt");
@@ -70,9 +71,19 @@ void setPapagoNmtAPIHeader(CURL* curl, struct curl_slist* &header, const char *p
   header = curl_slist_append(header, headerClientId.c_str());
   header = curl_slist_append(header, headerClientSecret.c_str());
   curl_easy_setopt(curl, CURLOPT_POST, 1L);
-  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, param);
+  curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postdata.c_str());
   curl_easy_setopt(curl, CURLOPT_HTTPHEADER, header);
+}
 
+void setGoogleTranslationAPIHeader(CURL* curl, struct curl_slist*& header, std::string param) {
+  // https://translation.googleapis.com/language/translate/v2?q={0}&target={1}&key={2}'.format(text, translation_language, api_key)
+  std::string baseurl = "https://translation.googleapis.com/language/translate/v2";
+  std::string key = std::getenv("GOOGLE_TRANSLATE_API_KEY");
+  std::string url = baseurl;
+  url += "?key=" + key;
+  url += "&q=" + param;
+  url += "&target=ko";
+  curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 }
 
 std::string 
@@ -89,12 +100,9 @@ Translate::translate(std::string src) {
     src = ANSIToUTF8(src);
     std::string encodedSrc = curl_easy_escape(curl, src.c_str(), src.length());
 
-    std::string apiKey = "AIzaSyB3MXUyZEcDiw4VQ8tucT3lcvOyr5VbIh0";
-    std::string url = "https://translation.googleapis.com/language/translate/v2?q=" + encodedSrc + "&target=ko&format=text&source=en&key=" + apiKey;
-    //curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     struct curl_slist* header = nullptr;
-    std::string param = "source=en&target=ko&text=" + encodedSrc;
-    setPapagoNmtAPIHeader(curl, header, param.c_str());
+    //setPapagoNmtAPIHeader(curl, header, encodedSrc);
+    setGoogleTranslationAPIHeader(curl, header, encodedSrc);
    
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -121,7 +129,8 @@ Translate::translate(std::string src) {
       fprintf(stderr, "curl_easy_perform() failed: %s\n", s);
       return "";
     } else {
-      std::string translatedText = node["message"]["result"]["translatedText"].as_string();
+      //std::string translatedText = node["message"]["result"]["translatedText"].as_string();
+      std::string translatedText = node["data"]["translations"][0]["translatedText"].as_string();
       pushHistory(src, translatedText);
       return translatedText;
     }

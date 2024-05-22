@@ -26,19 +26,19 @@ void test::imageProcess() {
 
   cv::Mat image = imageUtil::toMat(img);*/
   //imageUtil::detectLetters(cv::imread("./test-src/debug-sobel1.png"));
-  imageUtil::detectLetters(cv::imread("./test-src/debug-sobel2.png"));
+  //imageUtil::detectLetters(cv::imread("./test-src/debug-sobel2.png"));
 
 
   //cv::imwrite("./snap.png", image);
 
-  cv::Mat dbg1 = cv::imread("./test-src/debug1.png");
-  cv::Mat dbg2 = cv::imread("./test-src/debug2.png");
-  cv::Mat dbg3 = cv::imread("./test-src/debug3.png");
+  cv::Mat dbg1 = cv::imread("./test-src/debug5.png");
+  //cv::Mat dbg2 = cv::imread("./test-src/debug2.png");
+  //cv::Mat dbg3 = cv::imread("./test-src/debug3.png");
 
   OCR::instnace()->findOutTextInfos(dbg1);
-  OCR::instnace()->findOutTextInfos(dbg2);
-  OCR::instnace()->findOutTextInfos(dbg3);
+  //OCR::instnace()->findOutTextInfos(dbg2);
+  //OCR::instnace()->findOutTextInfos(dbg3);
 
-  imageUtil::findDominantColors(cv::imread("./test-src/debug-dominant-color.png"), 2);
+  //imageUtil::findDominantColors(cv::imread("./test-src/debug-dominant-color.png"), 2);
 
 }
