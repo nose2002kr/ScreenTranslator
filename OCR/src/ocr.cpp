@@ -26,6 +26,15 @@ OCR::findOutTextInfos(Image *imgParam) {
 }
 
 bool
+OCR::isTranslatable(std::string str) {
+  str.erase(std::remove_if(str.begin(), str.end(),
+    [](char c) { return !std::isalpha(c); }),
+    str.end());
+  return str.size() > 1;
+}
+
+
+bool
 OCR::ocrText(const cv::Mat &image, cv::Rect cropRect, int relx, int rely) {
   cv::Mat cropImg = image(imageUtil::normalize(image, cropRect));
   //resize(cropImg, cropImg, cv::Size(cropImg.cols, cropImg.rows));//resize image
@@ -39,7 +48,7 @@ OCR::ocrText(const cv::Mat &image, cv::Rect cropRect, int relx, int rely) {
   api->SetImage(cropImg.data, cropImg.cols, cropImg.rows, cropImg.channels(), cropImg.step1());
   char* textOutput = api->GetUTF8Text();     // Get the text 
   if (!textOutput) return false;
-  if (strlen(textOutput) == 0) {
+  if (!isTranslatable(textOutput)) {
     delete[] textOutput;
     return false;
   }
@@ -53,8 +62,8 @@ OCR::ocrText(const cv::Mat &image, cv::Rect cropRect, int relx, int rely) {
   std::vector<cv::Vec3b> vec = imageUtil::findDominantColors(cropImg, 2);
   TextInfo tInfo{ 0, };
 
-  tInfo.backgroundColor = static_cast<int>(imageUtil::Vec2Rgb(vec[1]));
-  tInfo.fontColor = static_cast<int>(imageUtil::Vec2Rgb(vec[0]));
+  tInfo.backgroundColor = static_cast<int>(imageUtil::Vec2Rgb(vec[0]));
+  tInfo.fontColor = static_cast<int>(imageUtil::Vec2Rgb(vec[1]));
   tInfo.ocrText = ocrText;
   tInfo.rect = rectUtil::toWinRect(cropRect);
   pushTextInfo(tInfo);
@@ -117,6 +126,10 @@ OCR::findOutTextInfos(const cv::Mat &img, int relx, int rely, bool useDiff) {
 #endif
         
         writeLog(DEBUG, "partitial find out text infos [" + rectUtil::toString(rect) + "]");
+        if (rect.width > 150) {
+          writeLog(DEBUG, "skip, the width is too big");
+          continue;
+        }
         
         bool foundFromParticle = OCR::instnace()->findOutTextInfos(crop, relx + rect.x, rely + rect.y, false);
         if (!foundFromParticle) {
