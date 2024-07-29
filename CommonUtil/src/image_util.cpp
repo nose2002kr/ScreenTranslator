@@ -376,11 +376,11 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
 #endif
   // it is should be sort by position. (in y order, then in x order.)
   for (int i = (int) contours.size() - 1; i >= 0; i--) {
-#ifdef DEBUG_LEVEL2
+#ifdef DEBUG_LEVEL3
     cv::Mat dbgImg = binaryImage.clone();
     cvtColor(dbgImg, dbgImg, cv::COLOR_GRAY2BGR);
     cv::polylines(dbgImg, contours[i], false, cv::Scalar(0., 255, 0., 255), 1, 8, 0);
-    cv::imwrite(DEBUG_LEVEL2"detect-contours.png", dbgImg);
+    cv::imwrite(DEBUG_LEVEL3"detect-contours.png", dbgImg);
 #endif
     if (contours[i].size() > contourComplexity) {
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
@@ -462,12 +462,12 @@ std::vector<cv::Rect>
 detectLetters(const cv::Mat &img) {
   auto letters = findContourBounds(sobelToBinrayImage(img), 40);
   letters = imageUtil::reorganizeText(letters);
-#ifdef DEBUG_LEVEL3
+#ifdef DEBUG_LEVEL2
   cv::Mat debugImg = img.clone();
   for (int i = 0; i < letters.size(); i++) {
     cv::rectangle(debugImg, letters[i], cv::Scalar(0, 255, 0, 255), 3, 8, 0);
   }
-  cv::imwrite(DEBUG_LEVEL3"reorganizeLetters.png", debugImg);
+  cv::imwrite(DEBUG_LEVEL2"reorganizeLetters.png", debugImg);
 #endif
   for (auto it = letters.begin(); it != letters.end(); ) {
     cv::Rect letter = *it;
@@ -548,6 +548,9 @@ findDiffRange(const cv::Mat &first, const cv::Mat &second) {
   cvtColor(first, prevImageG, cv::COLOR_BGR2GRAY);
   cvtColor(second, imageG, cv::COLOR_BGR2GRAY);
   cv::Mat diff = imageG ^ prevImageG;
+#ifdef DEBUG_LEVEL2
+  cv::imwrite(DEBUG_LEVEL2"diff.png", diff);
+#endif
   if (!diff.empty()) {
     diffRange = imageUtil::findContourBounds(sobelToBinrayImage(diff), 4);
   }
