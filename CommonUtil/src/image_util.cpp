@@ -328,10 +328,15 @@ bool isForward(cv::Rect prev, cv::Rect cur) {
 }
 
 static inline
-int findNearstRect(const std::vector<cv::Rect>& boundRect, cv::Rect cur, bool onlyForward = true, int* distance = nullptr) {
+int findNearstRect(const std::vector<cv::Rect>& boundRect,
+                        cv::Rect cur,
+                        bool onlyForward = true,
+                        int* distance = nullptr,
+                        int from = -1) {
   int foundIndex = -1;
   int xDistance = INT_MAX;
-  for (int j = (int)boundRect.size() - 1; j >= 0; j--) {
+  from = from == -1 ? boundRect.size() - 1 : from;
+  for (int j = from; j >= 0; j--) {
     if (!isSameLine(boundRect[j], cur)) {
       break;
     }
@@ -530,13 +535,36 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
     if (isOverwrapRect(src, i)) {
       continue;
     }
-
     int distance = INT_MAX;
-    int foundIndex = findNearstRect(dst, rect, false, &distance);
+    int pivotFoundIndex = findNearstRect(dst, rect, false, &distance);
     double spacing = rect.height * 0.8;
-    
-    if (foundIndex != -1 && abs(distance) < spacing) {
-      dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
+    if (pivotFoundIndex != -1 && abs(distance) < spacing) {
+        int foundIndex = pivotFoundIndex;
+        while (foundIndex != -1) {
+            if (abs(distance) <= spacing) {
+                dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
+                rect = dst[foundIndex];
+                spacing = rect.height * 0.8;
+            } else {
+                break;
+            }
+
+            foundIndex = findNearstRect(dst, rect, false, &distance, foundIndex - 1);
+        }
+
+        foundIndex = findNearstRect(dst, rect, true, &distance);
+        while (foundIndex != -1) {
+            if (abs(distance) <= spacing) {
+                dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
+                rect = dst[foundIndex];
+                spacing = rect.height * 0.8;
+            } else {
+                break;
+            }
+            foundIndex = findNearstRect(dst, rect, true, &distance);
+        }
+    } else if (pivotFoundIndex != -1 && rectUtil::contains(inflate(dst[pivotFoundIndex], 2, 2), rect)) {
+        dst[pivotFoundIndex] = rectUtil::mergeRect(dst[pivotFoundIndex], rect).toCVRect();
     } else {
       dst.push_back(rect);
     }
