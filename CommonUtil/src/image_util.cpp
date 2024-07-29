@@ -471,12 +471,12 @@ detectLetters(const cv::Mat &img) {
 #endif
   for (auto it = letters.begin(); it != letters.end(); ) {
     cv::Rect letter = *it;
-    if (letter.width < letter.height
+    /*if (letter.width < letter.height
       || letter.height > 100
       || letter.height < 5
       || letter.width < 2) {
       it = letters.erase(it);
-    } else {
+    } else */{
       ++it;
     }
   }
