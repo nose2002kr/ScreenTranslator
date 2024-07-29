@@ -20,8 +20,8 @@ RECT toWinRect(cv::Rect rect) {
 
 
 bool contains(RectWrapper super, RectWrapper sub) {
-  bool contains = (super.l() < sub.l() && super.r() > sub.r() &&
-                    super.t() < sub.t() && super.b() > sub.b());
+  bool contains = (super.l() <= sub.l() && super.r() >= sub.r() &&
+                    super.t() <= sub.t() && super.b() >= sub.b());
   return contains;
 }
 
