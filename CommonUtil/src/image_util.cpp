@@ -542,7 +542,7 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
     }
     int distance = INT_MAX;
     int pivotFoundIndex = findNearstRect(dst, rect, false, &distance);
-    double spacing = rect.height * 0.8;
+    double spacing = min(10, rect.height * 0.8);
     if (pivotFoundIndex != -1 && abs(distance) < spacing) {
         int foundIndex = pivotFoundIndex;
         std::function<int()> removePrevFunc = nullptr;
@@ -556,7 +556,7 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
                     }
                 }
                 rect = dst[foundIndex];
-                spacing = rect.height * 0.8;
+                spacing = min(10, rect.height * 0.8);
                 removePrevFunc = [&dst, foundIndex]() { dst.erase(dst.begin() + foundIndex); return foundIndex; };
             } else {
                 break;
@@ -574,7 +574,7 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
                 }
                 dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
                 rect = dst[foundIndex];
-                spacing = rect.height * 0.8;
+                spacing = min(10, rect.height * 0.8);
                 removePrevFunc = [&dst, &foundIndex]() {dst.erase(dst.begin() + foundIndex); return foundIndex;};
             } else {
                 break;
