@@ -3,6 +3,7 @@
 #include "rect_util.h"
 #include "debug_util.h"
 
+#include <functional>
 #ifdef DEBUG_LEVEL3
 #include <string> // for to_string
 #endif
@@ -324,7 +325,7 @@ bool isSameLine(cv::Rect prev, cv::Rect cur) {
 
 static inline
 bool isForward(cv::Rect prev, cv::Rect cur) {
-  return cur.x < prev.x;
+  return cur.x <= prev.x;
 }
 
 static inline
@@ -334,17 +335,21 @@ int findNearstRect(const std::vector<cv::Rect>& boundRect,
                         int* distance = nullptr,
                         int from = -1) {
   int foundIndex = -1;
-  int xDistance = INT_MAX;
+  int minXDist = INT_MAX;
   from = from == -1 ? boundRect.size() - 1 : from;
   for (int j = from; j >= 0; j--) {
     if (!isSameLine(boundRect[j], cur)) {
       break;
     }
     if ((!onlyForward) || (onlyForward && isForward(boundRect[j], cur))) {
-      if (abs(xDistance) > abs(cur.x - (boundRect[j].x + boundRect[j].width))) {
-        xDistance = cur.x - (boundRect[j].x + +boundRect[j].width);
+      int xDist = min(
+        abs(cur.x - (boundRect[j].x + boundRect[j].width)),
+        abs(boundRect[j].x - (cur.x + cur.width))
+      );
+      if (abs(minXDist) > xDist) {
+        minXDist = xDist;
         foundIndex = j;
-        if (distance) *distance = xDistance;
+        if (distance) *distance = minXDist;
       }
     }
   }
@@ -540,11 +545,19 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
     double spacing = rect.height * 0.8;
     if (pivotFoundIndex != -1 && abs(distance) < spacing) {
         int foundIndex = pivotFoundIndex;
+        std::function<int()> removePrevFunc = nullptr;
         while (foundIndex != -1) {
             if (abs(distance) <= spacing) {
                 dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
+                if (removePrevFunc) {
+                    int removedIndex = removePrevFunc();
+                    if (foundIndex >= removedIndex) {
+                        foundIndex--;
+                    }
+                }
                 rect = dst[foundIndex];
                 spacing = rect.height * 0.8;
+                removePrevFunc = [&dst, foundIndex]() { dst.erase(dst.begin() + foundIndex); return foundIndex; };
             } else {
                 break;
             }
@@ -555,9 +568,14 @@ std::vector<cv::Rect> reorganizeText(const std::vector<cv::Rect> &src) {
         foundIndex = findNearstRect(dst, rect, true, &distance);
         while (foundIndex != -1) {
             if (abs(distance) <= spacing) {
+                int removedIndex = removePrevFunc();
+                if (foundIndex >= removedIndex) {
+                    foundIndex--;
+                }
                 dst[foundIndex] = rectUtil::mergeRect(dst[foundIndex], rect).toCVRect();
                 rect = dst[foundIndex];
                 spacing = rect.height * 0.8;
+                removePrevFunc = [&dst, &foundIndex]() {dst.erase(dst.begin() + foundIndex); return foundIndex;};
             } else {
                 break;
             }
