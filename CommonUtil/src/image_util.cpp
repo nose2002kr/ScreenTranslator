@@ -388,19 +388,43 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
       if (binaryImage.rows == appRect.height && binaryImage.cols == appRect.width) {
         continue;
       }
-      
-      int forwardRectIndex = findForwardRect(boundRect, appRect);
+      int forwardRectIndex = -1;
+      for (int i = boundRect.size() - 1; i >= 0; i--) {
+          if (boundRect[i].y < appRect.y)
+              break;
+          else if (boundRect[i].y > appRect.y)
+              forwardRectIndex = i;
+          else if (boundRect[i].y == appRect.y)
+              if (boundRect[i].x >= appRect.x)
+                forwardRectIndex = i;
+      }
       if (forwardRectIndex == -1) {
         boundRect.push_back(appRect);
       } else {
         boundRect.insert(boundRect.begin() + forwardRectIndex, appRect);
       }
     } else {
+        continue;
       cv::approxPolyDP(cv::Mat(contours[i]), contours_poly[i], 3, true);
       cv::Rect appRect(boundingRect(cv::Mat(contours_poly[i])));
       int forwardRectIndex = findJustAroundRect(boundRect, appRect);
       if (forwardRectIndex != -1) {
-        boundRect.insert(boundRect.begin() + forwardRectIndex, appRect);
+          forwardRectIndex = -1;
+          for (int i = boundRect.size() - 1; i >= 0; i--) {
+              if (boundRect[i].y < appRect.y)
+                  break;
+              else if (boundRect[i].y > appRect.y)
+                  forwardRectIndex = i;
+              else if (boundRect[i].y == appRect.y)
+                  if (boundRect[i].x >= appRect.x)
+                      forwardRectIndex = i;
+          }
+
+          if (forwardRectIndex == -1) {
+              boundRect.push_back(appRect);
+          } else {
+              boundRect.insert(boundRect.begin() + forwardRectIndex, appRect);
+          }
       }
     }
   }
