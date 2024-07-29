@@ -130,26 +130,27 @@ TextOverlay::updateCanvasWindow() {
   //writeLog(DEBUG, "update canvas window");
   
   RECT rect = getTargetWindowRect();
+  RectWrapper rectWrapper(rect);
+  int w = rectWrapper.w();
+  int h = rectWrapper.h();
+
   RECT canvasRect;
   DwmGetWindowAttribute(m_canvasWnd, DWMWA_EXTENDED_FRAME_BOUNDS, &canvasRect, sizeof(RECT));
+  SetWindowPos(m_canvasWnd, HWND_TOPMOST, rect.left, rect.top, w, h, NULL);
+  m_rt->Resize(D2D1::SizeU(w, h));
   if (canvasRect.left == rect.left
     && canvasRect.top == rect.top
     && canvasRect.right == rect.right
     && canvasRect.bottom == rect.bottom)
     return;
 
-  RectWrapper rectWrapper(rect);
   RectWrapper canvasRectWrapper(canvasRect);
-  int w = rectWrapper.w();
-  int h = rectWrapper.h();
   if (canvasRectWrapper.w() != w || canvasRectWrapper.h() != h) {
     writeLog(INFO, "detect changed window!");
     g_msg.push(MESSAGE_OCR_CANCEL);
   }
 
-  m_rt->Resize(D2D1::SizeU(w, h));
   ShowWindow(m_canvasWnd, true);
-  SetWindowPos(m_canvasWnd, HWND_TOPMOST, rect.left, rect.top, w, h, NULL);
   writeLog(INFO, "detect moved window!");
 }
 
