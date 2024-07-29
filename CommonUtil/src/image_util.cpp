@@ -369,7 +369,7 @@ std::vector<cv::Rect> findContourBounds(const cv::Mat &binaryImage, size_t conto
   std::vector<cv::Rect> boundRect;
 
   std::vector< std::vector< cv::Point> > contours;
-  cv::findContours(binaryImage, contours, 0, 1);
+  cv::findContours(binaryImage, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
   std::vector<std::vector<cv::Point> > contours_poly(contours.size());
 #ifdef DEBUG_LEVEL2
   cv::imwrite(DEBUG_LEVEL2"detect-img_gray.png", binaryImage);
